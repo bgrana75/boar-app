@@ -1,0 +1,155 @@
+package team.sopa.boar.engine.rag
+
+import team.sopa.boar.engine.db.SqlDatabase
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+
+/**
+ * The on-phone knowledge base (port of src/rag/db.ts + the searches of src/rag/retrieve.ts): an FTS5 table for
+ * keyword search and float32 embeddings for semantic search, plus chat history, feedback, telemetry and user
+ * collections. Same file and schema as the Expo app (files/SQLite/aoair_knowledge.db), so an upgrade keeps them.
+ */
+class KnowledgeBase(private val db: SqlDatabase) {
+    data class Collection(
+        val id: String, val name: String, val sourceFilename: String?, val docCount: Long, val chunkCount: Long,
+        val sizeBytes: Long, val active: Boolean, val createdAt: Long,
+    )
+
+    init { migrate() }
+
+    private fun migrate() {
+        db.exec(SCHEMA)
+        val columns = db.query("PRAGMA table_info(chunks)") { it.string("name") }
+        if ("collection_id" !in columns) db.exec("ALTER TABLE chunks ADD COLUMN collection_id TEXT REFERENCES custom_collections(id)")
+    }
+
+    fun insertChunk(chunk: Chunk, embedding: FloatArray) = db.transaction {
+        db.execute(
+            "INSERT OR REPLACE INTO chunks (chunk_id, doc_id, title, body, source, collection_id) VALUES (?, ?, ?, ?, ?, ?)",
+            listOf(chunk.chunkId, chunk.docId, chunk.title, chunk.body, chunk.source, chunk.collectionId),
+        )
+        db.execute("INSERT OR REPLACE INTO chunks_fts (chunk_id, doc_id, title, body) VALUES (?, ?, ?, ?)", listOf(chunk.chunkId, chunk.docId, chunk.title, chunk.body))
+        db.execute("INSERT OR REPLACE INTO chunk_embeddings (chunk_id, embedding, dim) VALUES (?, ?, ?)", listOf(chunk.chunkId, toBlob(embedding), embedding.size))
+    }
+
+    fun chunkCount(): Long = db.query("SELECT COUNT(*) FROM chunks") { it.long(0) }.first()
+
+    /** Deletes seed-corpus chunks (never user-imported ones) by id. */
+    fun deleteSeedChunks(ids: List<String>) {
+        if (ids.isEmpty()) return
+        val marks = ids.joinToString(", ") { "?" }
+        val seed = "SELECT chunk_id FROM chunks WHERE collection_id IS NULL AND chunk_id IN ($marks)"
+        db.transaction {
+            db.execute("DELETE FROM chunks_fts WHERE chunk_id IN ($seed)", ids)
+            db.execute("DELETE FROM chunk_embeddings WHERE chunk_id IN ($seed)", ids)
+            db.execute(seed.replace("SELECT chunk_id FROM", "DELETE FROM"), ids)
+        }
+    }
+
+    /** Deletes seed-corpus chunks whose id starts with [prefix] (GLOB: case-sensitive, "_" literal); returns how many. */
+    fun deleteSeedChunksWithPrefix(prefix: String): Long {
+        val pattern = prefix.replace(Regex("[*?\\[\\]]"), "") + "*"
+        val seed = "SELECT chunk_id FROM chunks WHERE collection_id IS NULL AND chunk_id GLOB ?"
+        return db.transaction {
+            db.execute("DELETE FROM chunks_fts WHERE chunk_id IN ($seed)", listOf(pattern))
+            db.execute("DELETE FROM chunk_embeddings WHERE chunk_id IN ($seed)", listOf(pattern))
+            db.execute(seed.replace("SELECT chunk_id FROM", "DELETE FROM"), listOf(pattern))
+        }
+    }
+
+    fun collections(): List<Collection> = db.query("SELECT * FROM custom_collections ORDER BY created_at DESC") {
+        Collection(it.string("id")!!, it.string("name")!!, it.string("source_filename"), it.long("doc_count"), it.long("chunk_count"),
+            it.long("size_bytes"), it.long("active") == 1L, it.long("created_at"))
+    }
+
+    fun createCollection(id: String, name: String, sourceFilename: String?, docCount: Long, chunkCount: Long, sizeBytes: Long, now: Long = System.currentTimeMillis()) {
+        db.execute(
+            "INSERT INTO custom_collections (id, name, source_filename, doc_count, chunk_count, size_bytes, active, created_at) VALUES (?, ?, ?, ?, ?, ?, 1, ?)",
+            listOf(id, name, sourceFilename, docCount, chunkCount, sizeBytes, now),
+        )
+    }
+
+    fun setCollectionActive(id: String, active: Boolean) {
+        db.execute("UPDATE custom_collections SET active = ? WHERE id = ?", listOf(if (active) 1 else 0, id))
+    }
+
+    fun deleteCollection(id: String) {
+        val rows = "SELECT chunk_id FROM chunks WHERE collection_id = ?"
+        db.transaction {
+            db.execute("DELETE FROM chunk_embeddings WHERE chunk_id IN ($rows)", listOf(id))
+            db.execute("DELETE FROM chunks_fts WHERE chunk_id IN ($rows)", listOf(id))
+            db.execute("DELETE FROM chunks WHERE collection_id = ?", listOf(id))
+            db.execute("DELETE FROM custom_collections WHERE id = ?", listOf(id))
+        }
+    }
+
+    /**
+     * BM25 keyword search over the question's content words, gated by term coverage (no numeric bm25 floor:
+     * its scale depends on the corpus). Hits carry their real similarity when they have an embedding.
+     */
+    fun lexicalSearch(query: String, queryVec: FloatArray, limit: Int): List<Chunk> {
+        val lq = RagPure.buildLexicalQuery(query) ?: return emptyList()
+        val rows = db.query(
+            """SELECT f.chunk_id, f.doc_id, f.title, f.body, bm25(chunks_fts) AS rank, e.embedding
+               FROM chunks_fts f
+               JOIN chunks c ON c.chunk_id = f.chunk_id
+               LEFT JOIN chunk_embeddings e ON e.chunk_id = f.chunk_id
+               LEFT JOIN custom_collections cc ON cc.id = c.collection_id
+               WHERE chunks_fts MATCH ? AND (c.collection_id IS NULL OR cc.active = 1)
+               ORDER BY rank LIMIT ?""",
+            listOf(lq.match, limit * LEXICAL_CANDIDATE_MULTIPLIER),
+        ) {
+            val emb = it.blob("embedding")
+            Chunk(
+                chunkId = it.string("chunk_id")!!, docId = it.string("doc_id")!!, title = it.string("title") ?: "", body = it.string("body") ?: "",
+                score = -it.double("rank"), matchType = MatchType.LEXICAL,
+                similarity = emb?.let { b -> RagPure.cosine(queryVec, fromBlob(b)) },
+            )
+        }
+        return RagPure.filterByTermCoverage(rows, lq.terms).take(limit)
+    }
+
+    /** Brute-force cosine search over the stored embeddings, with the MIN_SEMANTIC_SIMILARITY floor. */
+    fun semanticSearch(queryVec: FloatArray, limit: Int): List<Chunk> {
+        val scored = db.query(
+            """SELECT c.chunk_id, c.doc_id, c.title, c.body, e.embedding
+               FROM chunk_embeddings e
+               JOIN chunks c ON c.chunk_id = e.chunk_id
+               LEFT JOIN custom_collections cc ON cc.id = c.collection_id
+               WHERE c.collection_id IS NULL OR cc.active = 1""",
+        ) {
+            val sim = RagPure.cosine(queryVec, fromBlob(it.blob("embedding")!!))
+            Chunk(it.string("chunk_id")!!, it.string("doc_id")!!, it.string("title") ?: "", it.string("body") ?: "", score = sim, similarity = sim, matchType = MatchType.SEMANTIC)
+        }
+        return scored.sortedByDescending { it.score }.filter { it.score >= RagPure.MIN_SEMANTIC_SIMILARITY }.take(limit)
+    }
+
+    companion object {
+        /** Extra BM25 candidates so the coverage gate has something to choose from. */
+        const val LEXICAL_CANDIDATE_MULTIPLIER = 4
+        const val FILE = "SQLite/aoair_knowledge.db"
+
+        fun toBlob(v: FloatArray): ByteArray = ByteBuffer.allocate(v.size * 4).order(ByteOrder.LITTLE_ENDIAN).apply { asFloatBuffer().put(v) }.array()
+        fun fromBlob(b: ByteArray): FloatArray = FloatArray(b.size / 4).also { ByteBuffer.wrap(b).order(ByteOrder.LITTLE_ENDIAN).asFloatBuffer().get(it) }
+
+        private val SCHEMA = """
+            PRAGMA journal_mode = WAL;
+            CREATE VIRTUAL TABLE IF NOT EXISTS chunks_fts USING fts5(chunk_id UNINDEXED, doc_id UNINDEXED, title, body);
+            CREATE TABLE IF NOT EXISTS chunks (chunk_id TEXT PRIMARY KEY, doc_id TEXT NOT NULL, title TEXT, body TEXT NOT NULL, source TEXT);
+            CREATE TABLE IF NOT EXISTS chunk_embeddings (chunk_id TEXT PRIMARY KEY REFERENCES chunks(chunk_id), embedding BLOB NOT NULL, dim INTEGER NOT NULL);
+            CREATE TABLE IF NOT EXISTS chat_sessions (id TEXT PRIMARY KEY, title TEXT NOT NULL, summary TEXT, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL);
+            CREATE TABLE IF NOT EXISTS chat_messages (id TEXT PRIMARY KEY, session_id TEXT NOT NULL REFERENCES chat_sessions(id), role TEXT NOT NULL, text TEXT NOT NULL, created_at INTEGER NOT NULL);
+            CREATE INDEX IF NOT EXISTS idx_chat_messages_session ON chat_messages(session_id, created_at);
+            CREATE TABLE IF NOT EXISTS answer_feedback (message_id TEXT PRIMARY KEY REFERENCES chat_messages(id), rating TEXT NOT NULL, created_at INTEGER NOT NULL);
+            CREATE TABLE IF NOT EXISTS execution_telemetry (
+              id TEXT PRIMARY KEY, created_at INTEGER NOT NULL, model_id TEXT, task_type TEXT,
+              adaptive_routing_used INTEGER NOT NULL DEFAULT 0, reason_codes TEXT, retrieval_used INTEGER, model_switches INTEGER,
+              cross_message_model_switch INTEGER, model_residency TEXT, model_load_ms REAL, ttft_ms REAL, generation_latency_ms REAL,
+              total_latency_ms REAL, tokens_generated INTEGER, tok_per_sec REAL, peak_rss_bytes INTEGER, outcome TEXT, error_message TEXT);
+            CREATE INDEX IF NOT EXISTS idx_execution_telemetry_created ON execution_telemetry(created_at DESC);
+            CREATE TABLE IF NOT EXISTS custom_collections (
+              id TEXT PRIMARY KEY, name TEXT NOT NULL, source_filename TEXT, doc_count INTEGER NOT NULL DEFAULT 0,
+              chunk_count INTEGER NOT NULL DEFAULT 0, size_bytes INTEGER NOT NULL DEFAULT 0, active INTEGER NOT NULL DEFAULT 1, created_at INTEGER NOT NULL);
+        """.trimIndent()
+    }
+}
