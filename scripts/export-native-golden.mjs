@@ -10,6 +10,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const out = join(root, "android-native/engine/src/test/resources/golden");
 const pure = await import(join(root, "src/rag/pure.ts"));
 const evalSet = await import(join(root, "src/eval/evalSet.ts"));
+const compress = await import(join(root, "src/rag/compress.ts"));
+const corpus = JSON.parse(readFileSync(join(root, "assets/corpus/corpus.json"), "utf8"));
 
 const questions = [
   ...evalSet.EVAL_SET.map((q) => q.query),
@@ -61,6 +63,26 @@ const data = {
   })),
   prefix: [undefined, "You are terse."].map((s) => ({ systemPrompt: s ?? null, out: pure.answerPromptPrefix(s) })),
 };
+
+// Compression on real corpus passages: for each question, the passages whose title shares a content word with it.
+const docs = (Array.isArray(corpus) ? corpus : corpus.documents ?? corpus.docs ?? Object.values(corpus)).filter((d) => d && d.title && d.body);
+const passagesFor = (q) => {
+  const words = new Set((pure.buildLexicalQuery(q)?.terms ?? []).flatMap((t) => t.forms));
+  return docs.filter((d) => d.title.toLowerCase().split(/[^a-z0-9]+/).some((w) => words.has(w))).slice(0, 4)
+    .map((d, i) => ({ chunkId: `c${i}-${d.id ?? d.title}`, docId: String(d.id ?? d.title), title: d.title, body: d.body, score: 1 - i * 0.1, matchType: "lexical" }));
+};
+const tricky = { chunkId: "t1", docId: "t1", title: "EIP-4844: Shard Blob Transactions", score: 1, matchType: "lexical",
+  body: "## Overview\nProto-danksharding adds blobs.  The U.S. agency e.g. reviewed it at 3.5 GB per day. It ships\nwith KZG commitments, as in the paper (Dr. Smith et al.). Lists:\nRSA\nDSA\nECDSA\n\nAfter that – a new paragraph begins. Café crème costs 2 €. “Quoted.” Next one?! Yes." };
+data.compress = [
+  ...questions.filter(Boolean).map((q) => ({ q, chunks: passagesFor(q) })).filter((c) => c.chunks.length > 0),
+  { q: "What is EIP-4844 and how do blobs work?", chunks: [tricky] },
+].flatMap(({ q, chunks }) => [
+  { q, chunks, taskType: "lookup", out: compress.compressForAnswer(q, chunks, "lookup") },
+  { q, chunks, taskType: "explanation", out: compress.compressForAnswer(q, chunks, "explanation") },
+]);
+data.compressPinned = { q: "What is EIP-4844?", chunks: [...passagesFor("vaccine immune system"), tricky], pinned: ["t1"],
+  out: compress.compressContext("What is EIP-4844?", [...passagesFor("vaccine immune system"), tricky], { tokenBudget: 200, pinned: new Set(["t1"]) }) };
+data.sentences = [tricky.body, ...docs.slice(0, 40).map((d) => d.body)].map((t) => ({ t, out: compress.splitSentences(t) }));
 
 const check = process.argv.includes("--check");
 mkdirSync(out, { recursive: true });
