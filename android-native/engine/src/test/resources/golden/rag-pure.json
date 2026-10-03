@@ -1,0 +1,1780 @@
+{
+ "lexical": [
+  {
+   "q": "hey, what's up?",
+   "out": {
+    "match": "\"hey\"",
+    "terms": [
+     {
+      "forms": [
+       "hey"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "What is the capital of Australia?",
+   "out": {
+    "match": "\"capital\" OR \"australia\"",
+    "terms": [
+     {
+      "forms": [
+       "capital"
+      ]
+     },
+     {
+      "forms": [
+       "australia"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "Who proposed the theory of evolution by natural selection?",
+   "out": {
+    "match": "\"proposed\" OR \"theory\" OR \"evolution\" OR \"natural\" OR \"selection\"",
+    "terms": [
+     {
+      "forms": [
+       "proposed"
+      ]
+     },
+     {
+      "forms": [
+       "theory"
+      ]
+     },
+     {
+      "forms": [
+       "evolution"
+      ]
+     },
+     {
+      "forms": [
+       "natural"
+      ]
+     },
+     {
+      "forms": [
+       "selection"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "How do vaccines work?",
+   "out": {
+    "match": "\"vaccines\" OR \"vaccine\"",
+    "terms": [
+     {
+      "forms": [
+       "vaccines",
+       "vaccine"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "Explain photosynthesis in simple terms.",
+   "out": {
+    "match": "\"photosynthesis\" OR \"simple\" OR \"terms\" OR \"term\"",
+    "terms": [
+     {
+      "forms": [
+       "photosynthesis"
+      ]
+     },
+     {
+      "forms": [
+       "simple"
+      ]
+     },
+     {
+      "forms": [
+       "terms",
+       "term"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "Compare the French Revolution and the Industrial Revolution.",
+   "out": {
+    "match": "\"french\" OR \"revolution\" OR \"industrial\"",
+    "terms": [
+     {
+      "forms": [
+       "french"
+      ]
+     },
+     {
+      "forms": [
+       "revolution"
+      ]
+     },
+     {
+      "forms": [
+       "industrial"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "Contrast how supply and demand explains price changes with how behavioral economics complicates that picture — where does the simple model break down?",
+   "out": {
+    "match": "\"contrast\" OR \"supply\" OR \"demand\" OR \"explains\" OR \"explain\" OR \"price\" OR \"changes\" OR \"change\" OR \"behavioral\" OR \"economics\" OR \"economic\" OR \"complicates\" OR \"complicate\" OR \"picture\" OR \"simple\" OR \"model\"",
+    "terms": [
+     {
+      "forms": [
+       "contrast"
+      ]
+     },
+     {
+      "forms": [
+       "supply"
+      ]
+     },
+     {
+      "forms": [
+       "demand"
+      ]
+     },
+     {
+      "forms": [
+       "explains",
+       "explain"
+      ]
+     },
+     {
+      "forms": [
+       "price"
+      ]
+     },
+     {
+      "forms": [
+       "changes",
+       "change"
+      ]
+     },
+     {
+      "forms": [
+       "behavioral"
+      ]
+     },
+     {
+      "forms": [
+       "economics",
+       "economic"
+      ]
+     },
+     {
+      "forms": [
+       "complicates",
+       "complicate"
+      ]
+     },
+     {
+      "forms": [
+       "picture"
+      ]
+     },
+     {
+      "forms": [
+       "simple"
+      ]
+     },
+     {
+      "forms": [
+       "model"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "What do the Agricultural Revolution and the Industrial Revolution have in common as turning points in human history, and how did they differ in how quickly they changed daily life?",
+   "out": {
+    "match": "\"agricultural\" OR \"revolution\" OR \"industrial\" OR \"common\" OR \"turning\" OR \"points\" OR \"point\" OR \"human\" OR \"history\" OR \"differ\" OR \"quickly\" OR \"changed\" OR \"daily\"",
+    "terms": [
+     {
+      "forms": [
+       "agricultural"
+      ]
+     },
+     {
+      "forms": [
+       "revolution"
+      ]
+     },
+     {
+      "forms": [
+       "industrial"
+      ]
+     },
+     {
+      "forms": [
+       "common"
+      ]
+     },
+     {
+      "forms": [
+       "turning"
+      ]
+     },
+     {
+      "forms": [
+       "points",
+       "point"
+      ]
+     },
+     {
+      "forms": [
+       "human"
+      ]
+     },
+     {
+      "forms": [
+       "history"
+      ]
+     },
+     {
+      "forms": [
+       "differ"
+      ]
+     },
+     {
+      "forms": [
+       "quickly"
+      ]
+     },
+     {
+      "forms": [
+       "changed"
+      ]
+     },
+     {
+      "forms": [
+       "daily"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "How does the immune system's response to a pathogen relate to how a vaccine works — walk through the mechanism.",
+   "out": {
+    "match": "\"immune\" OR \"system\" OR \"response\" OR \"pathogen\" OR \"relate\" OR \"vaccine\" OR \"walk\" OR \"mechanism\"",
+    "terms": [
+     {
+      "forms": [
+       "immune"
+      ]
+     },
+     {
+      "forms": [
+       "system"
+      ]
+     },
+     {
+      "forms": [
+       "response"
+      ]
+     },
+     {
+      "forms": [
+       "pathogen"
+      ]
+     },
+     {
+      "forms": [
+       "relate"
+      ]
+     },
+     {
+      "forms": [
+       "vaccine"
+      ]
+     },
+     {
+      "forms": [
+       "walk"
+      ]
+     },
+     {
+      "forms": [
+       "mechanism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "Why is the Amazon rainforest considered important for global climate, and what does biodiversity loss there actually threaten beyond the obvious loss of species?",
+   "out": {
+    "match": "\"amazon\" OR \"rainforest\" OR \"considered\" OR \"important\" OR \"global\" OR \"climate\" OR \"biodiversity\" OR \"loss\" OR \"actually\" OR \"threaten\" OR \"beyond\" OR \"obvious\"",
+    "terms": [
+     {
+      "forms": [
+       "amazon"
+      ]
+     },
+     {
+      "forms": [
+       "rainforest"
+      ]
+     },
+     {
+      "forms": [
+       "considered"
+      ]
+     },
+     {
+      "forms": [
+       "important"
+      ]
+     },
+     {
+      "forms": [
+       "global"
+      ]
+     },
+     {
+      "forms": [
+       "climate"
+      ]
+     },
+     {
+      "forms": [
+       "biodiversity"
+      ]
+     },
+     {
+      "forms": [
+       "loss"
+      ]
+     },
+     {
+      "forms": [
+       "actually"
+      ]
+     },
+     {
+      "forms": [
+       "threaten"
+      ]
+     },
+     {
+      "forms": [
+       "beyond"
+      ]
+     },
+     {
+      "forms": [
+       "obvious"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "A train leaves at 3:40 pm and the trip takes 2 hours and 35 minutes. What time does it arrive?",
+   "out": {
+    "match": "\"train\" OR \"leaves\" OR \"leave\" OR \"40\" OR \"pm\" OR \"trip\" OR \"takes\" OR \"take\" OR \"hours\" OR \"hour\" OR \"35\" OR \"minutes\" OR \"minute\" OR \"time\" OR \"arrive\"",
+    "terms": [
+     {
+      "forms": [
+       "train"
+      ]
+     },
+     {
+      "forms": [
+       "leaves",
+       "leave"
+      ]
+     },
+     {
+      "forms": [
+       "40"
+      ]
+     },
+     {
+      "forms": [
+       "pm"
+      ]
+     },
+     {
+      "forms": [
+       "trip"
+      ]
+     },
+     {
+      "forms": [
+       "takes",
+       "take"
+      ]
+     },
+     {
+      "forms": [
+       "hours",
+       "hour"
+      ]
+     },
+     {
+      "forms": [
+       "35"
+      ]
+     },
+     {
+      "forms": [
+       "minutes",
+       "minute"
+      ]
+     },
+     {
+      "forms": [
+       "time"
+      ]
+     },
+     {
+      "forms": [
+       "arrive"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "A device has a 12GB RAM budget. The OS and app overhead take 2GB, the embedding model needs 200MB, and the LLM's KV cache needs 1.5GB. How much is left for the LLM's weights, and would a 9GB model fit if loaded fully into RAM?",
+   "out": {
+    "match": "\"device\" OR \"12gb\" OR \"ram\" OR \"budget\" OR \"os\" OR \"app\" OR \"overhead\" OR \"take\" OR \"2gb\" OR \"embedding\" OR \"model\" OR \"needs\" OR \"need\"",
+    "terms": [
+     {
+      "forms": [
+       "device"
+      ]
+     },
+     {
+      "forms": [
+       "12gb"
+      ]
+     },
+     {
+      "forms": [
+       "ram"
+      ]
+     },
+     {
+      "forms": [
+       "budget"
+      ]
+     },
+     {
+      "forms": [
+       "os"
+      ]
+     },
+     {
+      "forms": [
+       "app"
+      ]
+     },
+     {
+      "forms": [
+       "overhead"
+      ]
+     },
+     {
+      "forms": [
+       "take"
+      ]
+     },
+     {
+      "forms": [
+       "2gb"
+      ]
+     },
+     {
+      "forms": [
+       "embedding"
+      ]
+     },
+     {
+      "forms": [
+       "model"
+      ]
+     },
+     {
+      "forms": [
+       "needs",
+       "need"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "If a Mixture-of-Experts model has 100B total parameters but only activates 8B per token, and each parameter needs 1 byte at Q8, what's the minimum disk footprint, and why doesn't RAM usage scale with the 100B figure?",
+   "out": {
+    "match": "\"mixture\" OR \"experts\" OR \"expert\" OR \"model\" OR \"100b\" OR \"total\" OR \"parameters\" OR \"parameter\" OR \"only\" OR \"activates\" OR \"activate\" OR \"8b\" OR \"per\" OR \"token\" OR \"needs\" OR \"need\"",
+    "terms": [
+     {
+      "forms": [
+       "mixture"
+      ]
+     },
+     {
+      "forms": [
+       "experts",
+       "expert"
+      ]
+     },
+     {
+      "forms": [
+       "model"
+      ]
+     },
+     {
+      "forms": [
+       "100b"
+      ]
+     },
+     {
+      "forms": [
+       "total"
+      ]
+     },
+     {
+      "forms": [
+       "parameters",
+       "parameter"
+      ]
+     },
+     {
+      "forms": [
+       "only"
+      ]
+     },
+     {
+      "forms": [
+       "activates",
+       "activate"
+      ]
+     },
+     {
+      "forms": [
+       "8b"
+      ]
+     },
+     {
+      "forms": [
+       "per"
+      ]
+     },
+     {
+      "forms": [
+       "token"
+      ]
+     },
+     {
+      "forms": [
+       "needs",
+       "need"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "Why did the Western Roman Empire fall?",
+   "out": {
+    "match": "\"western\" OR \"roman\" OR \"empire\" OR \"fall\"",
+    "terms": [
+     {
+      "forms": [
+       "western"
+      ]
+     },
+     {
+      "forms": [
+       "roman"
+      ]
+     },
+     {
+      "forms": [
+       "empire"
+      ]
+     },
+     {
+      "forms": [
+       "fall"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "What is a black hole and how does one form?",
+   "out": {
+    "match": "\"black\" OR \"hole\" OR \"one\" OR \"form\"",
+    "terms": [
+     {
+      "forms": [
+       "black"
+      ]
+     },
+     {
+      "forms": [
+       "hole"
+      ]
+     },
+     {
+      "forms": [
+       "one"
+      ]
+     },
+     {
+      "forms": [
+       "form"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "Who was Napoleon Bonaparte?",
+   "out": {
+    "match": "\"napoleon\" OR \"bonaparte\"",
+    "terms": [
+     {
+      "forms": [
+       "napoleon"
+      ]
+     },
+     {
+      "forms": [
+       "bonaparte"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "How do antibiotics work, and why does antibiotic resistance develop?",
+   "out": {
+    "match": "\"antibiotics\" OR \"antibiotic\" OR \"resistance\" OR \"develop\"",
+    "terms": [
+     {
+      "forms": [
+       "antibiotics",
+       "antibiotic"
+      ]
+     },
+     {
+      "forms": [
+       "resistance"
+      ]
+     },
+     {
+      "forms": [
+       "develop"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "Tell me about X.com.",
+   "out": {
+    "match": "\"com\"",
+    "terms": [
+     {
+      "forms": [
+       "com"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "How does a zk-SNARK differ from a zk-STARK?",
+   "out": {
+    "match": "\"zk\" OR \"snark\" OR \"differ\" OR \"stark\"",
+    "terms": [
+     {
+      "forms": [
+       "zk"
+      ]
+     },
+     {
+      "forms": [
+       "snark"
+      ]
+     },
+     {
+      "forms": [
+       "differ"
+      ]
+     },
+     {
+      "forms": [
+       "stark"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "What is quadratic funding and what are its weaknesses?",
+   "out": {
+    "match": "\"quadratic\" OR \"funding\" OR \"weaknesses\" OR \"weaknesse\" OR \"weakness\"",
+    "terms": [
+     {
+      "forms": [
+       "quadratic"
+      ]
+     },
+     {
+      "forms": [
+       "funding"
+      ]
+     },
+     {
+      "forms": [
+       "weaknesses",
+       "weaknesse",
+       "weakness"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "Does far-UVC light at 222 nm harm human skin?",
+   "out": {
+    "match": "\"far\" OR \"uvc\" OR \"light\" OR \"222\" OR \"nm\" OR \"harm\" OR \"human\" OR \"skin\"",
+    "terms": [
+     {
+      "forms": [
+       "far"
+      ]
+     },
+     {
+      "forms": [
+       "uvc"
+      ]
+     },
+     {
+      "forms": [
+       "light"
+      ]
+     },
+     {
+      "forms": [
+       "222"
+      ]
+     },
+     {
+      "forms": [
+       "nm"
+      ]
+     },
+     {
+      "forms": [
+       "harm"
+      ]
+     },
+     {
+      "forms": [
+       "human"
+      ]
+     },
+     {
+      "forms": [
+       "skin"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "What was Zuzalu?",
+   "out": {
+    "match": "\"zuzalu\"",
+    "terms": [
+     {
+      "forms": [
+       "zuzalu"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "Where can I find vegan food in Buenos Aires?",
+   "out": {
+    "match": "\"find\" OR \"vegan\" OR \"food\" OR \"buenos\" OR \"bueno\" OR \"aires\" OR \"aire\"",
+    "terms": [
+     {
+      "forms": [
+       "find"
+      ]
+     },
+     {
+      "forms": [
+       "vegan"
+      ]
+     },
+     {
+      "forms": [
+       "food"
+      ]
+     },
+     {
+      "forms": [
+       "buenos",
+       "bueno"
+      ]
+     },
+     {
+      "forms": [
+       "aires",
+       "aire"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "Which signature algorithms are quantum resistant?",
+   "out": {
+    "match": "\"signature\" OR \"algorithms\" OR \"algorithm\" OR \"quantum\" OR \"resistant\"",
+    "terms": [
+     {
+      "forms": [
+       "signature"
+      ]
+     },
+     {
+      "forms": [
+       "algorithms",
+       "algorithm"
+      ]
+     },
+     {
+      "forms": [
+       "quantum"
+      ]
+     },
+     {
+      "forms": [
+       "resistant"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "tell me something",
+   "out": null
+  },
+  {
+   "q": "What causes viruses, cases and boxes?",
+   "out": {
+    "match": "\"viruses\" OR \"viruse\" OR \"virus\" OR \"cases\" OR \"case\" OR \"cas\" OR \"boxes\" OR \"boxe\" OR \"box\"",
+    "terms": [
+     {
+      "forms": [
+       "viruses",
+       "viruse",
+       "virus"
+      ]
+     },
+     {
+      "forms": [
+       "cases",
+       "case",
+       "cas"
+      ]
+     },
+     {
+      "forms": [
+       "boxes",
+       "boxe",
+       "box"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "Qual é a diferença entre pandemia e epidemia?",
+   "out": {
+    "match": "\"qual\" OR \"diferenca\" OR \"entre\" OR \"pandemia\" OR \"epidemia\"",
+    "terms": [
+     {
+      "forms": [
+       "qual"
+      ]
+     },
+     {
+      "forms": [
+       "diferenca"
+      ]
+     },
+     {
+      "forms": [
+       "entre"
+      ]
+     },
+     {
+      "forms": [
+       "pandemia"
+      ]
+     },
+     {
+      "forms": [
+       "epidemia"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "Café, naïve résumé — Ångström units",
+   "out": {
+    "match": "\"cafe\" OR \"naive\" OR \"resume\" OR \"angstrom\" OR \"units\" OR \"unit\"",
+    "terms": [
+     {
+      "forms": [
+       "cafe"
+      ]
+     },
+     {
+      "forms": [
+       "naive"
+      ]
+     },
+     {
+      "forms": [
+       "resume"
+      ]
+     },
+     {
+      "forms": [
+       "angstrom"
+      ]
+     },
+     {
+      "forms": [
+       "units",
+       "unit"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "black holes AND \"event horizon\" NOT -stars*",
+   "out": {
+    "match": "\"black\" OR \"holes\" OR \"hole\" OR \"event\" OR \"horizon\" OR \"stars\" OR \"star\"",
+    "terms": [
+     {
+      "forms": [
+       "black"
+      ]
+     },
+     {
+      "forms": [
+       "holes",
+       "hole"
+      ]
+     },
+     {
+      "forms": [
+       "event"
+      ]
+     },
+     {
+      "forms": [
+       "horizon"
+      ]
+     },
+     {
+      "forms": [
+       "stars",
+       "star"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "",
+   "out": null
+  },
+  {
+   "q": "hey",
+   "out": {
+    "match": "\"hey\"",
+    "terms": [
+     {
+      "forms": [
+       "hey"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "q": "Compare the French Revolution with the Industrial Revolution and explain their causes, effects, leaders, dates, places, economics and legacies",
+   "out": {
+    "match": "\"french\" OR \"revolution\" OR \"industrial\" OR \"effects\" OR \"effect\" OR \"leaders\" OR \"leader\" OR \"dates\" OR \"date\" OR \"places\" OR \"place\" OR \"economics\" OR \"economic\" OR \"legacies\" OR \"legacy\"",
+    "terms": [
+     {
+      "forms": [
+       "french"
+      ]
+     },
+     {
+      "forms": [
+       "revolution"
+      ]
+     },
+     {
+      "forms": [
+       "industrial"
+      ]
+     },
+     {
+      "forms": [
+       "effects",
+       "effect"
+      ]
+     },
+     {
+      "forms": [
+       "leaders",
+       "leader"
+      ]
+     },
+     {
+      "forms": [
+       "dates",
+       "date"
+      ]
+     },
+     {
+      "forms": [
+       "places",
+       "place"
+      ]
+     },
+     {
+      "forms": [
+       "economics",
+       "economic"
+      ]
+     },
+     {
+      "forms": [
+       "legacies",
+       "legacy"
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "required": [
+  {
+   "n": 0,
+   "out": 0
+  },
+  {
+   "n": 1,
+   "out": 1
+  },
+  {
+   "n": 2,
+   "out": 2
+  },
+  {
+   "n": 3,
+   "out": 2
+  },
+  {
+   "n": 4,
+   "out": 3
+  },
+  {
+   "n": 5,
+   "out": 3
+  },
+  {
+   "n": 6,
+   "out": 4
+  },
+  {
+   "n": 7,
+   "out": 4
+  },
+  {
+   "n": 8,
+   "out": 5
+  },
+  {
+   "n": 12,
+   "out": 7
+  }
+ ],
+ "fuse": [
+  {
+   "topK": 3,
+   "lexical": [
+    {
+     "chunkId": "a",
+     "docId": "d-a",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 12.5,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "b",
+     "docId": "d-b",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 9.1,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "c",
+     "docId": "d-c",
+     "title": "Immune system",
+     "body": "Immune system body text.",
+     "score": 7,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "d",
+     "docId": "d-d",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 6,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "e",
+     "docId": "d-e",
+     "title": "Rome",
+     "body": "Rome body text.",
+     "score": 1.2,
+     "matchType": "lexical"
+    }
+   ],
+   "semantic": [
+    {
+     "chunkId": "c",
+     "docId": "d-c",
+     "title": "Immune system",
+     "body": "Immune system body text.",
+     "score": 0.81,
+     "matchType": "semantic",
+     "similarity": 0.81
+    },
+    {
+     "chunkId": "f",
+     "docId": "d-f",
+     "title": "Antibody",
+     "body": "Antibody body text.",
+     "score": 0.77,
+     "matchType": "semantic",
+     "similarity": 0.77
+    },
+    {
+     "chunkId": "a",
+     "docId": "d-a",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 0.74,
+     "matchType": "semantic",
+     "similarity": 0.74
+    },
+    {
+     "chunkId": "g",
+     "docId": "d-g",
+     "title": "Name",
+     "body": "Name body text.",
+     "score": 0.69,
+     "matchType": "semantic",
+     "similarity": 0.69
+    }
+   ],
+   "out": [
+    {
+     "chunkId": "a",
+     "docId": "d-a",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 0.9567901234567902,
+     "matchType": "hybrid",
+     "similarity": 0.74
+    },
+    {
+     "chunkId": "c",
+     "docId": "d-c",
+     "title": "Immune system",
+     "body": "Immune system body text.",
+     "score": 0.78,
+     "matchType": "hybrid",
+     "similarity": 0.81
+    },
+    {
+     "chunkId": "f",
+     "docId": "d-f",
+     "title": "Antibody",
+     "body": "Antibody body text.",
+     "score": 0.47530864197530864,
+     "matchType": "semantic",
+     "similarity": 0.77
+    }
+   ]
+  },
+  {
+   "topK": 4,
+   "lexical": [
+    {
+     "chunkId": "a",
+     "docId": "d-a",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 12.5,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "b",
+     "docId": "d-b",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 9.1,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "c",
+     "docId": "d-c",
+     "title": "Immune system",
+     "body": "Immune system body text.",
+     "score": 7,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "d",
+     "docId": "d-d",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 6,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "e",
+     "docId": "d-e",
+     "title": "Rome",
+     "body": "Rome body text.",
+     "score": 1.2,
+     "matchType": "lexical"
+    }
+   ],
+   "semantic": [
+    {
+     "chunkId": "c",
+     "docId": "d-c",
+     "title": "Immune system",
+     "body": "Immune system body text.",
+     "score": 0.81,
+     "matchType": "semantic",
+     "similarity": 0.81
+    },
+    {
+     "chunkId": "f",
+     "docId": "d-f",
+     "title": "Antibody",
+     "body": "Antibody body text.",
+     "score": 0.77,
+     "matchType": "semantic",
+     "similarity": 0.77
+    },
+    {
+     "chunkId": "a",
+     "docId": "d-a",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 0.74,
+     "matchType": "semantic",
+     "similarity": 0.74
+    },
+    {
+     "chunkId": "g",
+     "docId": "d-g",
+     "title": "Name",
+     "body": "Name body text.",
+     "score": 0.69,
+     "matchType": "semantic",
+     "similarity": 0.69
+    }
+   ],
+   "out": [
+    {
+     "chunkId": "a",
+     "docId": "d-a",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 0.9567901234567902,
+     "matchType": "hybrid",
+     "similarity": 0.74
+    },
+    {
+     "chunkId": "c",
+     "docId": "d-c",
+     "title": "Immune system",
+     "body": "Immune system body text.",
+     "score": 0.78,
+     "matchType": "hybrid",
+     "similarity": 0.81
+    },
+    {
+     "chunkId": "f",
+     "docId": "d-f",
+     "title": "Antibody",
+     "body": "Antibody body text.",
+     "score": 0.47530864197530864,
+     "matchType": "semantic",
+     "similarity": 0.77
+    },
+    {
+     "chunkId": "g",
+     "docId": "d-g",
+     "title": "Name",
+     "body": "Name body text.",
+     "score": 0.4259259259259259,
+     "matchType": "semantic",
+     "similarity": 0.69
+    }
+   ]
+  },
+  {
+   "topK": 10,
+   "lexical": [
+    {
+     "chunkId": "a",
+     "docId": "d-a",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 12.5,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "b",
+     "docId": "d-b",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 9.1,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "c",
+     "docId": "d-c",
+     "title": "Immune system",
+     "body": "Immune system body text.",
+     "score": 7,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "d",
+     "docId": "d-d",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 6,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "e",
+     "docId": "d-e",
+     "title": "Rome",
+     "body": "Rome body text.",
+     "score": 1.2,
+     "matchType": "lexical"
+    }
+   ],
+   "semantic": [
+    {
+     "chunkId": "c",
+     "docId": "d-c",
+     "title": "Immune system",
+     "body": "Immune system body text.",
+     "score": 0.81,
+     "matchType": "semantic",
+     "similarity": 0.81
+    },
+    {
+     "chunkId": "f",
+     "docId": "d-f",
+     "title": "Antibody",
+     "body": "Antibody body text.",
+     "score": 0.77,
+     "matchType": "semantic",
+     "similarity": 0.77
+    },
+    {
+     "chunkId": "a",
+     "docId": "d-a",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 0.74,
+     "matchType": "semantic",
+     "similarity": 0.74
+    },
+    {
+     "chunkId": "g",
+     "docId": "d-g",
+     "title": "Name",
+     "body": "Name body text.",
+     "score": 0.69,
+     "matchType": "semantic",
+     "similarity": 0.69
+    }
+   ],
+   "out": [
+    {
+     "chunkId": "a",
+     "docId": "d-a",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 0.9567901234567902,
+     "matchType": "hybrid",
+     "similarity": 0.74
+    },
+    {
+     "chunkId": "c",
+     "docId": "d-c",
+     "title": "Immune system",
+     "body": "Immune system body text.",
+     "score": 0.78,
+     "matchType": "hybrid",
+     "similarity": 0.81
+    },
+    {
+     "chunkId": "f",
+     "docId": "d-f",
+     "title": "Antibody",
+     "body": "Antibody body text.",
+     "score": 0.47530864197530864,
+     "matchType": "semantic",
+     "similarity": 0.77
+    },
+    {
+     "chunkId": "g",
+     "docId": "d-g",
+     "title": "Name",
+     "body": "Name body text.",
+     "score": 0.4259259259259259,
+     "matchType": "semantic",
+     "similarity": 0.69
+    },
+    {
+     "chunkId": "b",
+     "docId": "d-b",
+     "title": "Vaccine",
+     "body": "Vaccine body text.",
+     "score": 0.364,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "e",
+     "docId": "d-e",
+     "title": "Rome",
+     "body": "Rome body text.",
+     "score": 0.048,
+     "matchType": "lexical"
+    }
+   ]
+  }
+ ],
+ "gate": {
+  "in": [
+   {
+    "chunkId": "a",
+    "docId": "d-a",
+    "title": "Vaccine",
+    "body": "Vaccine body text.",
+    "score": 0.9567901234567902,
+    "matchType": "hybrid",
+    "similarity": 0.74
+   },
+   {
+    "chunkId": "c",
+    "docId": "d-c",
+    "title": "Immune system",
+    "body": "Immune system body text.",
+    "score": 0.78,
+    "matchType": "hybrid",
+    "similarity": 0.81
+   },
+   {
+    "chunkId": "f",
+    "docId": "d-f",
+    "title": "Antibody",
+    "body": "Antibody body text.",
+    "score": 0.47530864197530864,
+    "matchType": "semantic",
+    "similarity": 0.77
+   },
+   {
+    "chunkId": "g",
+    "docId": "d-g",
+    "title": "Name",
+    "body": "Name body text.",
+    "score": 0.4259259259259259,
+    "matchType": "semantic",
+    "similarity": 0.69
+   },
+   {
+    "chunkId": "b",
+    "docId": "d-b",
+    "title": "Vaccine",
+    "body": "Vaccine body text.",
+    "score": 0.364,
+    "matchType": "lexical"
+   },
+   {
+    "chunkId": "e",
+    "docId": "d-e",
+    "title": "Rome",
+    "body": "Rome body text.",
+    "score": 0.048,
+    "matchType": "lexical"
+   }
+  ],
+  "out": [
+   {
+    "chunkId": "a",
+    "docId": "d-a",
+    "title": "Vaccine",
+    "body": "Vaccine body text.",
+    "score": 0.9567901234567902,
+    "matchType": "hybrid",
+    "similarity": 0.74
+   },
+   {
+    "chunkId": "c",
+    "docId": "d-c",
+    "title": "Immune system",
+    "body": "Immune system body text.",
+    "score": 0.78,
+    "matchType": "hybrid",
+    "similarity": 0.81
+   },
+   {
+    "chunkId": "f",
+    "docId": "d-f",
+    "title": "Antibody",
+    "body": "Antibody body text.",
+    "score": 0.47530864197530864,
+    "matchType": "semantic",
+    "similarity": 0.77
+   }
+  ]
+ },
+ "cosine": [
+  {
+   "a": [
+    1,
+    0,
+    0
+   ],
+   "b": [
+    1,
+    0,
+    0
+   ],
+   "out": 1
+  },
+  {
+   "a": [
+    0.3,
+    -0.2,
+    0.9
+   ],
+   "b": [
+    0.1,
+    0.4,
+    0.8
+   ],
+   "out": 0.7678358089201353
+  },
+  {
+   "a": [
+    0,
+    0,
+    0
+   ],
+   "b": [
+    1,
+    2,
+    3
+   ],
+   "out": 0
+  }
+ ],
+ "cosineInt8": [
+  {
+   "q": [
+    0.3,
+    -0.2,
+    0.9,
+    0.05
+   ],
+   "v": [
+    12,
+    -40,
+    127,
+    -128
+   ],
+   "out": 0.6650473381814438
+  }
+ ],
+ "prompts": [
+  {
+   "query": "Why do we have seasons?",
+   "chunks": [
+    {
+     "chunkId": "s1",
+     "docId": "d-s1",
+     "title": "Season",
+     "body": "Season body text.",
+     "score": 1,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "s2",
+     "docId": "d-s2",
+     "title": "Axial tilt",
+     "body": "Axial tilt body text.",
+     "score": 0.5,
+     "matchType": "lexical"
+    }
+   ],
+   "systemPrompt": null,
+   "history": null,
+   "style": null,
+   "prompt": "You are an offline research assistant. Use the context below when relevant, and cite a source you used by its number, like [1] or [2]. If the context doesn't cover the question, say so and answer from general knowledge. You are BOAR, an offline AI research app running on this phone; \"Boar\" is the app's name, never the animal, so never describe yourself as one. You have no ability to control real-world devices or take physical actions — no alarms, lights, thermostats, timers, or any other device or system. You can only respond with text. Treat greetings and casual small talk conversationally and briefly, not as a command or task. Never claim to have done something (set, adjusted, turned on/off, scheduled, etc.) that you don't actually have the ability to do.\n\nContext:\n[1] Season\nSeason body text.\n\n[2] Axial tilt\nAxial tilt body text.\n\nQuestion: Why do we have seasons?\n\nAnswer:",
+   "messages": [
+    {
+     "role": "system",
+     "content": "You are an offline research assistant. Use the context below when relevant, and cite a source you used by its number, like [1] or [2]. If the context doesn't cover the question, say so and answer from general knowledge. You are BOAR, an offline AI research app running on this phone; \"Boar\" is the app's name, never the animal, so never describe yourself as one. You have no ability to control real-world devices or take physical actions — no alarms, lights, thermostats, timers, or any other device or system. You can only respond with text. Treat greetings and casual small talk conversationally and briefly, not as a command or task. Never claim to have done something (set, adjusted, turned on/off, scheduled, etc.) that you don't actually have the ability to do.\n\nContext:\n[1] Season\nSeason body text.\n\n[2] Axial tilt\nAxial tilt body text."
+    },
+    {
+     "role": "user",
+     "content": "Why do we have seasons?"
+    }
+   ]
+  },
+  {
+   "query": "Why do we have seasons?",
+   "chunks": [],
+   "systemPrompt": "You are terse.",
+   "history": {
+    "summary": "  We talked about seasons.  ",
+    "turns": [
+     {
+      "role": "user",
+      "text": "What is a season?"
+     },
+     {
+      "role": "assistant",
+      "text": "A part of the year."
+     }
+    ]
+   },
+   "style": "Keep it short.",
+   "prompt": "You are terse. You are BOAR, an offline AI research app running on this phone; \"Boar\" is the app's name, never the animal, so never describe yourself as one. You have no ability to control real-world devices or take physical actions — no alarms, lights, thermostats, timers, or any other device or system. You can only respond with text. Treat greetings and casual small talk conversationally and briefly, not as a command or task. Never claim to have done something (set, adjusted, turned on/off, scheduled, etc.) that you don't actually have the ability to do.\n\nSummary of earlier conversation:\nWe talked about seasons.\n\nRecent conversation:\nUser: What is a season?\nAssistant: A part of the year.\n\nQuestion: Why do we have seasons?\n\n(Response style: Keep it short.)\n\nAnswer:",
+   "messages": [
+    {
+     "role": "system",
+     "content": "You are terse. You are BOAR, an offline AI research app running on this phone; \"Boar\" is the app's name, never the animal, so never describe yourself as one. You have no ability to control real-world devices or take physical actions — no alarms, lights, thermostats, timers, or any other device or system. You can only respond with text. Treat greetings and casual small talk conversationally and briefly, not as a command or task. Never claim to have done something (set, adjusted, turned on/off, scheduled, etc.) that you don't actually have the ability to do.\n\nSummary of earlier conversation:\nWe talked about seasons."
+    },
+    {
+     "role": "user",
+     "content": "What is a season?"
+    },
+    {
+     "role": "assistant",
+     "content": "A part of the year."
+    },
+    {
+     "role": "user",
+     "content": "Why do we have seasons?\n\n(Response style: Keep it short.)"
+    }
+   ]
+  },
+  {
+   "query": "hi",
+   "chunks": [
+    {
+     "chunkId": "s1",
+     "docId": "d-s1",
+     "title": "Season",
+     "body": "Season body text.",
+     "score": 1,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "s2",
+     "docId": "d-s2",
+     "title": "Axial tilt",
+     "body": "Axial tilt body text.",
+     "score": 0.5,
+     "matchType": "lexical"
+    }
+   ],
+   "systemPrompt": "  ",
+   "history": {
+    "summary": "",
+    "turns": []
+   },
+   "style": "  ",
+   "prompt": "You are an offline research assistant. Use the context below when relevant, and cite a source you used by its number, like [1] or [2]. If the context doesn't cover the question, say so and answer from general knowledge. You are BOAR, an offline AI research app running on this phone; \"Boar\" is the app's name, never the animal, so never describe yourself as one. You have no ability to control real-world devices or take physical actions — no alarms, lights, thermostats, timers, or any other device or system. You can only respond with text. Treat greetings and casual small talk conversationally and briefly, not as a command or task. Never claim to have done something (set, adjusted, turned on/off, scheduled, etc.) that you don't actually have the ability to do.\n\nContext:\n[1] Season\nSeason body text.\n\n[2] Axial tilt\nAxial tilt body text.\n\nQuestion: hi\n\nAnswer:",
+   "messages": [
+    {
+     "role": "system",
+     "content": "You are an offline research assistant. Use the context below when relevant, and cite a source you used by its number, like [1] or [2]. If the context doesn't cover the question, say so and answer from general knowledge. You are BOAR, an offline AI research app running on this phone; \"Boar\" is the app's name, never the animal, so never describe yourself as one. You have no ability to control real-world devices or take physical actions — no alarms, lights, thermostats, timers, or any other device or system. You can only respond with text. Treat greetings and casual small talk conversationally and briefly, not as a command or task. Never claim to have done something (set, adjusted, turned on/off, scheduled, etc.) that you don't actually have the ability to do.\n\nContext:\n[1] Season\nSeason body text.\n\n[2] Axial tilt\nAxial tilt body text."
+    },
+    {
+     "role": "user",
+     "content": "hi"
+    }
+   ]
+  }
+ ],
+ "prefix": [
+  {
+   "systemPrompt": null,
+   "out": {
+    "system": "You are an offline research assistant. Use the context below when relevant, and cite a source you used by its number, like [1] or [2]. If the context doesn't cover the question, say so and answer from general knowledge. You are BOAR, an offline AI research app running on this phone; \"Boar\" is the app's name, never the animal, so never describe yourself as one. You have no ability to control real-world devices or take physical actions — no alarms, lights, thermostats, timers, or any other device or system. You can only respond with text. Treat greetings and casual small talk conversationally and briefly, not as a command or task. Never claim to have done something (set, adjusted, turned on/off, scheduled, etc.) that you don't actually have the ability to do.",
+    "prompt": "You are an offline research assistant. Use the context below when relevant, and cite a source you used by its number, like [1] or [2]. If the context doesn't cover the question, say so and answer from general knowledge. You are BOAR, an offline AI research app running on this phone; \"Boar\" is the app's name, never the animal, so never describe yourself as one. You have no ability to control real-world devices or take physical actions — no alarms, lights, thermostats, timers, or any other device or system. You can only respond with text. Treat greetings and casual small talk conversationally and briefly, not as a command or task. Never claim to have done something (set, adjusted, turned on/off, scheduled, etc.) that you don't actually have the ability to do.\n\n"
+   }
+  },
+  {
+   "systemPrompt": "You are terse.",
+   "out": {
+    "system": "You are terse. Use the context below when relevant, and cite a source you used by its number, like [1] or [2]. If the context doesn't cover the question, say so and answer from general knowledge. You are BOAR, an offline AI research app running on this phone; \"Boar\" is the app's name, never the animal, so never describe yourself as one. You have no ability to control real-world devices or take physical actions — no alarms, lights, thermostats, timers, or any other device or system. You can only respond with text. Treat greetings and casual small talk conversationally and briefly, not as a command or task. Never claim to have done something (set, adjusted, turned on/off, scheduled, etc.) that you don't actually have the ability to do.",
+    "prompt": "You are terse. Use the context below when relevant, and cite a source you used by its number, like [1] or [2]. If the context doesn't cover the question, say so and answer from general knowledge. You are BOAR, an offline AI research app running on this phone; \"Boar\" is the app's name, never the animal, so never describe yourself as one. You have no ability to control real-world devices or take physical actions — no alarms, lights, thermostats, timers, or any other device or system. You can only respond with text. Treat greetings and casual small talk conversationally and briefly, not as a command or task. Never claim to have done something (set, adjusted, turned on/off, scheduled, etc.) that you don't actually have the ability to do.\n\n"
+   }
+  }
+ ]
+}
