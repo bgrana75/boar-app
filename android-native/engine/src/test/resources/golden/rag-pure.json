@@ -3889,5 +3889,901 @@
     "Widespread endemic diseases with a stable number of infected individuals such as recurrences of seasonal influenza are generally excluded as they occur simultaneously in large regions of the globe rather than being spread worldwide."
    ]
   }
+ ],
+ "ptLexicon": [
+  {
+   "q": "Por que temos estações do ano?",
+   "looksPt": true,
+   "names": [
+    "Season"
+   ],
+   "key": "por que temos estacoes do ano?"
+  },
+  {
+   "q": "O que é o efeito estufa?",
+   "looksPt": true,
+   "names": [
+    "Greenhouse effect"
+   ],
+   "key": "o que e o efeito estufa?"
+  },
+  {
+   "q": "Qual a diferença entre fusão e fissão nuclear?",
+   "looksPt": true,
+   "names": [
+    "Nuclear fission"
+   ],
+   "key": "qual a diferenca entre fusao e fissao nuclear?"
+  },
+  {
+   "q": "O que causa os terremotos?",
+   "looksPt": true,
+   "names": [
+    "Earthquake"
+   ],
+   "key": "o que causa os terremotos?"
+  },
+  {
+   "q": "Como funciona uma vacina?",
+   "looksPt": true,
+   "names": [
+    "Vaccine"
+   ],
+   "key": "como funciona uma vacina?"
+  },
+  {
+   "q": "O que é uma monção?",
+   "looksPt": true,
+   "names": [
+    "Monsoon"
+   ],
+   "key": "o que e uma moncao?"
+  },
+  {
+   "q": "Quem foi Napoleão Bonaparte?",
+   "looksPt": false,
+   "names": [
+    "Napoleon"
+   ],
+   "key": "quem foi napoleao bonaparte?"
+  },
+  {
+   "q": "Como tratar uma picada de cobra?",
+   "looksPt": true,
+   "names": [
+    "Snakebite"
+   ],
+   "key": "como tratar uma picada de cobra?"
+  },
+  {
+   "q": "O que fazer em caso de hipotermia?",
+   "looksPt": true,
+   "names": [
+    "Hypothermia"
+   ],
+   "key": "o que fazer em caso de hipotermia?"
+  },
+  {
+   "q": "Qual a capital da Austrália?",
+   "looksPt": false,
+   "names": [
+    "Capital city",
+    "Australia"
+   ],
+   "key": "qual a capital da australia?"
+  },
+  {
+   "q": "Restaurantes veganos em São Paulo",
+   "looksPt": true,
+   "names": [
+    "São Paulo",
+    "Restaurant"
+   ],
+   "key": "restaurantes veganos em sao paulo"
+  },
+  {
+   "q": "Como se forma um buraco negro?",
+   "looksPt": true,
+   "names": [
+    "Black hole"
+   ],
+   "key": "como se forma um buraco negro?"
+  },
+  {
+   "q": "O que é a Revolução Industrial?",
+   "looksPt": true,
+   "names": [
+    "Industrial Revolution"
+   ],
+   "key": "o que e a revolucao industrial?"
+  },
+  {
+   "q": "Quais são os sintomas da desidratação?",
+   "looksPt": true,
+   "names": [
+    "Signs and symptoms",
+    "Dehydration"
+   ],
+   "key": "quais sao os sintomas da desidratacao?"
+  },
+  {
+   "q": "O que é o Ethereum e como funciona o EIP-1559?",
+   "looksPt": true,
+   "names": [
+    "Ethereum"
+   ],
+   "key": "o que e o ethereum e como funciona o eip-1559?"
+  },
+  {
+   "q": "Fahrenheit para Celsius",
+   "looksPt": true,
+   "names": [
+    "Fahrenheit",
+    "Celsius"
+   ],
+   "key": "fahrenheit para celsius"
+  },
+  {
+   "q": "Por que o céu é azul?",
+   "looksPt": true,
+   "names": [
+    "Blue"
+   ],
+   "key": "por que o ceu e azul?"
+  },
+  {
+   "q": "Como purificar água na natilha?",
+   "looksPt": true,
+   "names": [],
+   "key": "como purificar agua na natilha?"
+  },
+  {
+   "q": "O que é Tbilisi?",
+   "looksPt": true,
+   "names": [
+    "Tbilisi"
+   ],
+   "key": "o que e tbilisi?"
+  },
+  {
+   "q": "Viagem para a Geórgia",
+   "looksPt": true,
+   "names": [
+    "Travel",
+    "Georgia (country)"
+   ],
+   "key": "viagem para a georgia"
+  },
+  {
+   "q": "What is the capital of Australia?",
+   "looksPt": false,
+   "names": [
+    "Capital city",
+    "Australia"
+   ],
+   "key": "what is the capital of australia?"
+  },
+  {
+   "q": "Why do we have seasons?",
+   "looksPt": false,
+   "names": [],
+   "key": "why do we have seasons?"
+  },
+  {
+   "q": "Is São Paulo safe at night?",
+   "looksPt": false,
+   "names": [
+    "São Paulo"
+   ],
+   "key": "is sao paulo safe at night?"
+  },
+  {
+   "q": "Medellín travel tips",
+   "looksPt": false,
+   "names": [
+    "Medellín"
+   ],
+   "key": "medellin travel tips"
+  },
+  {
+   "q": "O que é romã?",
+   "looksPt": true,
+   "names": [
+    "Pomegranate"
+   ],
+   "key": "o que e roma?"
+  },
+  {
+   "q": "Roma antiga",
+   "looksPt": false,
+   "names": [
+    "Ancient Rome"
+   ],
+   "key": "roma antiga"
+  },
+  {
+   "q": "vacinas e sistema imunológico",
+   "looksPt": true,
+   "names": [
+    "Immune system",
+    "Vaccine"
+   ],
+   "key": "vacinas e sistema imunologico"
+  },
+  {
+   "q": "como funciona",
+   "looksPt": true,
+   "names": [],
+   "key": "como funciona"
+  },
+  {
+   "q": "o que é",
+   "looksPt": true,
+   "names": [],
+   "key": "o que e"
+  },
+  {
+   "q": "",
+   "looksPt": false,
+   "names": [],
+   "key": ""
+  }
+ ],
+ "singularsPt": [
+  {
+   "w": "estações",
+   "out": [
+    "estaçõe"
+   ]
+  },
+  {
+   "w": "monções",
+   "out": [
+    "monçõe"
+   ]
+  },
+  {
+   "w": "vacinas",
+   "out": [
+    "vacina"
+   ]
+  },
+  {
+   "w": "animais",
+   "out": [
+    "animal",
+    "animail",
+    "animai"
+   ]
+  },
+  {
+   "w": "papéis",
+   "out": [
+    "papéil",
+    "papéi"
+   ]
+  },
+  {
+   "w": "fuzis",
+   "out": [
+    "fuzil",
+    "fuzi"
+   ]
+  },
+  {
+   "w": "nuvens",
+   "out": [
+    "nuvem",
+    "nuven"
+   ]
+  },
+  {
+   "w": "flores",
+   "out": [
+    "flor",
+    "flore"
+   ]
+  },
+  {
+   "w": "luzes",
+   "out": [
+    "luz",
+    "luze"
+   ]
+  },
+  {
+   "w": "casa",
+   "out": []
+  },
+  {
+   "w": "mês",
+   "out": []
+  }
+ ],
+ "identifiers": [
+  {
+   "q": "What is EIP-1559?",
+   "out": [
+    "EIP-1559"
+   ]
+  },
+  {
+   "q": "erc20 vs ERC 721 and bip-0032",
+   "out": [
+    "ERC-20",
+    "ERC-721",
+    "BIP-32"
+   ]
+  },
+  {
+   "q": "EIP 4844 and EIP-4844 again",
+   "out": [
+    "EIP-4844"
+   ]
+  },
+  {
+   "q": "PEIP-12",
+   "out": []
+  },
+  {
+   "q": "no ids here",
+   "out": []
+  },
+  {
+   "q": "BIP32 seeds",
+   "out": [
+    "BIP-32"
+   ]
+  }
+ ],
+ "titleHasId": [
+  {
+   "t": "EIP-1559: Fee market change",
+   "id": "EIP-1559",
+   "out": true
+  },
+  {
+   "t": "BIP 32",
+   "id": "BIP-32",
+   "out": true
+  },
+  {
+   "t": "ERC20 token",
+   "id": "ERC-20",
+   "out": true
+  },
+  {
+   "t": "EIP-15590",
+   "id": "EIP-1559",
+   "out": false
+  },
+  {
+   "t": "BIP-0032",
+   "id": "BIP-32",
+   "out": true
+  }
+ ],
+ "explainIntent": [
+  {
+   "q": "hey, what's up?",
+   "out": false
+  },
+  {
+   "q": "What is the capital of Australia?",
+   "out": false
+  },
+  {
+   "q": "Who proposed the theory of evolution by natural selection?",
+   "out": false
+  },
+  {
+   "q": "How do vaccines work?",
+   "out": true
+  },
+  {
+   "q": "Explain photosynthesis in simple terms.",
+   "out": false
+  },
+  {
+   "q": "Compare the French Revolution and the Industrial Revolution.",
+   "out": false
+  },
+  {
+   "q": "Contrast how supply and demand explains price changes with how behavioral economics complicates that picture — where does the simple model break down?",
+   "out": false
+  },
+  {
+   "q": "What do the Agricultural Revolution and the Industrial Revolution have in common as turning points in human history, and how did they differ in how quickly they changed daily life?",
+   "out": true
+  },
+  {
+   "q": "How does the immune system's response to a pathogen relate to how a vaccine works — walk through the mechanism.",
+   "out": true
+  },
+  {
+   "q": "Why is the Amazon rainforest considered important for global climate, and what does biodiversity loss there actually threaten beyond the obvious loss of species?",
+   "out": true
+  },
+  {
+   "q": "A train leaves at 3:40 pm and the trip takes 2 hours and 35 minutes. What time does it arrive?",
+   "out": false
+  },
+  {
+   "q": "A device has a 12GB RAM budget. The OS and app overhead take 2GB, the embedding model needs 200MB, and the LLM's KV cache needs 1.5GB. How much is left for the LLM's weights, and would a 9GB model fit if loaded fully into RAM?",
+   "out": false
+  },
+  {
+   "q": "If a Mixture-of-Experts model has 100B total parameters but only activates 8B per token, and each parameter needs 1 byte at Q8, what's the minimum disk footprint, and why doesn't RAM usage scale with the 100B figure?",
+   "out": true
+  },
+  {
+   "q": "Why did the Western Roman Empire fall?",
+   "out": true
+  },
+  {
+   "q": "What is a black hole and how does one form?",
+   "out": true
+  },
+  {
+   "q": "Who was Napoleon Bonaparte?",
+   "out": false
+  },
+  {
+   "q": "How do antibiotics work, and why does antibiotic resistance develop?",
+   "out": true
+  },
+  {
+   "q": "Tell me about X.com.",
+   "out": false
+  },
+  {
+   "q": "How does a zk-SNARK differ from a zk-STARK?",
+   "out": true
+  },
+  {
+   "q": "What is quadratic funding and what are its weaknesses?",
+   "out": false
+  },
+  {
+   "q": "Does far-UVC light at 222 nm harm human skin?",
+   "out": false
+  },
+  {
+   "q": "What was Zuzalu?",
+   "out": false
+  },
+  {
+   "q": "Where can I find vegan food in Buenos Aires?",
+   "out": false
+  },
+  {
+   "q": "Which signature algorithms are quantum resistant?",
+   "out": false
+  },
+  {
+   "q": "tell me something",
+   "out": false
+  },
+  {
+   "q": "What causes viruses, cases and boxes?",
+   "out": true
+  },
+  {
+   "q": "Qual é a diferença entre pandemia e epidemia?",
+   "out": false
+  },
+  {
+   "q": "Café, naïve résumé — Ångström units",
+   "out": false
+  },
+  {
+   "q": "black holes AND \"event horizon\" NOT -stars*",
+   "out": false
+  },
+  {
+   "q": "",
+   "out": false
+  },
+  {
+   "q": "hey",
+   "out": false
+  },
+  {
+   "q": "Compare the French Revolution with the Industrial Revolution and explain their causes, effects, leaders, dates, places, economics and legacies",
+   "out": false
+  },
+  {
+   "q": "Por que temos estações do ano?",
+   "out": true
+  },
+  {
+   "q": "O que é o efeito estufa?",
+   "out": false
+  },
+  {
+   "q": "Qual a diferença entre fusão e fissão nuclear?",
+   "out": false
+  },
+  {
+   "q": "O que causa os terremotos?",
+   "out": true
+  },
+  {
+   "q": "Como funciona uma vacina?",
+   "out": true
+  },
+  {
+   "q": "O que é uma monção?",
+   "out": false
+  },
+  {
+   "q": "Quem foi Napoleão Bonaparte?",
+   "out": false
+  },
+  {
+   "q": "Como tratar uma picada de cobra?",
+   "out": false
+  },
+  {
+   "q": "O que fazer em caso de hipotermia?",
+   "out": false
+  },
+  {
+   "q": "Qual a capital da Austrália?",
+   "out": false
+  },
+  {
+   "q": "Restaurantes veganos em São Paulo",
+   "out": false
+  },
+  {
+   "q": "Como se forma um buraco negro?",
+   "out": true
+  },
+  {
+   "q": "O que é a Revolução Industrial?",
+   "out": false
+  },
+  {
+   "q": "Quais são os sintomas da desidratação?",
+   "out": false
+  },
+  {
+   "q": "O que é o Ethereum e como funciona o EIP-1559?",
+   "out": true
+  },
+  {
+   "q": "Fahrenheit para Celsius",
+   "out": false
+  },
+  {
+   "q": "Por que o céu é azul?",
+   "out": true
+  },
+  {
+   "q": "Como purificar água na natilha?",
+   "out": false
+  },
+  {
+   "q": "O que é Tbilisi?",
+   "out": false
+  },
+  {
+   "q": "Viagem para a Geórgia",
+   "out": false
+  },
+  {
+   "q": "What is the capital of Australia?",
+   "out": false
+  },
+  {
+   "q": "Why do we have seasons?",
+   "out": true
+  },
+  {
+   "q": "Is São Paulo safe at night?",
+   "out": false
+  },
+  {
+   "q": "Medellín travel tips",
+   "out": false
+  },
+  {
+   "q": "O que é romã?",
+   "out": false
+  },
+  {
+   "q": "Roma antiga",
+   "out": false
+  },
+  {
+   "q": "vacinas e sistema imunológico",
+   "out": false
+  },
+  {
+   "q": "como funciona",
+   "out": true
+  },
+  {
+   "q": "o que é",
+   "out": false
+  },
+  {
+   "q": "",
+   "out": false
+  }
+ ],
+ "explaining": {
+  "q": "Why do earthquakes happen at plate boundaries?",
+  "items": [
+   {
+    "chunkId": "1",
+    "docId": "1",
+    "title": "Plate tectonics",
+    "body": "Plate tectonics is a scientific theory.",
+    "score": 9,
+    "matchType": "lexical"
+   },
+   {
+    "chunkId": "2",
+    "docId": "2",
+    "title": "Earthquake",
+    "body": "An earthquake shakes the ground.",
+    "score": 8,
+    "matchType": "lexical"
+   },
+   {
+    "chunkId": "3",
+    "docId": "3",
+    "title": "Plate tectonics",
+    "body": "Earthquakes happen where plates meet at a boundary.",
+    "score": 7,
+    "matchType": "lexical"
+   },
+   {
+    "chunkId": "4",
+    "docId": "4",
+    "title": "Plate tectonics",
+    "body": "Boundaries move slowly.",
+    "score": 6,
+    "matchType": "lexical"
+   }
+  ],
+  "out": [
+   {
+    "chunkId": "3",
+    "docId": "3",
+    "title": "Plate tectonics",
+    "body": "Earthquakes happen where plates meet at a boundary.",
+    "score": 9,
+    "matchType": "lexical"
+   },
+   {
+    "chunkId": "2",
+    "docId": "2",
+    "title": "Earthquake",
+    "body": "An earthquake shakes the ground.",
+    "score": 8,
+    "matchType": "lexical"
+   },
+   {
+    "chunkId": "4",
+    "docId": "4",
+    "title": "Plate tectonics",
+    "body": "Boundaries move slowly.",
+    "score": 7,
+    "matchType": "lexical"
+   },
+   {
+    "chunkId": "1",
+    "docId": "1",
+    "title": "Plate tectonics",
+    "body": "Plate tectonics is a scientific theory.",
+    "score": 6,
+    "matchType": "lexical"
+   }
+  ]
+ },
+ "dedupe": [
+  {
+   "chunks": [
+    {
+     "chunkId": "a",
+     "docId": "a",
+     "title": "Age of Discovery",
+     "body": "The Age of Discovery, also known as the Age of Exploration, was part of the early modern period and overlapped with the Age of Sail. It was a period from approximately the 15th to the 17th century, during which seafarers from European countries explored, colonized, and conquered regions across the globe. The Age of Discovery was a transformative period when previously isolated parts of the world became connected to form the world-system, and laid the groundwork for globalization. The extensive overseas exploration, particularly the opening of maritime routes to the East Indies and European colonization of the Americas by the Portuguese and Spaniards, later joined by the English, French, and Dutch, spurred international global trade. The interconnected global economy of the 21st century has its origins in the expansion of trade networks during this era. The exploration created European colonial empires and marked an increased adoption of colonialism as a government policy in several European states. As such, it is sometimes synonymous with the first wave of European colonization. This colonization reshaped power dynamics causing geopolitical shifts in Europe and creating new centers of power beyond Europe.",
+     "score": 2,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "b",
+     "docId": "b",
+     "title": "AGE OF DISCOVERY",
+     "body": "The Age of Discovery, also known as the Age of Exploration, was part of the early modern period and overlapped with the Age of Sail. It was a period from approximately the 15th to the 17th century, during which seafarers from European countries explored, colonized, and conquered regions across the globe. The Age of Discovery was a transformative period when previously isolated parts of the world became connected to form the world-system, and laid the groundwork for globalization. The extensive overseas exploration, particularly the opening of maritime routes to the East Indies and European colonization of the Americas by the Portuguese and Spaniards, later joined by the English, French, and Dutch, spurred international global trade. The interconnected global economy of the 21st century has its origins in the expansion of trade networks during this era. The exploration created European colonial empires and marked an increased adoption of colonialism as a government policy in several European states. As such, it is sometimes synonymous with the first wave of European colonization. This colonization reshaped power dynamics causing geopolitical shifts in Europe and creating new centers of power beyond Europe. Extra sentence.",
+     "score": 1,
+     "matchType": "lexical"
+    }
+   ],
+   "out": [
+    "a"
+   ]
+  },
+  {
+   "chunks": [
+    {
+     "chunkId": "a",
+     "docId": "a",
+     "title": "Vaccine",
+     "body": "A vaccine trains the immune system.",
+     "score": 2,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "b",
+     "docId": "b",
+     "title": "Vaccine",
+     "body": "Vaccines were invented by Jenner in 1796.",
+     "score": 1,
+     "matchType": "lexical"
+    }
+   ],
+   "out": [
+    "a",
+    "b"
+   ]
+  },
+  {
+   "chunks": [
+    {
+     "chunkId": "a",
+     "docId": "a",
+     "title": "Season",
+     "body": "Short",
+     "score": 2,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "b",
+     "docId": "b",
+     "title": "Season",
+     "body": "short",
+     "score": 1,
+     "matchType": "lexical"
+    }
+   ],
+   "out": [
+    "a"
+   ]
+  },
+  {
+   "chunks": [
+    {
+     "chunkId": "0",
+     "docId": "0",
+     "title": "Age of Discovery",
+     "body": "The Age of Discovery, also known as the Age of Exploration, was part of the early modern period and overlapped with the Age of Sail. It was a period from approximately the 15th to the 17th century, during which seafarers from European countries explored, colonized, and conquered regions across the globe. The Age of Discovery was a transformative period when previously isolated parts of the world became connected to form the world-system, and laid the groundwork for globalization. The extensive overseas exploration, particularly the opening of maritime routes to the East Indies and European colonization of the Americas by the Portuguese and Spaniards, later joined by the English, French, and Dutch, spurred international global trade. The interconnected global economy of the 21st century has its origins in the expansion of trade networks during this era. The exploration created European colonial empires and marked an increased adoption of colonialism as a government policy in several European states. As such, it is sometimes synonymous with the first wave of European colonization. This colonization reshaped power dynamics causing geopolitical shifts in Europe and creating new centers of power beyond Europe.",
+     "score": 8,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "1",
+     "docId": "1",
+     "title": "Agricultural revolution",
+     "body": "Agricultural revolution may refer to:First Agricultural Revolution, the prehistoric transition from hunting and gathering to settled agriculture \nArab Agricultural Revolution, The spread of new crops and advanced techniques in the Muslim world\nBritish Agricultural Revolution, an unprecedented increase in agricultural productivity in Great Britain \nScottish Agricultural Revolution, the transformation into a modern and productive system\nGreen Revolution (1930s–1960s), an increase in agricultural production, especially in the developing world ",
+     "score": 7,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "2",
+     "docId": "2",
+     "title": "Amazon rainforest",
+     "body": "The Amazon rainforest, also called the Amazon jungle, Amazonia, or simply the Amazon, is a moist broadleaf tropical rainforest in the Amazon biome that covers most of the Amazon basin of South America. This basin encompasses 7 million km2 (2.7 million sq mi), of which 6 million km2 (2.3 million sq mi) are covered by the rainforest. This region includes territory belonging to nine nations and 3,344 indigenous territories.",
+     "score": 6,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "3",
+     "docId": "3",
+     "title": "Android (operating system)",
+     "body": "Android is an operating system developed by Google, designed primarily for smartphones and tablets, based on a modified version of the Linux kernel and other open-source software. First released in 2008, Android is the world's most widely used operating system with 3.9 billion users, and the most used operating system for smartphones. The latest version, released on June 16, 2026, is Android 17.",
+     "score": 5,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "4",
+     "docId": "4",
+     "title": "Antimicrobial resistance",
+     "body": "Antimicrobial resistance occurs when microbes evolve mechanisms that protect them from antimicrobials, which are drugs used to treat infections in humans, animals, and plants. Any microbe can develop resistance, including bacteria, viruses, parasites, and fungi. Together, these adaptations fall under the AMR umbrella, posing a challenge to all countries and all demographics. Misuse and improper management of antimicrobials are primary drivers of this resistance, though it can also occur naturally through genetic mutations and the spread of resistant genes. Microbes resistant to multiple drugs are termed multidrug-resistant (MDR) and are sometimes called superbugs.",
+     "score": 4,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "5",
+     "docId": "5",
+     "title": "Artificial general intelligence",
+     "body": "Artificial general intelligence (AGI) is a hypothetical type of artificial intelligence that matches or surpasses human capabilities across virtually all cognitive tasks. Unlike artificial narrow intelligence (ANI), whose competence is confined to well‑defined tasks, an AGI system can generalise knowledge, transfer skills between domains, and solve novel problems without task‑specific reprogramming.",
+     "score": 3,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "6",
+     "docId": "6",
+     "title": "BM25",
+     "body": "BM25 may refer to:BM-25, a Soviet multiple rocket launcher\nBM-25 Musudan, a North Korean intermediate-range ballistic missile thought to be designed in the 1960s and made in the 1970s, it was seen in the late 1980s by photographers\nOkapi BM25, a ranking function in information retrieval",
+     "score": 2,
+     "matchType": "lexical"
+    },
+    {
+     "chunkId": "7",
+     "docId": "7",
+     "title": "Behavioral economics",
+     "body": "Behavioral economics is the study of the psychological factors involved in the decisions of individuals or institutions, and how these decisions deviate from those implied by traditional economic theory.",
+     "score": 1,
+     "matchType": "lexical"
+    }
+   ],
+   "out": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7"
+   ]
+  }
+ ],
+ "containedShare": [
+  {
+   "a": "The Age of Discovery, also known as the Age of Exploration, was part of the early modern period and overlapped with the Age of Sail. It was a period from approximately the 15th to the 17th century, during which seafarers from European countries explored, colonized, and conquered regions across the globe. The Age of Discovery was a transformative period when previously isolated parts of the world became connected to form the world-system, and laid the groundwork for globalization. The extensive overseas exploration, particularly the opening of maritime routes to the East Indies and European colonization of the Americas by the Portuguese and Spaniards, later joined by the English, French, and Dutch, spurred international global trade. The interconnected global economy of the 21st century has its origins in the expansion of trade networks during this era. The exploration created European colonial empires and marked an increased adoption of colonialism as a government policy in several European states. As such, it is sometimes synonymous with the first wave of European colonization. This colonization reshaped power dynamics causing geopolitical shifts in Europe and creating new centers of power beyond Europe.",
+   "b": "Agricultural revolution may refer to:First Agricultural Revolution, the prehistoric transition from hunting and gathering to settled agriculture \nArab Agricultural Revolution, The spread of new crops  The Age of Discovery, also known as the Age of Exploration, was part of the early modern period and overlapped with the Age of Sail. It was a period from approximately the 15th to the 17th century, during which seafarers from European countries explored, colonized, and conquered regions across the g",
+   "out": 0.6447368421052632
+  },
+  {
+   "a": "Agricultural revolution may refer to:First Agricultural Revolution, the prehistoric transition from hunting and gathering to settled agriculture \nArab Agricultural Revolution, The spread of new crops and advanced techniques in the Muslim world\nBritish Agricultural Revolution, an unprecedented increase in agricultural productivity in Great Britain \nScottish Agricultural Revolution, the transformation into a modern and productive system\nGreen Revolution (1930s–1960s), an increase in agricultural production, especially in the developing world ",
+   "b": "The Amazon rainforest, also called the Amazon jungle, Amazonia, or simply the Amazon, is a moist broadleaf tropical rainforest in the Amazon biome that covers most of the Amazon basin of South America Agricultural revolution may refer to:First Agricultural Revolution, the prehistoric transition from hunting and gathering to settled agriculture \nArab Agricultural Revolution, The spread of new crops and advanced techniques in the Muslim world\nBritish Agricultural Revolution, an unprecedented increa",
+   "out": 0.5352112676056338
+  },
+  {
+   "a": "The Amazon rainforest, also called the Amazon jungle, Amazonia, or simply the Amazon, is a moist broadleaf tropical rainforest in the Amazon biome that covers most of the Amazon basin of South America. This basin encompasses 7 million km2 (2.7 million sq mi), of which 6 million km2 (2.3 million sq mi) are covered by the rainforest. This region includes territory belonging to nine nations and 3,344 indigenous territories.",
+   "b": "Android is an operating system developed by Google, designed primarily for smartphones and tablets, based on a modified version of the Linux kernel and other open-source software. First released in 20 The Amazon rainforest, also called the Amazon jungle, Amazonia, or simply the Amazon, is a moist broadleaf tropical rainforest in the Amazon biome that covers most of the Amazon basin of South America. This basin encompasses 7 million km2 (2.7 million sq mi), of which 6 million km2 (2.3 million sq m",
+   "out": 0.6235294117647059
+  },
+  {
+   "a": "Android is an operating system developed by Google, designed primarily for smartphones and tablets, based on a modified version of the Linux kernel and other open-source software. First released in 2008, Android is the world's most widely used operating system with 3.9 billion users, and the most used operating system for smartphones. The latest version, released on June 16, 2026, is Android 17.",
+   "b": "Antimicrobial resistance occurs when microbes evolve mechanisms that protect them from antimicrobials, which are drugs used to treat infections in humans, animals, and plants. Any microbe can develop  Android is an operating system developed by Google, designed primarily for smartphones and tablets, based on a modified version of the Linux kernel and other open-source software. First released in 2008, Android is the world's most widely used operating system with 3.9 billion users, and the most us",
+   "out": 0.6282051282051282
+  },
+  {
+   "a": "Antimicrobial resistance occurs when microbes evolve mechanisms that protect them from antimicrobials, which are drugs used to treat infections in humans, animals, and plants. Any microbe can develop resistance, including bacteria, viruses, parasites, and fungi. Together, these adaptations fall under the AMR umbrella, posing a challenge to all countries and all demographics. Misuse and improper management of antimicrobials are primary drivers of this resistance, though it can also occur naturally through genetic mutations and the spread of resistant genes. Microbes resistant to multiple drugs are termed multidrug-resistant (MDR) and are sometimes called superbugs.",
+   "b": "Artificial general intelligence (AGI) is a hypothetical type of artificial intelligence that matches or surpasses human capabilities across virtually all cognitive tasks. Unlike artificial narrow inte Antimicrobial resistance occurs when microbes evolve mechanisms that protect them from antimicrobials, which are drugs used to treat infections in humans, animals, and plants. Any microbe can develop resistance, including bacteria, viruses, parasites, and fungi. Together, these adaptations fall unde",
+   "out": 0.5846153846153846
+  },
+  {
+   "a": "Artificial general intelligence (AGI) is a hypothetical type of artificial intelligence that matches or surpasses human capabilities across virtually all cognitive tasks. Unlike artificial narrow intelligence (ANI), whose competence is confined to well‑defined tasks, an AGI system can generalise knowledge, transfer skills between domains, and solve novel problems without task‑specific reprogramming.",
+   "b": "BM25 may refer to:BM-25, a Soviet multiple rocket launcher\nBM-25 Musudan, a North Korean intermediate-range ballistic missile thought to be designed in the 1960s and made in the 1970s, it was seen in  Artificial general intelligence (AGI) is a hypothetical type of artificial intelligence that matches or surpasses human capabilities across virtually all cognitive tasks. Unlike artificial narrow intelligence (ANI), whose competence is confined to well‑defined tasks, an AGI system can generalise kno",
+   "out": 0.5064935064935064
+  },
+  {
+   "a": "BM25 may refer to:BM-25, a Soviet multiple rocket launcher\nBM-25 Musudan, a North Korean intermediate-range ballistic missile thought to be designed in the 1960s and made in the 1970s, it was seen in the late 1980s by photographers\nOkapi BM25, a ranking function in information retrieval",
+   "b": "Behavioral economics is the study of the psychological factors involved in the decisions of individuals or institutions, and how these decisions deviate from those implied by traditional economic theo BM25 may refer to:BM-25, a Soviet multiple rocket launcher\nBM-25 Musudan, a North Korean intermediate-range ballistic missile thought to be designed in the 1960s and made in the 1970s, it was seen in the late 1980s by photographers\nOkapi BM25, a ranking function in information retrieval",
+   "out": 0.6410256410256411
+  },
+  {
+   "a": "Behavioral economics is the study of the psychological factors involved in the decisions of individuals or institutions, and how these decisions deviate from those implied by traditional economic theory.",
+   "b": "Biodiversity loss happens when species disappear completely from Earth (extinction) or when there is a decrease or disappearance of species in a specific area. Biodiversity loss means that there is a  Behavioral economics is the study of the psychological factors involved in the decisions of individuals or institutions, and how these decisions deviate from those implied by traditional economic theory.",
+   "out": 0.4745762711864407
+  },
+  {
+   "a": "Biodiversity loss happens when species disappear completely from Earth (extinction) or when there is a decrease or disappearance of species in a specific area. Biodiversity loss means that there is a reduction in biological diversity in a given area. The decrease can be temporary or permanent. It is temporary if the damage that led to the loss is reversible in time, for example through ecological restoration.If this is not possible, then the decrease is permanent. The cause of most of the biodiversity loss is, generally speaking, human activities that push the planetary boundaries too far. These activities include habitat destruction and land use intensification. Further problem areas are air and water pollution, over-exploitation, invasive species and climate change.",
+   "b": "A black hole is an astronomical body so compact that its gravity prevents anything, including light, from escaping. Albert Einstein's theory of general relativity, which describes gravitation as the c Biodiversity loss happens when species disappear completely from Earth (extinction) or when there is a decrease or disappearance of species in a specific area. Biodiversity loss means that there is a reduction in biological diversity in a given area. The decrease can be temporary or permanent. It is",
+   "out": 0.6025641025641025
+  },
+  {
+   "a": "A black hole is an astronomical body so compact that its gravity prevents anything, including light, from escaping. Albert Einstein's theory of general relativity, which describes gravitation as the curvature of spacetime, predicts that any sufficiently compact mass will form a black hole. The boundary of no escape is called the event horizon. In general relativity, crossing a black hole's event horizon traps an object inside but produces no locally detectable change. General relativity also predicts that every black hole should have a central singularity, where the curvature of spacetime is infinite.",
+   "b": "The Age of Discovery, also known as the Age of Exploration, was part of the early modern period and overlapped with the Age of Sail. It was a period from approximately the 15th to the 17th century, du A black hole is an astronomical body so compact that its gravity prevents anything, including light, from escaping. Albert Einstein's theory of general relativity, which describes gravitation as the curvature of spacetime, predicts that any sufficiently compact mass will form a black hole. The bound",
+   "out": 0.5421686746987951
+  }
  ]
 }

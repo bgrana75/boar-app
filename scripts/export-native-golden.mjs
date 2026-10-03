@@ -5,12 +5,30 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { registerHooks } from "node:module";
+
+// The engine's .ts files import each other without extensions ("./pure"), as the bundler allows: retry with ".ts".
+registerHooks({
+  resolve(specifier, context, next) {
+    try {
+      return next(specifier, context);
+    } catch (e) {
+      if (specifier.startsWith(".") && !/\.[cm]?[jt]sx?$|\.json$/.test(specifier)) return next(`${specifier}.ts`, context);
+      throw e;
+    }
+  },
+});
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const out = join(root, "android-native/engine/src/test/resources/golden");
 const pure = await import(join(root, "src/rag/pure.ts"));
 const evalSet = await import(join(root, "src/eval/evalSet.ts"));
 const compress = await import(join(root, "src/rag/compress.ts"));
+const explain = await import(join(root, "src/rag/explain.ts"));
+const dedupe = await import(join(root, "src/rag/dedupe.ts"));
+const ids = await import(join(root, "src/rag/identifiers.ts"));
+const pt = await import(join(root, "src/rag/ptLexicon.ts"));
+const lexicon = JSON.parse(readFileSync(join(root, "assets/lexicon/pt-en.json"), "utf8"));
 const corpus = JSON.parse(readFileSync(join(root, "assets/corpus/corpus.json"), "utf8"));
 
 const questions = [
@@ -83,6 +101,40 @@ data.compress = [
 data.compressPinned = { q: "What is EIP-4844?", chunks: [...passagesFor("vaccine immune system"), tricky], pinned: ["t1"],
   out: compress.compressContext("What is EIP-4844?", [...passagesFor("vaccine immune system"), tricky], { tokenBudget: 200, pinned: new Set(["t1"]) }) };
 data.sentences = [tricky.body, ...docs.slice(0, 40).map((d) => d.body)].map((t) => ({ t, out: compress.splitSentences(t) }));
+
+// Portuguese and English questions against the real lexicon.
+const ptQuestions = [
+  "Por que temos estações do ano?", "O que é o efeito estufa?", "Qual a diferença entre fusão e fissão nuclear?",
+  "O que causa os terremotos?", "Como funciona uma vacina?", "O que é uma monção?", "Quem foi Napoleão Bonaparte?",
+  "Como tratar uma picada de cobra?", "O que fazer em caso de hipotermia?", "Qual a capital da Austrália?",
+  "Restaurantes veganos em São Paulo", "Como se forma um buraco negro?", "O que é a Revolução Industrial?",
+  "Quais são os sintomas da desidratação?", "O que é o Ethereum e como funciona o EIP-1559?", "Fahrenheit para Celsius",
+  "Por que o céu é azul?", "Como purificar água na natilha?", "O que é Tbilisi?", "Viagem para a Geórgia",
+  "What is the capital of Australia?", "Why do we have seasons?", "Is São Paulo safe at night?", "Medellín travel tips",
+  "O que é romã?", "Roma antiga", "vacinas e sistema imunológico", "como funciona", "o que é", "",
+];
+data.ptLexicon = ptQuestions.map((q) => ({ q, looksPt: pt.looksPortuguese(q), names: pt.englishNamesIn(q, lexicon), key: pt.normalizeKey(q) }));
+data.singularsPt = ["estações", "monções", "vacinas", "animais", "papéis", "fuzis", "nuvens", "flores", "luzes", "casa", "mês"].map((w) => ({ w, out: pt.singularsPt(w) }));
+data.identifiers = ["What is EIP-1559?", "erc20 vs ERC 721 and bip-0032", "EIP 4844 and EIP-4844 again", "PEIP-12", "no ids here", "BIP32 seeds"]
+  .map((q) => ({ q, out: ids.identifiersIn(q) }));
+data.titleHasId = [["EIP-1559: Fee market change", "EIP-1559"], ["BIP 32", "BIP-32"], ["ERC20 token", "ERC-20"], ["EIP-15590", "EIP-1559"], ["BIP-0032", "BIP-32"]]
+  .map(([t, id]) => ({ t, id, out: ids.titleHasIdentifier(t, id) }));
+data.explainIntent = [...questions, ...ptQuestions].map((q) => ({ q, out: explain.EXPLAIN_INTENT.test(q) }));
+const ex = (id, title, body, score) => ({ chunkId: id, docId: id, title, body, score, matchType: "lexical" });
+data.explaining = {
+  q: "Why do earthquakes happen at plate boundaries?",
+  items: [ex("1", "Plate tectonics", "Plate tectonics is a scientific theory.", 9), ex("2", "Earthquake", "An earthquake shakes the ground.", 8),
+    ex("3", "Plate tectonics", "Earthquakes happen where plates meet at a boundary.", 7), ex("4", "Plate tectonics", "Boundaries move slowly.", 6)],
+};
+data.explaining.out = explain.explainingFirst(data.explaining.items, pure.buildLexicalQuery(data.explaining.q).terms);
+const lead = docs[0];
+data.dedupe = [
+  [ex("a", lead.title, lead.body, 2), ex("b", lead.title.toUpperCase(), lead.body + " Extra sentence.", 1)],
+  [ex("a", "Vaccine", "A vaccine trains the immune system.", 2), ex("b", "Vaccine", "Vaccines were invented by Jenner in 1796.", 1)],
+  [ex("a", "Season", "Short", 2), ex("b", "Season", "short", 1)],
+  docs.slice(0, 8).map((d, i) => ex(String(i), d.title, d.body, 8 - i)),
+].map((chunks) => ({ chunks, out: dedupe.dedupeArticleCopies(chunks).map((c) => c.chunkId) }));
+data.containedShare = docs.slice(0, 10).map((d, i) => ({ a: d.body, b: docs[(i + 1) % 10].body.slice(0, 200) + " " + d.body.slice(0, 300), out: dedupe.containedShare(d.body, docs[(i + 1) % 10].body.slice(0, 200) + " " + d.body.slice(0, 300)) }));
 
 const check = process.argv.includes("--check");
 mkdirSync(out, { recursive: true });
