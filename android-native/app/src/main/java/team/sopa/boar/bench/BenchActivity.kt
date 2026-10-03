@@ -65,7 +65,8 @@ class BenchActivity : ComponentActivity() {
         val log = mutableStateOf("${BoarEngine.systemInfo()}\ncores: ${topology.cores.joinToString { "${it.id}@${it.maxKhz / 1000}MHz" }}\nbig: ${topology.bigCores}\n")
         val models = modelFiles()
 
-        intent.getStringExtra("run")?.let { run ->
+        // Only on a fresh start: a recreated activity must not load a second copy of the model.
+        if (savedInstanceState == null) intent.getStringExtra("run")?.let { run ->
             val params = paramsFromIntent(topology)
             val model = intent.getStringExtra("model")?.let { name -> models.firstOrNull { it.name == name } } ?: models.firstOrNull()
             lifecycleScope.launch { runHeadless(run, model, params, log) }
