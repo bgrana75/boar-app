@@ -37,4 +37,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
+    testImplementation(libs.sqlite.jdbc)
+    testImplementation(libs.zstd.jni)
+    testImplementation(libs.kotlinx.coroutines.android)
 }

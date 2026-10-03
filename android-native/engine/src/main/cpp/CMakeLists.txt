@@ -25,7 +25,24 @@ set(LLAMA_CURL OFF CACHE BOOL "" FORCE)
 set(LLAMA_SRC ${CMAKE_CURRENT_LIST_DIR}/llama.cpp)
 add_subdirectory(${LLAMA_SRC} build-llama)
 
-add_library(boar_engine SHARED boar_jni.cpp)
+# SQLite with FTS5 (same feature flags as expo-sqlite) and zstd decompression, compiled in.
+add_library(boar_sqlite STATIC sqlite/sqlite3.c)
+target_compile_definitions(boar_sqlite PRIVATE
+    SQLITE_ENABLE_FTS5 SQLITE_ENABLE_FTS4 SQLITE_ENABLE_FTS3_PARENTHESIS SQLITE_ENABLE_MATH_FUNCTIONS
+    SQLITE_THREADSAFE=1 SQLITE_DEFAULT_MEMSTATUS=0 SQLITE_DQS=0 SQLITE_OMIT_DEPRECATED SQLITE_MAX_EXPR_DEPTH=0)
+target_compile_options(boar_sqlite PRIVATE -O2 -w)
+set_target_properties(boar_sqlite PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+set(ZSTD_LIB ${CMAKE_CURRENT_LIST_DIR}/zstd/lib)
+file(GLOB ZSTD_SRC ${ZSTD_LIB}/common/*.c ${ZSTD_LIB}/decompress/*.c)
+add_library(boar_zstd STATIC ${ZSTD_SRC})
+target_include_directories(boar_zstd PUBLIC ${ZSTD_LIB} ${ZSTD_LIB}/common)
+target_compile_definitions(boar_zstd PRIVATE ZSTD_DISABLE_ASM ZSTD_MULTITHREAD=0)
+target_compile_options(boar_zstd PRIVATE -O2 -w)
+set_target_properties(boar_zstd PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+add_library(boar_engine SHARED boar_jni.cpp boar_sqlite.cpp)
 target_include_directories(boar_engine PRIVATE
-    ${LLAMA_SRC}/include ${LLAMA_SRC}/common ${LLAMA_SRC}/ggml/include ${LLAMA_SRC}/vendor)
-target_link_libraries(boar_engine llama llama-common ggml android log)
+    ${LLAMA_SRC}/include ${LLAMA_SRC}/common ${LLAMA_SRC}/ggml/include ${LLAMA_SRC}/vendor
+    ${CMAKE_CURRENT_LIST_DIR}/sqlite ${ZSTD_LIB})
+target_link_libraries(boar_engine llama llama-common ggml boar_sqlite boar_zstd android log)

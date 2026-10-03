@@ -1,3 +1,6 @@
 [submodule "android-native/engine/src/main/cpp/llama.cpp"]
 	path = android-native/engine/src/main/cpp/llama.cpp
 	url = https://github.com/ggml-org/llama.cpp
+[submodule "android-native/engine/src/main/cpp/zstd"]
+	path = android-native/engine/src/main/cpp/zstd
+	url = https://github.com/facebook/zstd
