@@ -80,6 +80,14 @@ export interface PromptPrefix {
  */
 export const PREFIX_WARM_IDLE_MS = 750;
 
+/**
+ * Tokens the prefix warm-up generates (and discards). Not 0: with n_predict 0, llama.rn 0.13 rc.6 returns
+ * before the prompt is decoded, so the KV cache never held the prefix and every answer re-read it (Pixel 6,
+ * 2026-10-04: warm "1 token in 0 ms" even after a title prompt replaced the cache; answers evaluated their
+ * whole prompt although 229 of its first tokens matched the prefix). One token makes the decode loop run.
+ */
+export const WARM_N_PREDICT = 1;
+
 export interface GenerationTimings {
   promptTokens: number;
   promptMs: number;
@@ -449,15 +457,15 @@ export class LlamaEngine {
     }, delayMs);
   }
 
-  /** Prefills the prefix with no token generated (n_predict 0), in the same format an answer uses. */
+  /** Prefills the prefix (one discarded token, WARM_N_PREDICT), in the same format an answer uses. */
   private async warmNow(): Promise<void> {
     const prefix = this.prefix;
     const context = this.context;
     if (!prefix || !context || this.prefixCached || this.pending > 0) return;
     const params = context.isJinjaSupported()
       ? // The empty user turn keeps templates that require one (Qwen3) rendering; the prefix ends before it.
-        { messages: [{ role: "system", content: prefix.system }, { role: "user", content: "" }], jinja: true, n_predict: 0 }
-      : { prompt: prefix.prompt, n_predict: 0 };
+        { messages: [{ role: "system", content: prefix.system }, { role: "user", content: "" }], jinja: true, n_predict: WARM_N_PREDICT }
+      : { prompt: prefix.prompt, n_predict: WARM_N_PREDICT };
     const completion = context.completion(params);
     this.inFlight = completion;
     try {

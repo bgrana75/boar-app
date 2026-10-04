@@ -83,7 +83,7 @@ vi.mock("ram-monitor", () => ({
   getAvailableRamBytes: () => ram.avail,
 }));
 
-import { LlamaEngine, PREFIX_WARM_IDLE_MS, defaultContextSize } from "./LlamaEngine";
+import { LlamaEngine, PREFIX_WARM_IDLE_MS, WARM_N_PREDICT, defaultContextSize } from "./LlamaEngine";
 
 const live = () => created.filter((c) => !c.released);
 
@@ -410,15 +410,15 @@ describe("answer prefix kept in the KV cache (iPhone 13: 4-5 s to the first toke
       isJinjaSupported: () => true,
       completion: (p: any) => {
         seen.push(p);
-        return Promise.resolve({ text: p.n_predict === 0 ? "" : "ok", timings: { prompt_n: 60, prompt_ms: 600 } });
+        return Promise.resolve({ text: p.n_predict === WARM_N_PREDICT ? "" : "ok", timings: { prompt_n: 60, prompt_ms: 600 } });
       },
     });
     vi.useFakeTimers();
     return { engine, seen };
   }
-  const warms = (seen: any[]) => seen.filter((p) => p.n_predict === 0);
+  const warms = (seen: any[]) => seen.filter((p) => p.n_predict === WARM_N_PREDICT);
 
-  it("prefills the tone's prefix after the load, with no token generated, in the answer's chat format", async () => {
+  it("prefills the tone's prefix after the load, generating one discarded token (n_predict 0 skipped the decode), in the answer's chat format", async () => {
     try {
       const { engine, seen } = await loadedEngine();
       engine.setAnswerPrefix(PREFIX);
@@ -449,7 +449,7 @@ describe("answer prefix kept in the KV cache (iPhone 13: 4-5 s to the first toke
       (created[0] as any).isJinjaSupported = () => false;
       await engine.generate({ prompt: "Title: q" });
       await vi.advanceTimersByTimeAsync(PREFIX_WARM_IDLE_MS + 20);
-      expect(warms(seen)[2]).toEqual({ prompt: PREFIX.prompt, n_predict: 0 });
+      expect(warms(seen)[2]).toEqual({ prompt: PREFIX.prompt, n_predict: WARM_N_PREDICT });
     } finally {
       vi.useRealTimers();
     }
