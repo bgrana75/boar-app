@@ -25,6 +25,7 @@ import { llamaEngine } from "../inference/LlamaEngine";
 import { embeddingEngine } from "../rag/embed";
 import { retrieve, assemblePrompt, RetrievedChunk, ConversationTurn } from "../rag/retrieve";
 import { assembleChatMessages, ANSWER_CONTEXT_CHUNKS } from "../rag/pure";
+import { budgetHistory } from "../routing/historyBudget";
 import { compressForAnswer } from "../rag/compress";
 import { classifyTask, isRetrievalIrrelevant } from "../routing/classify";
 import type { TaskType } from "../routing/types";
@@ -575,9 +576,12 @@ export function ChatScreen({
       const styleReminder = activePersonalityId === "custom" ? undefined : personality.styleReminder;
 
       const priorMessages = messagesRef.current.filter((m) => m.text.length > 0);
-      const verbatimTurns: ConversationTurn[] = priorMessages
-        .slice(-VERBATIM_MESSAGE_COUNT)
-        .map((m) => ({ role: m.role, text: m.role === "assistant" ? stripThinking(m.text) : m.text }));
+      // Within a token budget: earlier answers cut to their opening sentences (historyBudget.ts).
+      const verbatimTurns: ConversationTurn[] = budgetHistory(
+        priorMessages
+          .slice(-VERBATIM_MESSAGE_COUNT)
+          .map((m) => ({ role: m.role, text: m.role === "assistant" ? stripThinking(m.text) : m.text }))
+      );
       const history = { summary: sessionSummaryRef.current, turns: verbatimTurns };
 
       let firstToken = true;
@@ -813,10 +817,14 @@ export function ChatScreen({
           const olderMessages = allMessages.slice(0, -VERBATIM_MESSAGE_COUNT);
           if (olderMessages.length > 0) {
             const sid = sessionId;
-            const turnsToSummarize: ConversationTurn[] = olderMessages.map((m) => ({
-              role: m.role,
-              text: m.role === "assistant" ? stripThinking(m.text) : m.text,
-            }));
+            // Bounded like the answer's history: the whole detailed chat (thousands of tokens) took tens
+            // of seconds to read, and the next question waited for it (cancelBackgroundTask).
+            const turnsToSummarize: ConversationTurn[] = budgetHistory(
+              olderMessages.map((m) => ({
+                role: m.role,
+                text: m.role === "assistant" ? stripThinking(m.text) : m.text,
+              }))
+            );
             const previousSummary = sessionSummaryRef.current;
             backgroundTaskRef.current = summarizeConversation(turnsToSummarize, previousSummary)
               .then(async (summary) => {
