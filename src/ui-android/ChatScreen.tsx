@@ -135,6 +135,8 @@ export function ChatScreen({
   const [loadStatus, setLoadStatus] = useState(t("chatScreen.initializingCore"));
   const [loadError, setLoadError] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
+  /** Set synchronously when a send starts, so a second tap can't slip in before `generating` updates. */
+  const sendingRef = useRef(false);
   const [showPromptIdeas, setShowPromptIdeas] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
@@ -509,28 +511,40 @@ export function ChatScreen({
   /** `text`: send this instead of the input box (a prompt idea). */
   const send = useCallback(async (text?: string) => {
     const query = (text ?? input).trim();
-    if (!query || generating) return;
-
-    await cancelBackgroundTask();
-
+    // sendingRef, not only `generating`: the state flips after the awaits below, and taps during
+    // cancelBackgroundTask (a summary still reading its prompt, tens of seconds) each sent the
+    // question again, all with the same millisecond ids (UNIQUE constraint failed: chat_messages.id).
+    if (!query || generating || sendingRef.current) return;
+    sendingRef.current = true;
     setInput("");
     setGenerating(true);
-    stopRequestedRef.current = false;
 
     let sessionId = activeSessionId;
     const isNewSession = !sessionId;
-    if (!sessionId) {
-      const session = await createSession();
-      sessionId = session.id;
-      setActiveSessionId(sessionId);
+    // Unique even for two sends in the same millisecond.
+    const stamp = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const userMsg: Message = { id: `${stamp}-u`, role: "user", text: query };
+    const assistantId = `${stamp}-a`;
+    try {
+      await cancelBackgroundTask();
+      stopRequestedRef.current = false;
+      if (!sessionId) {
+        const session = await createSession();
+        sessionId = session.id;
+        setActiveSessionId(sessionId);
+      }
+      // Explicit id, matching the in-memory message id used for the FlatList
+      // key/React state — so a thumbs-up/down tap on this exact message can
+      // reference `item.id` directly as answer_feedback's foreign key later,
+      // rather than needing a separate id-mapping step.
+      await persistMessage(sessionId, "user", query, userMsg.id);
+    } catch (e: any) {
+      console.warn("[ChatScreen] send failed before generation:", e?.message ?? e);
+      sendingRef.current = false;
+      setGenerating(false);
+      setInput(query);
+      return;
     }
-    const userMsg: Message = { id: `${Date.now()}-u`, role: "user", text: query };
-    const assistantId = `${Date.now()}-a`;
-    // Explicit id, matching the in-memory message id used for the FlatList
-    // key/React state — so a thumbs-up/down tap on this exact message can
-    // reference `item.id` directly as answer_feedback's foreign key later,
-    // rather than needing a separate id-mapping step.
-    await persistMessage(sessionId, "user", query, userMsg.id);
 
     setMessages((prev) => [...prev, userMsg, { id: assistantId, role: "assistant", text: "" }]);
     setProcessing({ messageId: assistantId, status: "retrieving" });
@@ -838,6 +852,7 @@ export function ChatScreen({
         errorMessage: e?.message ?? String(e),
       }).catch(() => {});
     } finally {
+      sendingRef.current = false;
       setGenerating(false);
       setStopping(false);
       setProcessing(null);
