@@ -23,6 +23,7 @@ import { retrieve } from "../rag/retrieve";
 import { assemblePrompt, assembleChatMessages, ConversationHistory, ANSWER_CONTEXT_CHUNKS } from "../rag/pure";
 import { compressForAnswer } from "../rag/compress";
 import { classifyTask } from "./classify";
+import { searchWithFollowUp } from "./followUp";
 import type { RetrievedChunk } from "../rag/retrieve.types";
 import { RoutingPlan, RoutingStep } from "./router";
 import { buildVerificationInput, parseVerificationVerdict, VERIFICATION_INSTRUCTION } from "./verify";
@@ -225,7 +226,9 @@ export async function executeRoutingPlan(
     switch (step.type) {
       case "retrieve": {
         const retrieveStart = performance.now();
-        const compressed = compressForAnswer(input.query, await retrieve(input.query, ANSWER_CONTEXT_CHUNKS), classifyTask(input.query));
+        // A follow-up ("What did he publish?") is searched with the previous question (followUp.ts).
+        const found = await searchWithFollowUp(input.query, input.history, (text) => retrieve(text, ANSWER_CONTEXT_CHUNKS));
+        const compressed = compressForAnswer(found.searchedFor, found.chunks, classifyTask(input.query));
         retrievalMs = performance.now() - retrieveStart;
         citations = compressed.chunks;
         contextTokensBefore = compressed.tokensBefore;

@@ -26,6 +26,7 @@ import { embeddingEngine } from "../rag/embed";
 import { retrieve, assemblePrompt, RetrievedChunk, ConversationTurn } from "../rag/retrieve";
 import { assembleChatMessages, ANSWER_CONTEXT_CHUNKS } from "../rag/pure";
 import { budgetHistory } from "../routing/historyBudget";
+import { searchWithFollowUp } from "../routing/followUp";
 import { compressForAnswer } from "../rag/compress";
 import { classifyTask, isRetrievalIrrelevant } from "../routing/classify";
 import type { TaskType } from "../routing/types";
@@ -645,8 +646,10 @@ export function ChatScreen({
             c = [];
           } else {
             setProcessing({ messageId: assistantId, status: "retrieving" });
-            // Only the sentences that answer: a shorter prompt brings the first word sooner.
-            c = compressForAnswer(query, await retrieve(query, ANSWER_CONTEXT_CHUNKS), fixedTaskType).chunks;
+            // Only the sentences that answer: a shorter prompt brings the first word sooner. A follow-up
+            // ("What did he publish?") is searched with the previous question (followUp.ts).
+            const found = await searchWithFollowUp(query, history, (text) => retrieve(text, ANSWER_CONTEXT_CHUNKS));
+            c = compressForAnswer(found.searchedFor, found.chunks, fixedTaskType).chunks;
           }
           setProcessing({ messageId: assistantId, status: "thinking" });
           // Use the model's own chat template when its file ships one; the
