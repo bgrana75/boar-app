@@ -3,7 +3,7 @@
  *
  * The chat sent the last 6 messages verbatim, counted in messages. With the
  * detailed personality each answer is ~500 tokens, so history alone grew to
- * ~1,700 tokens and the first word of a follow-up took 20-48 s on a Pixel 6
+ * ~1,700 tokens and the first word of a follow-up took 20-48 s on a Pixel 6a
  * (1.5B, 2026-10-03), against 1.6 s for the same question in a new chat.
  *
  * Rule: newest turns first, within `budgetTokens`. A question is kept whole;

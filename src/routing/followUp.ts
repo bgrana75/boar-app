@@ -3,7 +3,7 @@
  *
  * Retrieval saw only the question's own words, so a follow-up found nothing:
  * "What did he publish?" after a Darwin answer, "What are the side effects?"
- * after a vaccines answer (Pixel 6, 2026-10-04, both models: no sources). The
+ * after a vaccines answer (Pixel 6a, 2026-10-04, both models: no sources). The
  * model still resolved "he" from the history and answered from memory, uncited,
  * which is the weaker case for the bounty (Qwen3-4B 0.49 from memory vs 0.61
  * with passages, r4to's eval).
@@ -35,7 +35,7 @@ export interface FollowUpSearch {
   /**
    * With `direct`: the previous question alone, when the combined text finds nothing. The keyword search
    * wants most of the query's words in a source, and the combined query has many: "Who proposed the theory
-   * of evolution… What did he publish?" found 0 chunks, the Evolution article lacking "publish" (Pixel 6).
+   * of evolution… What did he publish?" found 0 chunks, the Evolution article lacking "publish" (Pixel 6a).
    */
   previous?: string;
   /** Search this only if the question alone found nothing (short, no name of its own). */

@@ -82,7 +82,7 @@ export const PREFIX_WARM_IDLE_MS = 750;
 
 /**
  * Tokens the prefix warm-up generates (and discards). Not 0: with n_predict 0, llama.rn 0.13 rc.6 returns
- * before the prompt is decoded, so the KV cache never held the prefix and every answer re-read it (Pixel 6,
+ * before the prompt is decoded, so the KV cache never held the prefix and every answer re-read it (Pixel 6a,
  * 2026-10-04: warm "1 token in 0 ms" even after a title prompt replaced the cache; answers evaluated their
  * whole prompt although 229 of its first tokens matched the prefix). One token makes the decode loop run.
  */
