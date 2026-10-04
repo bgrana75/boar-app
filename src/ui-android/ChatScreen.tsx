@@ -27,6 +27,8 @@ import { retrieve, assemblePrompt, RetrievedChunk, ConversationTurn } from "../r
 import { assembleChatMessages, ANSWER_CONTEXT_CHUNKS } from "../rag/pure";
 import { budgetHistory } from "../routing/historyBudget";
 import { searchWithFollowUp } from "../routing/followUp";
+import { answerLength, lengthInstruction } from "../routing/answerLength";
+import { measuredSpeeds } from "../routing/depth";
 import { compressForAnswer } from "../rag/compress";
 import { classifyTask, isRetrievalIrrelevant } from "../routing/classify";
 import type { TaskType } from "../routing/types";
@@ -84,7 +86,7 @@ import { splitThinking, stripThinking } from "../services/thinking";
 import { cleanCitations } from "../services/citations";
 import { SourceFootnotes } from "./components/SourceFootnotes";
 import { recordQueryStats, trackPeakRss, startAppMemoryTracking, QueryStats } from "../services/telemetry";
-import { recordExecution } from "../services/executionTelemetry";
+import { listRecentExecutions, recordExecution } from "../services/executionTelemetry";
 import { getMemoryInfo } from "ram-monitor";
 import { useTheme, colors, typography } from "./theme";
 import { spacing, radii } from "./theme/spacing";
@@ -567,14 +569,19 @@ export function ChatScreen({
     let assistantText = "";
 
     try {
-      const [maxTokens, activePersonalityId, customPrompt] = await Promise.all([
+      const [maxTokens, activePersonalityId, customPrompt, recent] = await Promise.all([
         getMaxTokens(),
         getPersonalityId(),
         getCustomSystemPrompt(),
+        listRecentExecutions(100).catch(() => []),
       ]);
       const personality = getPersonality(activePersonalityId);
       const systemPrompt = activePersonalityId === "custom" ? customPrompt : personality.systemPrompt;
-      const styleReminder = activePersonalityId === "custom" ? undefined : personality.styleReminder;
+      // A length this phone can write in time, so the answer ends instead of being cut (answerLength.ts).
+      const length = answerLength({ maxTokens, tokPerSec: baseModelId ? measuredSpeeds(recent).get(baseModelId) : undefined });
+      const styleReminder = [activePersonalityId === "custom" ? undefined : personality.styleReminder, lengthInstruction(length.words)]
+        .filter(Boolean)
+        .join("\n");
 
       const priorMessages = messagesRef.current.filter((m) => m.text.length > 0);
       // Within a token budget: earlier answers cut to their opening sentences (historyBudget.ts).
