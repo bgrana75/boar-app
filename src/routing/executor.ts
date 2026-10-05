@@ -24,6 +24,7 @@ import { assemblePrompt, assembleChatMessages, ConversationHistory, ANSWER_CONTE
 import { compressForAnswer } from "../rag/compress";
 import { classifyTask } from "./classify";
 import { searchWithFollowUp } from "./followUp";
+import { answerLength, lengthInstruction } from "./answerLength";
 import type { RetrievedChunk } from "../rag/retrieve.types";
 import { RoutingPlan, RoutingStep } from "./router";
 import { buildVerificationInput, parseVerificationVerdict, VERIFICATION_INSTRUCTION } from "./verify";
@@ -63,6 +64,11 @@ export interface PipelineInput {
   /** Personality.styleReminder of the selected tone. */
   styleReminder?: string;
   history?: ConversationHistory;
+  /**
+   * Size the answer to the phone (answerLength.ts) once the sources are known: the time to the first word is
+   * estimated from this prompt's own size. `ttftMs` is the fallback when there is no reading speed yet.
+   */
+  length?: { maxTokens: number; tokPerSec?: number; ttftMs?: number };
 }
 
 export interface PipelineCallbacks {
@@ -271,16 +277,28 @@ export async function executeRoutingPlan(
             : !!generateModel?.usesChatTemplate;
         promptFormat = useTemplate ? "chat-template" : "plain";
 
+        // The answer's length, from this prompt's size: a question with more sources or history reads longer
+        // before its first word, and leaves less of the step timeout for writing.
+        let styleReminder = input.styleReminder;
+        if (input.length) {
+          const draft = useTemplate
+            ? { messages: assembleChatMessages(input.query, citations, input.systemPrompt, input.history, input.styleReminder) }
+            : { prompt: assemblePrompt(input.query, citations, input.systemPrompt, input.history, input.styleReminder) };
+          const estimated = await llamaEngine.estimateFirstTokenMs(draft);
+          const len = answerLength({ maxTokens: input.length.maxTokens, tokPerSec: input.length.tokPerSec, ttftMs: estimated ?? input.length.ttftMs });
+          styleReminder = [input.styleReminder, lengthInstruction(len.words)].filter(Boolean).join("\n");
+        }
+
         answer = useTemplate
           ? await llamaEngine.generate({
-              messages: assembleChatMessages(input.query, citations, input.systemPrompt, input.history, input.styleReminder),
+              messages: assembleChatMessages(input.query, citations, input.systemPrompt, input.history, styleReminder),
               nPredict: step.maxTokens ?? 512,
               onToken: timedOnToken,
               timeoutMs: step.timeoutMs ?? STEP_TIMEOUT_MS,
               onTimeout: markTimedOut,
             })
           : await llamaEngine.generate({
-              prompt: assemblePrompt(input.query, citations, input.systemPrompt, input.history, input.styleReminder),
+              prompt: assemblePrompt(input.query, citations, input.systemPrompt, input.history, styleReminder),
               nPredict: step.maxTokens ?? 512,
               onToken: timedOnToken,
               timeoutMs: step.timeoutMs ?? STEP_TIMEOUT_MS,

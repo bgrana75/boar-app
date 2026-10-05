@@ -15,6 +15,7 @@ const getModelInfoMock = vi.fn(() =>
 );
 let mockEmbeddedTemplate = false;
 const hasEmbeddedChatTemplateMock = vi.fn(() => mockEmbeddedTemplate);
+let mockFirstTokenMs: number | null = null;
 
 vi.mock("../inference/LlamaEngine", () => ({
   llamaEngine: {
@@ -22,6 +23,7 @@ vi.mock("../inference/LlamaEngine", () => ({
     generate: (opts: any) => generateMock(opts),
     getModelInfo: () => getModelInfoMock(),
     hasEmbeddedChatTemplate: () => hasEmbeddedChatTemplateMock(),
+    estimateFirstTokenMs: async () => mockFirstTokenMs,
   },
 }));
 
@@ -104,6 +106,24 @@ describe("executeRoutingPlan", () => {
     expect(typeof call.prompt).toBe("string");
     expect(call.prompt).toContain("Question: hey!");
     expect(call.messages).toBeUndefined();
+  });
+
+  it("sizes the answer from this prompt's estimated first word, after retrieval", async () => {
+    const p = plan({
+      steps: [{ id: "generate-0", type: "generate", modelId: "qwen-1.5b", required: true }],
+      selectedModelIds: ["qwen-1.5b"],
+    });
+    // 4 tok/s; a 56 s first word leaves 120 - 56 - 15 = 49 s of writing -> 196 tokens -> ~120 words.
+    mockFirstTokenMs = 56_000;
+    await executeRoutingPlan(p, { query: "Compare them.", styleReminder: "Be thorough.", length: { maxTokens: 512, tokPerSec: 4, ttftMs: 11_500 } }, resolveModel);
+    const user = generateMock.mock.calls[0][0].messages.at(-1).content;
+    expect(user).toContain("Be thorough.");
+    expect(user).toContain("about 120 words");
+    // No reading speed yet: the last answer's first word is the estimate (11.5 s -> 90 s of writing -> 360 tokens).
+    generateMock.mockClear();
+    mockFirstTokenMs = null;
+    await executeRoutingPlan(p, { query: "Compare them.", length: { maxTokens: 512, tokPerSec: 4, ttftMs: 11_500 } }, resolveModel);
+    expect(generateMock.mock.calls[0][0].messages.at(-1).content).toContain("about 220 words");
   });
 
   it("Qwen (usesChatTemplate: true) receives a role-separated messages array instead of a prompt string", async () => {

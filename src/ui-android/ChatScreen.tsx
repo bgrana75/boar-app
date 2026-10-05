@@ -580,9 +580,10 @@ export function ChatScreen({
       // A length this phone can write in time, so the answer ends instead of being cut (answerLength.ts).
       const speed = currentSpeed(recent, baseModelId, Date.now(), baseModelId ? measuredSpeeds(recent).get(baseModelId) : undefined);
       const length = answerLength({ maxTokens, ...speed });
-      const styleReminder = [activePersonalityId === "custom" ? undefined : personality.styleReminder, lengthInstruction(length.words)]
-        .filter(Boolean)
-        .join("\n");
+      const baseStyleReminder = activePersonalityId === "custom" ? undefined : personality.styleReminder;
+      // The router sizes the answer itself once the sources are known (executor.ts, `length`); the fixed-model
+      // fallback below still gets this up-front target.
+      const styleReminder = [baseStyleReminder, lengthInstruction(length.words)].filter(Boolean).join("\n");
 
       // Not this send's own messages: setMessages above can reach messagesRef before this line, and the
       // question then went into the history too (asked twice in the prompt, and a follow-up searched for
@@ -679,7 +680,7 @@ export function ChatScreen({
         if (adaptiveRoutingEnabled) {
           try {
             const result = await runAdaptiveChat(
-              { query, systemPrompt, styleReminder, history },
+              { query, systemPrompt, styleReminder: baseStyleReminder, history, length: { maxTokens, ...speed } },
               maxTokens,
               {
                 onToken,

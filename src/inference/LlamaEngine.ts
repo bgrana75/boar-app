@@ -89,6 +89,9 @@ export const PREFIX_WARM_IDLE_MS = 750;
  */
 export const WARM_N_PREDICT = 1;
 
+/** Fewer evaluated tokens than this say little about prompt reading speed. */
+const MIN_PREFILL_SAMPLE_TOKENS = 32;
+
 export interface GenerationTimings {
   promptTokens: number;
   promptMs: number;
@@ -200,6 +203,10 @@ export class LlamaEngine {
   private prefix: PromptPrefix | null = null;
   /** Whether the KV cache holds `prefix` (a load or another prompt drops it). */
   private prefixCached = false;
+  /** Tokens the warm prefix fills (the warm-up's whole prompt), once it has run. */
+  private prefixTokens = 0;
+  /** The last answer's prompt reading: tokens llama.cpp evaluated and the time to its first token. */
+  private lastPrefill: { tokens: number; ms: number } | null = null;
   private warmTimer: ReturnType<typeof setTimeout> | null = null;
   /** generate() calls not settled yet: a prefix refill never waits in front of one of them. */
   private pending = 0;
@@ -466,6 +473,29 @@ export class LlamaEngine {
     }, delayMs);
   }
 
+  /**
+   * Expected time to the first token for this prompt, from the last answer's prompt reading speed: the
+   * prompt's tokens (in the format generate() will send) minus the warm prefix when it is cached. Null when
+   * there is no measurement yet or the prompt can't be tokenized.
+   */
+  async estimateFirstTokenMs(opts: Pick<GenerateOptions, "prompt" | "messages">): Promise<number | null> {
+    const ctx = this.context;
+    const rate = this.lastPrefill;
+    if (!ctx || !rate || rate.ms <= 0) return null;
+    try {
+      let text = opts.prompt ?? "";
+      if (opts.messages) {
+        const r: any = await ctx.getFormattedChat(opts.messages as any, null, { jinja: true });
+        text = typeof r === "string" ? r : (r?.prompt ?? "");
+      }
+      const tokens = ((await ctx.tokenize(text)) as any).tokens?.length ?? 0;
+      const cached = this.prefixCached && this.sharesPrefix(opts) ? Math.min(this.prefixTokens, tokens) : 0;
+      return (Math.max(tokens - cached, 1) / rate.tokens) * rate.ms;
+    } catch {
+      return null;
+    }
+  }
+
   /** Prefills the prefix (one discarded token, WARM_N_PREDICT), in the same format an answer uses. */
   private async warmNow(): Promise<void> {
     const prefix = this.prefix;
@@ -478,7 +508,8 @@ export class LlamaEngine {
     const completion = context.completion(params);
     this.inFlight = completion;
     try {
-      const result = (await completion) as { timings?: { prompt_n?: number; prompt_ms?: number } };
+      const result = (await completion) as { timings?: { prompt_n?: number; prompt_ms?: number }; tokens_evaluated?: number };
+      if (result?.tokens_evaluated) this.prefixTokens = result.tokens_evaluated;
       if (this.prefix === prefix && this.context === context) this.prefixCached = true;
       const t = result?.timings;
       if (t) console.log(`[engine] answer prefix prefilled: ${t.prompt_n} tokens in ${Math.round(t.prompt_ms ?? 0)} ms`);
@@ -545,7 +576,10 @@ export class LlamaEngine {
       : { prompt: prompt!, n_predict: nPredict, temperature, stop: stop ?? DEFAULT_STOP_SEQUENCES };
 
     let full = "";
+    const startedAt = Date.now();
+    let firstTokenAt: number | null = null;
     const completion = this.context.completion(completionParams, (data) => {
+      if (firstTokenAt === null) firstTokenAt = Date.now();
       full += data.token;
       onToken?.(data.token);
     });
@@ -553,6 +587,8 @@ export class LlamaEngine {
     try {
       const result = await completion;
       const t = (result as { timings?: any; tokens_cached?: number }).timings;
+      // Prompt reading speed for the next answer's length (prompt_n: tokens evaluated, the cached prefix excluded).
+      if (t?.prompt_n >= MIN_PREFILL_SAMPLE_TOKENS && firstTokenAt !== null) this.lastPrefill = { tokens: t.prompt_n, ms: firstTokenAt - startedAt };
       if (t && onTimings) {
         onTimings({
           promptTokens: t.prompt_n ?? 0,
