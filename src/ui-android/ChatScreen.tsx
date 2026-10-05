@@ -27,7 +27,7 @@ import { retrieve, assemblePrompt, RetrievedChunk, ConversationTurn } from "../r
 import { assembleChatMessages, ANSWER_CONTEXT_CHUNKS } from "../rag/pure";
 import { budgetHistory } from "../routing/historyBudget";
 import { searchWithFollowUp } from "../routing/followUp";
-import { answerLength, lengthInstruction } from "../routing/answerLength";
+import { answerLength, currentSpeed, lengthInstruction } from "../routing/answerLength";
 import { measuredSpeeds } from "../routing/depth";
 import { compressForAnswer } from "../rag/compress";
 import { classifyTask, isRetrievalIrrelevant } from "../routing/classify";
@@ -578,7 +578,8 @@ export function ChatScreen({
       const personality = getPersonality(activePersonalityId);
       const systemPrompt = activePersonalityId === "custom" ? customPrompt : personality.systemPrompt;
       // A length this phone can write in time, so the answer ends instead of being cut (answerLength.ts).
-      const length = answerLength({ maxTokens, tokPerSec: baseModelId ? measuredSpeeds(recent).get(baseModelId) : undefined });
+      const speed = currentSpeed(recent, baseModelId, Date.now(), baseModelId ? measuredSpeeds(recent).get(baseModelId) : undefined);
+      const length = answerLength({ maxTokens, ...speed });
       const styleReminder = [activePersonalityId === "custom" ? undefined : personality.styleReminder, lengthInstruction(length.words)]
         .filter(Boolean)
         .join("\n");
