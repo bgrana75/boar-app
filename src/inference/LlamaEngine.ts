@@ -12,7 +12,7 @@ import {
   toGb,
   contextSizeForRam,
 } from "./memoryFit";
-import { BackendInfo, cpuDeviceNames, initWithCpuFallback } from "./initFallback";
+import { BackendInfo, cpuDeviceNames, initWithCpuFallback, kvBytesPerElem, kvCacheParams } from "./initFallback";
 import { describeModelFile, type LoadGuard, type LoadMeta } from "./loadMarker";
 import { MODEL_CATALOG } from "../models/manifest";
 import { listDiscoveredModels } from "../models/discoveredModels";
@@ -282,6 +282,7 @@ export class LlamaEngine {
           n_ctx: nCtx,
           n_threads: nThreads,
           n_gpu_layers: 0, // CPU-only for broad device compatibility; adjust per-device
+          ...kvCacheParams(Platform.OS),
         },
         { platform: Platform.OS, cpuDevices: () => cpuDeviceNames(getBackendDevicesInfo), log: (m) => console.warn(m) }
       );
@@ -357,6 +358,7 @@ export class LlamaEngine {
     return estimateMemoryFit({
       fileBytes,
       nCtx,
+      kvBytesPerElem: kvBytesPerElem(kvCacheParams(Platform.OS)),
       shape,
       totalRamBytes,
       availableRamBytes: availableRamFrom({ totalBytes: totalRamBytes, rssBytes, availBytes }),

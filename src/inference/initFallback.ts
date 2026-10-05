@@ -11,6 +11,38 @@ export interface BackendInitParams {
   n_gpu_layers?: number;
   devices?: string[];
   flash_attn_type?: "auto" | "on" | "off";
+  cache_type_k?: KvCacheType;
+  cache_type_v?: KvCacheType;
+}
+
+/** The KV cache types this app uses (a subset of llama.rn's). */
+export type KvCacheType = "f16" | "q8_0";
+
+/**
+ * KV cache at 8 bits instead of 16: the one allocation mmap can't page out, halved. On a Pixel 6a (6 GB)
+ * the 4B left ~290 MB free with swap full, and answers stalled at 0.1 tok/s while its weights were
+ * re-read from storage. llama.cpp needs flash attention for a quantized V cache, so V is 8-bit only
+ * where flash attention is on (Android); iOS keeps it off (Metal, see initWithCpuFallback) and gets K only.
+ */
+export const KV_CACHE_TYPE: KvCacheType = "q8_0";
+
+export function kvCacheParams(platform: string): Pick<BackendInitParams, "cache_type_k" | "cache_type_v" | "flash_attn_type"> {
+  return platform === "ios"
+    ? { cache_type_k: KV_CACHE_TYPE }
+    : { cache_type_k: KV_CACHE_TYPE, cache_type_v: KV_CACHE_TYPE, flash_attn_type: "on" };
+}
+
+/** Average bytes per KV element for these cache types (q8_0: 34 bytes per 32 values), for memoryFit. */
+export function kvBytesPerElem(p: Pick<BackendInitParams, "cache_type_k" | "cache_type_v">): number {
+  const bytes = (t?: KvCacheType) => (t === "q8_0" ? 34 / 32 : 2);
+  return (bytes(p.cache_type_k) + bytes(p.cache_type_v)) / 2;
+}
+
+/** Without flash attention llama.cpp can't use a quantized V cache: keep V at 16 bits. */
+function withFlashAttnOff<P extends BackendInitParams>(p: P): P {
+  const out = { ...p, flash_attn_type: "off" as const };
+  if (out.cache_type_v && out.cache_type_v !== "f16") delete out.cache_type_v;
+  return out;
 }
 
 export interface BackendInfo {
@@ -46,14 +78,14 @@ export async function initWithCpuFallback<P extends object, C>(
   opts: { platform: string; cpuDevices: () => Promise<string[]>; log?: (message: string) => void }
 ): Promise<{ context: C; backend: BackendInfo }> {
   // iOS: the library that fails to compile is the flash-attention one; don't ask for it.
-  const first: P & BackendInitParams = opts.platform === "ios" ? { ...params, flash_attn_type: "off" } : params;
+  const first: P & BackendInitParams = opts.platform === "ios" ? withFlashAttnOff(params) : params;
   try {
     return { context: await init(first), backend: { kind: "default" } };
   } catch (e: any) {
     const reason = String(e?.message ?? e);
     if (!BACKEND_INIT_ERROR.test(reason)) throw e;
     opts.log?.(`[engine] backend init failed (${reason}); retrying on CPU only`);
-    const cpu = { ...params, n_gpu_layers: 0, devices: await opts.cpuDevices(), flash_attn_type: "off" as const };
+    const cpu = withFlashAttnOff({ ...params, n_gpu_layers: 0, devices: await opts.cpuDevices() });
     return { context: await init(cpu), backend: { kind: "cpu-fallback", reason } };
   }
 }

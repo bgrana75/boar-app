@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { cpuDeviceNames, initWithCpuFallback } from "./initFallback";
+import { cpuDeviceNames, initWithCpuFallback, kvBytesPerElem, kvCacheParams } from "./initFallback";
 
 // Plain functions, not vi.fn(): a rejecting vi.fn() fails the test in vitest 5.
 function fakeInit(failures: string[]) {
@@ -63,5 +63,30 @@ describe("cpuDeviceNames", () => {
     ).toEqual(["CPU"]);
     expect(await cpuDeviceNames(async () => [{ backend: "Metal", type: "gpu", deviceName: "MTL0" }])).toEqual(["CPU"]);
     expect(await cpuDeviceNames(() => Promise.reject(new Error("no")))).toEqual(["CPU"]);
+  });
+});
+
+describe("8-bit KV cache", () => {
+  it("Android: K and V at 8 bits, with the flash attention a quantized V needs", () => {
+    expect(kvCacheParams("android")).toEqual({ cache_type_k: "q8_0", cache_type_v: "q8_0", flash_attn_type: "on" });
+    expect(kvBytesPerElem(kvCacheParams("android"))).toBeCloseTo(1.0625);
+  });
+
+  it("iOS: K only, since flash attention stays off there", () => {
+    expect(kvCacheParams("ios")).toEqual({ cache_type_k: "q8_0" });
+    expect(kvBytesPerElem(kvCacheParams("ios"))).toBeCloseTo((1.0625 + 2) / 2);
+  });
+
+  it("the CPU retry turns flash attention off and so keeps V at 16 bits", async () => {
+    const f = fakeInit(["failed to initialize context"]);
+    await initWithCpuFallback(f.init, { model: "m.gguf", ...kvCacheParams("android") }, { platform: "android", cpuDevices: cpu });
+    expect(f.calls[0]).toMatchObject({ cache_type_k: "q8_0", cache_type_v: "q8_0", flash_attn_type: "on" });
+    expect(f.calls[1]).toEqual({ model: "m.gguf", cache_type_k: "q8_0", n_gpu_layers: 0, devices: ["CPU"], flash_attn_type: "off" });
+  });
+
+  it("iOS never asks for a quantized V, even if given one", async () => {
+    const f = fakeInit([]);
+    await initWithCpuFallback(f.init, { model: "m.gguf", cache_type_k: "q8_0", cache_type_v: "q8_0" }, { platform: "ios", cpuDevices: cpu });
+    expect(f.calls[0]).toEqual({ model: "m.gguf", cache_type_k: "q8_0", flash_attn_type: "off" });
   });
 });
