@@ -11,6 +11,7 @@ import {
   parseGgufShape,
   toGb,
   contextSizeForRam,
+  shouldRepack,
 } from "./memoryFit";
 import { BackendInfo, cpuDeviceNames, initWithCpuFallback, kvBytesPerElem, kvCacheParams } from "./initFallback";
 import { describeModelFile, type LoadGuard, type LoadMeta } from "./loadMarker";
@@ -116,6 +117,8 @@ export interface LoadedModelInfo {
   nThreads: number;
   /** "cpu-fallback" with the native reason when the GPU backend failed to start (initFallback.ts). */
   backend?: BackendInfo;
+  /** Whether the weights were repacked for the ARM kernels (in app memory) or kept as the mapped file. */
+  repacked?: boolean;
 }
 
 export function defaultContextSize(): number {
@@ -260,6 +263,8 @@ export class LlamaEngine {
       throw new ModelLoadError(message, "memory", message);
     }
 
+    // No RAM readouts: repack, as before this check existed.
+    const repack = fit ? shouldRepack(fit) : true;
     let backend: BackendInfo = { kind: "default" };
     // A caller without meta (the chat's preload, the catalog screen) still gets the model's id and label.
     const known =
@@ -283,12 +288,14 @@ export class LlamaEngine {
           n_threads: nThreads,
           n_gpu_layers: 0, // CPU-only for broad device compatibility; adjust per-device
           ...kvCacheParams(Platform.OS),
+          // Repacked weights live in the app's own memory; on a tight phone keep them as the mapped file (memoryFit.ts).
+          no_extra_bufts: !repack,
         },
         { platform: Platform.OS, cpuDevices: () => cpuDeviceNames(getBackendDevicesInfo), log: (m) => console.warn(m) }
       );
       this.context = loaded.context;
       backend = loaded.backend;
-      this.modelInfo = { filename: modelFilename, nCtx, nThreads, backend };
+      this.modelInfo = { filename: modelFilename, nCtx, nThreads, backend, repacked: repack };
       this.loadedMeta = meta;
       loadedOk = true;
       this.arch = fit ? this.lastHeaderArch : await this.readArch(modelPath);

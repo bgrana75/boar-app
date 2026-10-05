@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import {
   availableRamFrom,
+  shouldRepack,
+  REPACK_HEADROOM_BYTES,
   describeFit,
   estimateMemoryFit,
   expertFractionOf,
@@ -160,5 +162,32 @@ describe("availableRamFrom", () => {
   });
   it("uses what the OS reports when that is more", () => {
     expect(availableRamFrom({ totalBytes: 12 * GiB, rssBytes: GiB, availBytes: 10 * GiB })).toBe(10 * GiB);
+  });
+});
+
+describe("shouldRepack", () => {
+  const GiB = 1024 ** 3;
+  // Pixel 6a: 5.46 GiB total -> availableRamFrom budget ~2.96 GiB.
+  const budget = availableRamFrom({ totalBytes: 5.46 * GiB, rssBytes: 0, availBytes: 2.8 * GiB });
+
+  it("keeps the 4B as the mapped file on a 6 GB phone", () => {
+    expect(shouldRepack({ fileBytes: 2.33 * GiB, anonBytes: 0.8 * GiB, availableBytes: budget })).toBe(false);
+  });
+
+  it("repacks the 1.5B on the same phone (fast prompt reading, room to spare)", () => {
+    expect(shouldRepack({ fileBytes: 0.92 * GiB, anonBytes: 0.45 * GiB, availableBytes: budget })).toBe(true);
+  });
+
+  it("repacks the 4B on a 12 GB phone", () => {
+    const big = availableRamFrom({ totalBytes: 11.6 * GiB, rssBytes: 0, availBytes: 6 * GiB });
+    expect(shouldRepack({ fileBytes: 2.33 * GiB, anonBytes: 0.8 * GiB, availableBytes: big })).toBe(true);
+  });
+
+  it("never repacks a model that has to stream from storage", () => {
+    expect(shouldRepack({ fileBytes: 11 * GiB, anonBytes: 0.6 * GiB, availableBytes: 8.7 * GiB })).toBe(false);
+  });
+
+  it("needs the headroom, not just a fit", () => {
+    expect(shouldRepack({ fileBytes: 2 * GiB, anonBytes: 0.5 * GiB, availableBytes: 2.5 * GiB + REPACK_HEADROOM_BYTES - 1 })).toBe(false);
   });
 });

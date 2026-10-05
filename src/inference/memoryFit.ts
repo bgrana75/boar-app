@@ -222,6 +222,24 @@ export function estimateMemoryFit(i: FitInputs): MemoryFit {
   };
 }
 
+/**
+ * Whether llama.cpp may repack the weights for its fast ARM CPU kernels (llama.rn `no_extra_bufts: false`).
+ *
+ * Repacked weights are copies in the app's own (anonymous) memory, not the mmap'd file: Android can't drop
+ * and re-read them, only compress them into swap. On a Pixel 6a (6 GB) the repacked Qwen3-4B left ~300-700 MB
+ * free with 1.9 GB of the app in swap; about one answer in six stalled at 0.1 tok/s while weights came back
+ * from swap, and Android killed the app twice while it loaded (2.8 GB anonymous at the load peak). Kept as
+ * the mapped file, the same phone had ~2.8 GB free, no stalls and no kills; decode was as fast (3.6-5.3 tok/s)
+ * and prompt reading ~2x slower (2026-10-05).
+ *
+ * So: repack only when the whole file plus the buffers fits the budget with REPACK_HEADROOM_BYTES to spare.
+ */
+export const REPACK_HEADROOM_BYTES = 0.75 * GiB;
+
+export function shouldRepack(f: Pick<MemoryFit, "fileBytes" | "anonBytes" | "availableBytes">): boolean {
+  return f.fileBytes + f.anonBytes + REPACK_HEADROOM_BYTES <= f.availableBytes;
+}
+
 /** Kept for the system and the app you came from: a quarter of the phone's RAM, at least 2.5 GB. */
 export const SYSTEM_RESERVE_FRACTION = 0.25;
 export const MIN_SYSTEM_RESERVE_BYTES = 2.5 * GiB;
