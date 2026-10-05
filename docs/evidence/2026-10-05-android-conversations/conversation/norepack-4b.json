@@ -1,0 +1,134 @@
+{
+  "label": "norepack-4b",
+  "since_ms": 1791224120384,
+  "telemetry": [
+    {
+      "created_at": 1791224193127,
+      "model_id": "qwen3-4b-instruct-2507-q4km",
+      "task_type": "research",
+      "ttft_ms": 13350.508428990841,
+      "tok_per_sec": 5.2966262586050235,
+      "tokens_generated": 273,
+      "generation_latency_ms": 51542.243434011936,
+      "total_latency_ms": 65383.94408297539,
+      "outcome": "success"
+    },
+    {
+      "created_at": 1791224357406,
+      "model_id": "qwen3-4b-instruct-2507-q4km",
+      "task_type": "lookup",
+      "ttft_ms": 18148.76599997282,
+      "tok_per_sec": 4.636766264904051,
+      "tokens_generated": 314,
+      "generation_latency_ms": 67719.60932701826,
+      "total_latency_ms": 86659.5367039442,
+      "outcome": "success"
+    },
+    {
+      "created_at": 1791224500179,
+      "model_id": "qwen3-4b-instruct-2507-q4km",
+      "task_type": "lookup",
+      "ttft_ms": 27731.24858903885,
+      "tok_per_sec": 3.991452155729651,
+      "tokens_generated": 262,
+      "generation_latency_ms": 65640.2707029581,
+      "total_latency_ms": 94284.43677300215,
+      "outcome": "success"
+    },
+    {
+      "created_at": 1791224598428,
+      "model_id": "qwen3-4b-instruct-2507-q4km",
+      "task_type": "lookup",
+      "ttft_ms": 11474.15157699585,
+      "tok_per_sec": 4.622862504323237,
+      "tokens_generated": 163,
+      "generation_latency_ms": 35259.53883498907,
+      "total_latency_ms": 47728.817731022835,
+      "outcome": "success"
+    },
+    {
+      "created_at": 1791224797295,
+      "model_id": "qwen3-4b-instruct-2507-q4km",
+      "task_type": "compare",
+      "ttft_ms": 56049.445502996445,
+      "tok_per_sec": 3.5873790460138837,
+      "tokens_generated": 235,
+      "generation_latency_ms": 65507.4350900054,
+      "total_latency_ms": 122222.21347904205,
+      "outcome": "success"
+    },
+    {
+      "created_at": 1791224926977,
+      "model_id": "qwen3-4b-instruct-2507-q4km",
+      "task_type": "lookup",
+      "ttft_ms": 51466.14138299227,
+      "tok_per_sec": 3.9742944285720827,
+      "tokens_generated": 112,
+      "generation_latency_ms": 28181.102837979794,
+      "total_latency_ms": 80808.56298798323,
+      "outcome": "success"
+    }
+  ],
+  "messages": [
+    {
+      "created_at": 1791224127610,
+      "role": "user",
+      "text": "How do vaccines work?"
+    },
+    {
+      "created_at": 1791224193131,
+      "role": "assistant",
+      "text": "Vaccines work by training the immune system to recognize and fight specific pathogens\u2014like viruses or bacteria\u2014without causing the full disease. They introduce a harmless component of the pathogen, such as a weakened or inactivated form, a piece of a virus (like a surface protein), or its toxin, which triggers an immune response [1]. This response creates memory cells that \"remember\" the pathogen, enabling a faster and stronger defense if the real pathogen later enters the body.\n\nUnlike natural infection, vaccines do not cause the disease. For example, the measles vaccine uses a weakened strain of the virus, which provokes immunity without leading to severe illness. This makes vaccines safer and more predictable than natural exposure, which carries risks like complications or death.\n\nThe immune response involves B cells producing antibodies and T cells targeting infected cells. Once activated, these cells remain dormant, allowing the body to respond rapidly upon future exposure. This is why vaccinated individuals often experience milder symptoms or no symptoms at all when infected.\n\nCompared to natural infection, vaccines provide immunity with far less risk and often without requiring actual disease exposure. For instance, the HPV vaccine prevents cervical cancer by targeting specific viral proteins, demonstrating how targeted immunity can prevent chronic illness.\n\nIn essence, vaccines are a safe, effective, and scientifically validated method of building immunity through controlled exposure to pathogen components."
+    },
+    {
+      "created_at": 1791224270659,
+      "role": "user",
+      "text": "What are the side effects?"
+    },
+    {
+      "created_at": 1791224357412,
+      "role": "assistant",
+      "text": "Vaccines are generally safe, with side effects typically mild and short-lived. Common side effects include soreness at the injection site, low-grade fever, fatigue, or headache\u2014similar to symptoms from a mild illness. These occur because the immune system is actively responding to the vaccine\u2019s components [1]. For example, the Pfizer-BioNTech COVID-19 vaccine may cause a sore arm or mild fever within 1\u20133 days, which typically resolves within a day or two.\n\nUnlike natural infections, vaccines do not cause the full disease. This means the risk of severe illness or complications is negligible. For instance, while a natural measles infection carries a 1 in 1,000 risk of death, vaccinated individuals face nearly zero such risk [1]. The immune response triggered by vaccines is controlled and targeted, reducing the chance of harmful side effects.\n\nSome people report rare adverse events, like allergic reactions (e.g., anaphylaxis), which are extremely uncommon\u2014less than 1 in a million doses. These are more likely in individuals with severe allergies to vaccine components (e.g., gelatin or polyethylene glycol). Such reactions are monitored closely and are preventable with proper screening.\n\nIn comparison, natural infection often leads to more severe outcomes, including hospitalization or long-term complications. Vaccines provide immunity without these risks, offering a safer, more predictable path to protection.\n\nOverall, the benefits of vaccination\u2014preventing disease, reducing transmission, and saving lives\u2014far outweigh the rare and mild side effects experienced by most people."
+    },
+    {
+      "created_at": 1791224405880,
+      "role": "user",
+      "text": "Who proposed the theory of evolution by natural selection?"
+    },
+    {
+      "created_at": 1791224500180,
+      "role": "assistant",
+      "text": "The theory of evolution by natural selection was primarily proposed by Charles Darwin, building on earlier ideas from scientists like Alfred Russel Wallace. Darwin\u2019s key insight was that individuals with heritable traits better suited to their environment are more likely to survive and reproduce, passing those advantageous traits to offspring. This process, over generations, leads to changes in populations\u2014what we now call evolution [1].\n\nDarwin\u2019s theory differed from earlier views, such as Lamarckism, which claimed organisms acquire traits during life and pass them on. Natural selection is a more evidence-based, observable process: it relies on variation, inheritance, and differential survival. For example, in finch populations on the Gal\u00e1pagos Islands, birds with larger beaks survived droughts better, leading to a shift in beak size over time.\n\nDarwin didn\u2019t work in isolation. He drew on data from geology, biogeography, and embryology, and his work was refined by later scientists like Gregor Mendel, whose principles of inheritance provided the genetic basis for natural selection. Together, these advances explain how evolution is both a process and a mechanism.\n\nIn contrast to theories of divine design or spontaneous generation, natural selection offers a testable, predictive framework. Its success in explaining biodiversity and adaptation underscores its central role in biology."
+    },
+    {
+      "created_at": 1791224550681,
+      "role": "user",
+      "text": "What did he publish?"
+    },
+    {
+      "created_at": 1791224598432,
+      "role": "assistant",
+      "text": "Charles Darwin published *On the Origin of Species* in 1859, which presented a comprehensive theory of evolution by natural selection. The book detailed how species adapt over time through heritable variations that enhance survival and reproduction in specific environments. Darwin used evidence from biogeography, fossils, and comparative anatomy, showing patterns of relatedness across species [1].\n\nHe contrasted natural selection with Lamarckism, which claimed traits were passed based on use or disuse. Darwin\u2019s mechanism\u2014where advantageous traits become more common through differential survival\u2014was grounded in observable natural processes.\n\nThe work influenced biology profoundly, shifting scientific thought from static species to dynamic, evolving life. Though Darwin didn't publish all data immediately, *On the Origin of Species* became the foundational text, establishing evolutionary biology as a scientific discipline."
+    },
+    {
+      "created_at": 1791224674891,
+      "role": "user",
+      "text": "Compare the French Revolution and the Industrial Revolution."
+    },
+    {
+      "created_at": 1791224797301,
+      "role": "assistant",
+      "text": "The French Revolution (1789\u20131799) was a political and social upheaval that transformed France\u2019s governance, ending absolute monarchy and establishing a republic. It was driven by economic hardship, social inequality, and Enlightenment ideals, leading to radical changes in law, citizenship, and governance [1]. In contrast, the Industrial Revolution (beginning c. 1760) was an economic transformation marked by mechanization, urbanization, and the rise of factories, fundamentally altering production methods and societal structures [2].\n\nWhile the French Revolution focused on political reorganization and human rights\u2014such as equality and liberty\u2014it did not significantly alter economic systems. The Industrial Revolution, however, redefined the economy, shifting from agrarian to industrial economies and creating new social classes, including the working class and industrial capitalists.\n\nThe French Revolution had profound ideological impacts, influencing liberal democracies worldwide. The Industrial Revolution, by contrast, reshaped global economies, leading to technological innovation, increased productivity, and long-term changes in labor, transport, and city life.\n\nBoth revolutions were transformative, but in different domains: one a political revolution of ideas and institutions, the other a"
+    },
+    {
+      "created_at": 1791224846138,
+      "role": "user",
+      "text": "What is the capital of Australia?"
+    },
+    {
+      "created_at": 1791224926987,
+      "role": "assistant",
+      "text": "The capital of Australia is Canberra. Unlike most countries, Australia does not have a capital city located at a geographic center. Instead, Canberra was deliberately chosen as a compromise between Sydney and Melbourne, the two largest cities. It was established in 1913 as a neutral seat of government to avoid political bias. Unlike capitals like London or Washington, Canberra is a planned city, designed for symmetry and civic balance. Its location in the Australian Capital Territory (ACT) ensures equitable representation of all states. This reflects Australia\u2019s commitment to federal governance and national unity."
+    }
+  ]
+}

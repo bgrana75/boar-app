@@ -1,0 +1,134 @@
+{
+  "label": "base-15b",
+  "since_ms": 1791230985563,
+  "telemetry": [
+    {
+      "created_at": 1791231021696,
+      "model_id": "qwen2.5-1.5b-instruct-q4km",
+      "task_type": "research",
+      "ttft_ms": 2090.1255300045013,
+      "tok_per_sec": 15.61549749061318,
+      "tokens_generated": 414,
+      "generation_latency_ms": 26512.123629033566,
+      "total_latency_ms": 29006.711073994637,
+      "outcome": "success"
+    },
+    {
+      "created_at": 1791231139932,
+      "model_id": "qwen2.5-1.5b-instruct-q4km",
+      "task_type": "lookup",
+      "ttft_ms": 8227.47851896286,
+      "tok_per_sec": 12.419020163945847,
+      "tokens_generated": 416,
+      "generation_latency_ms": 33497.00656801462,
+      "total_latency_ms": 42119.32358801365,
+      "outcome": "success"
+    },
+    {
+      "created_at": 1791231276609,
+      "model_id": "qwen2.5-1.5b-instruct-q4km",
+      "task_type": "lookup",
+      "ttft_ms": 14867.467537045479,
+      "tok_per_sec": 10.331995532565314,
+      "tokens_generated": 483,
+      "generation_latency_ms": 46747.987692952156,
+      "total_latency_ms": 62027.88487702608,
+      "outcome": "success"
+    },
+    {
+      "created_at": 1791231441507,
+      "model_id": "qwen2.5-1.5b-instruct-q4km",
+      "task_type": "lookup",
+      "ttft_ms": 25162.57622396946,
+      "tok_per_sec": 8.066302871782652,
+      "tokens_generated": 512,
+      "generation_latency_ms": 63473.936962008476,
+      "total_latency_ms": 89089.24227201939,
+      "outcome": "success"
+    },
+    {
+      "created_at": 1791231605900,
+      "model_id": "qwen2.5-1.5b-instruct-q4km",
+      "task_type": "compare",
+      "ttft_ms": 31463.43283599615,
+      "tok_per_sec": 6.3522168279783395,
+      "tokens_generated": 512,
+      "generation_latency_ms": 80601.7826319933,
+      "total_latency_ms": 112495.12664097548,
+      "outcome": "success"
+    },
+    {
+      "created_at": 1791231760193,
+      "model_id": "qwen2.5-1.5b-instruct-q4km",
+      "task_type": "lookup",
+      "ttft_ms": 30791.74501001835,
+      "tok_per_sec": 7.260327007837067,
+      "tokens_generated": 512,
+      "generation_latency_ms": 70520.23957699537,
+      "total_latency_ms": 102065.68388801813,
+      "outcome": "success"
+    }
+  ],
+  "messages": [
+    {
+      "created_at": 1791230992533,
+      "role": "user",
+      "text": "How do vaccines work?"
+    },
+    {
+      "created_at": 1791231021698,
+      "role": "assistant",
+      "text": "Vaccines work by stimulating the immune system to recognize and respond to pathogens. They do this by introducing a weakened or inactive form of the pathogen into the body, which the immune system then identifies as foreign and mounts an immune response. This response includes the production of antibodies, which are proteins that specifically bind to the pathogen and mark it for destruction by other immune cells. \n\nThe immune response also includes the activation of helper T cells, which release cytokines to attract additional immune cells and initiate inflammation. This creates a localized immune response against the pathogen. \n\nIf the pathogen invades the body later, the immune system is primed and can quickly recognize and eliminate it, preventing the disease. This is because the immune system remembers the specific pathogen, so it can recognize and neutralize it without the need for a full-scale attack. This is why vaccines are so effective - they allow the immune system to gain immunity without the risk of the disease itself.\n\nVaccines are compared to natural infection because they provide an equivalent level of immunity without the risk of serious illness or death. For example, the flu vaccine provides protection against the flu virus, which can cause serious illness and death. In contrast, the natural infection with the flu virus can result in flu symptoms, mild illness, or severe complications, such as pneumonia. \n\nThe effectiveness of vaccines is supported by rigorous scientific studies. For instance, the CDC recommends that all children receive the measles, mumps, and rubella (MMR) vaccine to protect against these three diseases. This vaccine has been shown to be 97% effective in preventing measles in children who receive it. \n\nIn conclusion, vaccines work by stimulating the immune system to recognize and respond to pathogens, allowing it to produce antibodies and activate helper T cells. This prepares the immune system to quickly neutralize the pathogen if it invades the body later. Vaccines are a safe and effective way to prevent serious illnesses and diseases, with the added benefit of the immune system remembering the specific pathogen to prevent future infections."
+    },
+    {
+      "created_at": 1791231097576,
+      "role": "user",
+      "text": "What are the side effects?"
+    },
+    {
+      "created_at": 1791231139932,
+      "role": "assistant",
+      "text": "The side effects of vaccines are generally minor and short-lived, with the most common being pain, swelling, and redness at the injection site, fatigue, and a low-grade fever. These symptoms are a sign that the immune system is working to fight the vaccine and do not indicate a serious side effect. \n\nSome individuals may experience more severe side effects, such as anaphylaxis or anaphylactic shock, which is an allergic reaction to the vaccine that can cause swelling, difficulty breathing, and low blood pressure. While rare, anaphylaxis is a serious condition that can be life-threatening. \n\nIn rare cases, vaccines can cause more severe side effects, such as severe allergic reactions, such as anaphylactic shock or anaphylaxis. However, these side effects are much less common than the side effects of natural infection. \n\nFor example, the MMR vaccine, which is used to prevent measles, mumps, and rubella, has been shown to be 97% effective in preventing measles in children who receive it. The vaccine is made up of a weakened form of the virus that can't cause disease, but is enough to trigger the immune system to produce antibodies. \n\nThe side effects of vaccines are compared to the risks of natural infection. For instance, natural measles can cause severe complications, such as pneumonia, ear infections, and brain inflammation. Natural mumps can cause meningitis, and natural rubella can cause heart damage. The risk of these complications is much higher with natural infection than with the vaccine, making the vaccine much safer and more effective. \n\nIn conclusion, the side effects of vaccines are generally minor and short-lived, with the most common being pain, swelling, and redness at the injection site, fatigue, and a low-grade fever. These symptoms are a sign that the immune system is working to fight the vaccine and do not indicate a serious side effect. The side effects of vaccines are compared to the risks of natural infection, with the vaccine being much safer and more effective in preventing serious illnesses and diseases."
+    },
+    {
+      "created_at": 1791231214405,
+      "role": "user",
+      "text": "Who proposed the theory of evolution by natural selection?"
+    },
+    {
+      "created_at": 1791231276610,
+      "role": "assistant",
+      "text": "The theory of evolution by natural selection was proposed by the Victorian naturalist Charles Darwin in the mid-19th century. Darwin was a member of the Cambridge University Natural History and Philosophical Museum, and his work was initially influenced by the work of earlier naturalists such as Linnaeus, Buffon, and Lamarck. \n\nDarwin's theory was based on his observations and research on the diversity of life on earth, including his experiences on the Beagle, a six-year-long voyage around the world. On the Beagle, Darwin collected thousands of specimens of plants and animals, and during his time on the ship, he developed his ideas about evolution and natural selection. \n\nDarwin's theory of natural selection posits that the survival of a species depends on the ability to adapt to its environment. Individuals within a species that are better adapted to their environment tend to survive and reproduce more successfully than those that are not. Over time, this leads to the evolution of new species and the extinction of others. \n\nDarwin's theory was not immediately accepted by the scientific community, and it faced intense criticism from many prominent scientists who believed in the theory of creationism or the doctrine of catastrophism. However, Darwin's theory was later supported by the work of other scientists, including Alfred Russel Wallace, who independently developed the theory in 1858, and the geneticist Gregor Mendel, who developed the theory of genetics.\n\nThe theory of evolution by natural selection has been supported by an enormous amount of evidence. For example, the fossil record shows that many species have evolved from earlier forms, and the genetic evidence shows that humans share a common ancestor with chimpanzees. The theory of natural selection also explains the diversity of life on earth, from the smallest bacteria to the largest mammals. \n\nIn conclusion, the theory of evolution by natural selection was proposed by Charles Darwin in the mid-19th century, based on his observations and research on the diversity of life on earth. Darwin's theory was initially met with criticism from many scientists, but it has been supported by an enormous amount of evidence, including the fossil record, genetic evidence, and the diversity of life on earth. The theory of natural selection has been a cornerstone of modern biology, and it has been supported by an enormous amount of evidence, including the fossil record, genetic evidence, and the diversity of life on earth."
+    },
+    {
+      "created_at": 1791231352255,
+      "role": "user",
+      "text": "What did he publish?"
+    },
+    {
+      "created_at": 1791231441508,
+      "role": "assistant",
+      "text": "Charles Darwin published his theory of evolution by natural selection in his groundbreaking work \"On the Origin of Species\" (1859), which is considered one of the most important scientific texts in the history of science. Darwin's theory proposed that species evolve over time through the process of natural selection, where the fittest individuals in a population are more likely to survive and reproduce, passing on their advantageous traits to future generations.\n\nDarwin's theory was revolutionary because it challenged the prevailing belief of the time, that species were fixed and immutable. Darwin's research was based on his observations and investigations, and he traveled the world to collect evidence, including the fossil record, the anatomy of animals, and the distribution of species. He also observed the diversity of life on earth and the adaptability of organisms to their environments.\n\nDarwin's theory was based on the principle of natural selection, which states that individuals with traits that are better suited to their environment are more likely to survive and reproduce. Over time, these traits become more common in the population, leading to the evolution of new species. Darwin also proposed the concept of the \"descent of man,\" suggesting that humans evolved from apes, which was a radical idea at the time.\n\nDarwin's theory was not immediately accepted, and it faced intense criticism from many prominent scientists, including the geologist Charles Lyell, who rejected the theory of natural selection. However, Darwin's theory was later supported by the work of other scientists, including Alfred Russel Wallace, who independently developed the theory in 1858. Darwin's theory was further supported by the work of the geneticist Gregor Mendel, who developed the theory of genetics, and it has been a cornerstone of modern biology.\n\nDarwin's theory of natural selection has been supported by an enormous amount of evidence, including the fossil record, genetic evidence, and the diversity of life on earth. For example, the fossil record shows that many species have evolved from earlier forms, and the genetic evidence shows that humans share a common ancestor with chimpanzees. The theory of natural selection also explains the diversity of life on earth, from the smallest bacteria to the largest mammals.\n\nIn conclusion, Charles Darwin published his theory of evolution by natural selection in his groundbreaking work \"On the Origin of Species\" (1859), which challenged the prevailing belief of the time that species were fixed and immutable. Darwin's theory was based on his observations and research, and it proposed that individuals with traits that are better suited to their environment are more likely to survive"
+    },
+    {
+      "created_at": 1791231493017,
+      "role": "user",
+      "text": "Compare the French Revolution and the Industrial Revolution."
+    },
+    {
+      "created_at": 1791231605900,
+      "role": "assistant",
+      "text": "The French Revolution and the Industrial Revolution were two of the most transformative events in modern history, each having a profound impact on society, culture, and the economy. The French Revolution, which began in 1789 and lasted until 1799, was a period of political and social upheaval that sought to establish a new system of government and a more equitable society. The Industrial Revolution, on the other hand, began in the late 18th century and was characterized by a rapid expansion of manufacturing and a shift from agrarian to industrial economies.\n\nThe French Revolution was marked by radical changes in government, society, and culture. It led to the rise of the bourgeoisie, the establishment of the First French Republic, and the rise of Napoleon Bonaparte. The revolution also saw the rise of the Enlightenment and the emergence of new ideas about human rights, democracy, and equality. The revolution was characterized by violence, as the royalists and the revolutionaries battled it out, and the French Revolution is often seen as a precursor to the French Empire, which lasted until Napoleon's defeat in 1815.\n\nThe Industrial Revolution, on the other hand, was characterized by a rapid expansion of manufacturing and a shift from agrarian to industrial economies. The Industrial Revolution began in Great Britain and spread to other parts of the world, including the United States and Europe. The Industrial Revolution led to the creation of new industries, such as textiles, iron, and coal mining, and it led to the rise of the industrial proletariat and the working class. The Industrial Revolution also led to the development of new technologies, such as the steam engine and the spinning jenny, and it led to the creation of new social classes, such as the industrial bourgeoisie.\n\nOne of the key differences between the French Revolution and the Industrial Revolution is the pace of change. The French Revolution was marked by violent upheaval and radical change, while the Industrial Revolution was characterized by gradual progress and steady change. The French Revolution was a period of political upheaval and social change, while the Industrial Revolution was a period of economic and technological progress.\n\nIn conclusion, the French Revolution and the Industrial Revolution were two of the most transformative events in modern history, each having a profound impact on society, culture, and the economy. The French Revolution was marked by radical changes in government, society, and culture, while the Industrial Revolution was characterized by a rapid expansion of manufacturing and a shift from agrarian to industrial economies. The pace of change was also different, with the French Revolution being a"
+    },
+    {
+      "created_at": 1791231657859,
+      "role": "user",
+      "text": "What is the capital of Australia?"
+    },
+    {
+      "created_at": 1791231760194,
+      "role": "assistant",
+      "text": "The capital of Australia is Canberra, located in the Australian Capital Territory. Canberra is the seat of the Australian government and is home to the Australian Parliament and the High Court of Australia. It was established in 1913 as a planned city and has since become a vibrant and diverse city.\n\nCanberra is situated at the intersection of two major waterways\u2014the Australian Alps and the Murray River\u2014and is surrounded by the Australian Capital Territory. The city is known for its unique architecture, which blends traditional Australian design with modern and international styles. The design of Canberra was influenced by the city of Bras\u00edlia in Brazil, which was also planned and built in a planned, futuristic manner.\n\nCanberra's location is significant for several reasons. It is located in a region known as the Great Dividing Range, which runs along the eastern coast of Australia and provides a natural barrier against the more extreme weather conditions found in the north and south. This natural protection has made Canberra a relatively mild climate for a tropical country like Australia.\n\nThe choice of Canberra as the capital city was influenced by the desire to create a central location for the government and administration of the newly federated nation. It was also intended to be a symbol of national unity and a place where the government could be more closely tied to the people. The city's layout was designed to be efficient and functional, with wide avenues and planned parks, which have since become iconic features of the city.\n\nCanberra has a diverse population, including many expatriates and tourists. It is known for its extensive parks and gardens, including the Australian War Memorial and the National Gallery of Australia. The city offers a range of cultural and recreational activities, including museums, art galleries, and theaters. Canberra is also a hub for politics and government, with many international conferences and diplomatic missions based in the city.\n\nCompared to other capital cities, Canberra is notable for its modern and futuristic design, which contrasts with the more traditional architecture of some other capitals. For instance, Paris is known for its iconic landmarks such as the Eiffel Tower and Notre-Dame Cathedral, while Bras\u00edlia is famous for its futuristic buildings and planned layout. Canberra, however, has been recognized as one of the world's most livable cities, and it continues to be a significant center for politics, culture, and industry in Australia.\n\nIn summary, Canberra's status as the capital of Australia is a testament to its strategic location, planned architecture, and modernity, making it a unique and important city in the heart of the nation. Its design and location have"
+    }
+  ]
+}
