@@ -42,9 +42,14 @@ export interface FollowUpSearch {
   fallback?: string;
 }
 
-function previousQuestion(history?: ConversationHistory): string | null {
+/** The latest earlier question, never the current one (a history that already holds it would make it its own subject). */
+function previousQuestion(query: string, history?: ConversationHistory): string | null {
   const turns = history?.turns ?? [];
-  for (let i = turns.length - 1; i >= 0; i--) if (turns[i].role === "user" && turns[i].text.trim()) return turns[i].text.trim();
+  const current = query.trim();
+  for (let i = turns.length - 1; i >= 0; i--) {
+    const text = turns[i].text.trim();
+    if (turns[i].role === "user" && text && text !== current) return text;
+  }
   return null;
 }
 
@@ -55,7 +60,7 @@ function namesItsOwnSubject(query: string): boolean {
 }
 
 export function followUpSearch(query: string, history?: ConversationHistory): FollowUpSearch {
-  const previous = previousQuestion(history);
+  const previous = previousQuestion(query, history);
   if (!previous) return {};
   const combined = `${previous} ${query.trim()}`;
   if (POINTS_BACK.test(query)) return { direct: combined, previous };

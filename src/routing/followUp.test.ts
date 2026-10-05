@@ -34,6 +34,17 @@ describe("followUpSearch", () => {
     expect(followUpSearch("How does the immune system respond to a new virus infection?", after("How do vaccines work?"))).toEqual({});
   });
 
+  it("never takes the current question as the previous one", () => {
+    const history = {
+      turns: [
+        { role: "user" as const, text: "Who proposed the theory of evolution?" },
+        { role: "assistant" as const, text: "Charles Darwin." },
+        { role: "user" as const, text: "What did he publish?" },
+      ],
+    };
+    expect(followUpSearch("What did he publish?", history).direct).toBe("Who proposed the theory of evolution? What did he publish?");
+  });
+
   it("does nothing without an earlier question", () => {
     expect(followUpSearch("What did he publish?", { turns: [] })).toEqual({});
     expect(followUpSearch("What did he publish?")).toEqual({});

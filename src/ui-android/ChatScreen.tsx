@@ -584,7 +584,10 @@ export function ChatScreen({
         .filter(Boolean)
         .join("\n");
 
-      const priorMessages = messagesRef.current.filter((m) => m.text.length > 0);
+      // Not this send's own messages: setMessages above can reach messagesRef before this line, and the
+      // question then went into the history too (asked twice in the prompt, and a follow-up searched for
+      // itself: "What did he publish? What did he publish?", Pixel 6a).
+      const priorMessages = messagesRef.current.filter((m) => m.text.length > 0 && m.id !== userMsg.id && m.id !== assistantId);
       // Within a token budget: earlier answers cut to their opening sentences (historyBudget.ts).
       const verbatimTurns: ConversationTurn[] = budgetHistory(
         priorMessages
