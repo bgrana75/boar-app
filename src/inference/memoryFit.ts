@@ -226,18 +226,18 @@ export function estimateMemoryFit(i: FitInputs): MemoryFit {
  * Whether llama.cpp may repack the weights for its fast ARM CPU kernels (llama.rn `no_extra_bufts: false`).
  *
  * Repacked weights are copies in the app's own (anonymous) memory, not the mmap'd file: Android can't drop
- * and re-read them, only compress them into swap. On a Pixel 6a (6 GB) the repacked Qwen3-4B left ~300-700 MB
- * free with 1.9 GB of the app in swap; about one answer in six stalled at 0.1 tok/s while weights came back
- * from swap, and Android killed the app twice while it loaded (2.8 GB anonymous at the load peak). Kept as
- * the mapped file, the same phone had ~2.8 GB free, no stalls and no kills; decode was as fast (3.6-5.3 tok/s)
- * and prompt reading ~2x slower (2026-10-05).
+ * and re-read them, only compress them into swap. A model whose file doesn't fit the memory budget can't
+ * work repacked at all (an 11 GB mixture of experts on a 12 GB phone would need its whole file in RAM instead
+ * of streaming its experts), so it stays the mapped file.
  *
- * So: repack only when the whole file plus the buffers fits the budget with REPACK_HEADROOM_BYTES to spare.
+ * Only that case. A stricter rule (file + buffers + 0.75 GB) kept Qwen3-4B mapped on a Pixel 6a (6 GB): no
+ * stalls or load-time kills in long conversations, but prompt reading ~2x slower, so single questions took
+ * 23 s to the first word instead of 9 s (eval:device standard set, 2026-10-05). Repacked, that phone can run
+ * short of memory in long sessions (~1 answer in 6 stalled at 0.1 tok/s); switching to the mapped file under
+ * memory pressure would be the follow-up.
  */
-export const REPACK_HEADROOM_BYTES = 0.75 * GiB;
-
-export function shouldRepack(f: Pick<MemoryFit, "fileBytes" | "anonBytes" | "availableBytes">): boolean {
-  return f.fileBytes + f.anonBytes + REPACK_HEADROOM_BYTES <= f.availableBytes;
+export function shouldRepack(f: Pick<MemoryFit, "fileBytes" | "availableBytes">): boolean {
+  return f.fileBytes <= f.availableBytes;
 }
 
 /** Kept for the system and the app you came from: a quarter of the phone's RAM, at least 2.5 GB. */
