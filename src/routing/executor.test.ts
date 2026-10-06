@@ -126,6 +126,18 @@ describe("executeRoutingPlan", () => {
     expect(generateMock.mock.calls[0][0].messages.at(-1).content).toContain("about 220 words");
   });
 
+  it("sizes the answer with the speed of the model the router picked, not the base model's", async () => {
+    const p = plan({
+      steps: [{ id: "generate-0", type: "generate", modelId: "qwen-1.5b", required: true }],
+      selectedModelIds: ["qwen-1.5b"],
+    });
+    mockFirstTokenMs = null;
+    // Base model: 4 tok/s (-> ~220 words, above). The picked 1.5B: 2 tok/s, 11.5 s first word -> 180 tokens -> ~110 words.
+    const speedFor = (id: string) => (id === "qwen-1.5b" ? { tokPerSec: 2, ttftMs: 11_500 } : {});
+    await executeRoutingPlan(p, { query: "Compare them.", length: { maxTokens: 512, tokPerSec: 4, ttftMs: 11_500, speedFor } }, resolveModel);
+    expect(generateMock.mock.calls[0][0].messages.at(-1).content).toContain("about 110 words");
+  });
+
   it("Qwen (usesChatTemplate: true) receives a role-separated messages array instead of a prompt string", async () => {
     const p = plan({
       steps: [{ id: "generate-0", type: "generate", modelId: "qwen-1.5b", required: true }],

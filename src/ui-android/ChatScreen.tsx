@@ -578,7 +578,10 @@ export function ChatScreen({
       const personality = getPersonality(activePersonalityId);
       const systemPrompt = activePersonalityId === "custom" ? customPrompt : personality.systemPrompt;
       // A length this phone can write in time, so the answer ends instead of being cut (answerLength.ts).
-      const speed = currentSpeed(recent, baseModelId, Date.now(), baseModelId ? measuredSpeeds(recent).get(baseModelId) : undefined);
+      const typical = measuredSpeeds(recent);
+      // Per model: the router can answer with another model than the base one.
+      const speedFor = (id: string) => currentSpeed(recent, id, Date.now(), typical.get(id));
+      const speed = baseModelId ? speedFor(baseModelId) : {};
       const length = answerLength({ maxTokens, ...speed });
       const baseStyleReminder = activePersonalityId === "custom" ? undefined : personality.styleReminder;
       // The router sizes the answer itself once the sources are known (executor.ts, `length`); the fixed-model
@@ -680,7 +683,7 @@ export function ChatScreen({
         if (adaptiveRoutingEnabled) {
           try {
             const result = await runAdaptiveChat(
-              { query, systemPrompt, styleReminder: baseStyleReminder, history, length: { maxTokens, ...speed } },
+              { query, systemPrompt, styleReminder: baseStyleReminder, history, length: { maxTokens, ...speed, speedFor } },
               maxTokens,
               {
                 onToken,

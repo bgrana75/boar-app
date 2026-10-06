@@ -398,6 +398,9 @@ export class LlamaEngine {
     const context = this.context;
     this.context = null;
     this.prefixCached = false;
+    // Another model reads prompts at another speed (estimateFirstTokenMs).
+    this.prefixTokens = 0;
+    this.lastPrefill = null;
     this.modelInfo = null;
     this.loadedMeta = null;
     this.lastLoad = { fit: null, warning: null };

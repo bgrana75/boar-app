@@ -67,8 +67,10 @@ export interface PipelineInput {
   /**
    * Size the answer to the phone (answerLength.ts) once the sources are known: the time to the first word is
    * estimated from this prompt's own size. `ttftMs` is the fallback when there is no reading speed yet.
+   * `speedFor` gives the speed of the model the router picked (it can differ from the one `tokPerSec` was
+   * measured on); without it, `tokPerSec` and `ttftMs` are used.
    */
-  length?: { maxTokens: number; tokPerSec?: number; ttftMs?: number };
+  length?: { maxTokens: number; tokPerSec?: number; ttftMs?: number; speedFor?: (modelId: string) => { tokPerSec?: number; ttftMs?: number } };
 }
 
 export interface PipelineCallbacks {
@@ -285,7 +287,8 @@ export async function executeRoutingPlan(
             ? { messages: assembleChatMessages(input.query, citations, input.systemPrompt, input.history, input.styleReminder) }
             : { prompt: assemblePrompt(input.query, citations, input.systemPrompt, input.history, input.styleReminder) };
           const estimated = await llamaEngine.estimateFirstTokenMs(draft);
-          const len = answerLength({ maxTokens: input.length.maxTokens, tokPerSec: input.length.tokPerSec, ttftMs: estimated ?? input.length.ttftMs });
+          const speed = input.length.speedFor && step.modelId ? input.length.speedFor(step.modelId) : input.length;
+          const len = answerLength({ maxTokens: input.length.maxTokens, tokPerSec: speed.tokPerSec, ttftMs: estimated ?? speed.ttftMs });
           styleReminder = [input.styleReminder, lengthInstruction(len.words)].filter(Boolean).join("\n");
         }
 
