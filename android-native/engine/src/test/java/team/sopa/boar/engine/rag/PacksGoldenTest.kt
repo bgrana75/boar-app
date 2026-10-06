@@ -26,21 +26,8 @@ class PacksGoldenTest {
     private val g = Json.parseToJsonElement(File(dir, "format1.json").readText()).jsonObject
     private val JsonElement.str get() = if (this is JsonNull) null else jsonPrimitive.content
 
-    /** The exporter's stand-in embedding: hashed words (FNV-1a over code points), as a Float32Array. */
-    private fun hashVec(text: String): FloatArray {
-        val v = FloatArray(384)
-        for (m in Regex("[\\p{L}\\p{N}]+").findAll(text.lowercase())) {
-            var h = 2166136261L.toInt()
-            m.value.codePoints().forEach { cp -> h = (h xor cp) * 16777619 }
-            val u = h.toLong() and 0xffffffffL
-            v[(u % 384).toInt()] += 1f
-            v[((u ushr 9) % 384).toInt()] -= 0.5f
-        }
-        return v
-    }
-
-    private fun chunkLine(c: Chunk) = listOf(c.chunkId, c.docId, c.title, c.body, c.source, c.score, c.matchType.name.lowercase(), c.similarity, c.action).joinToString(" | ")
-    private fun chunkLine(o: JsonObject) = listOf(
+    fun chunkLine(c: Chunk) = listOf(c.chunkId, c.docId, c.title, c.body, c.source, c.score, c.matchType.name.lowercase(), c.similarity, c.action).joinToString(" | ")
+    fun chunkLine(o: JsonObject) = listOf(
         o["chunkId"]!!.str, o["docId"]!!.str, o["title"]!!.str, o["body"]!!.str, o["source"]?.str, o["score"]!!.jsonPrimitive.double, o["matchType"]!!.str,
         o["similarity"]?.jsonPrimitive?.doubleOrNull, o["action"]?.jsonPrimitive?.booleanOrNull ?: false,
     ).joinToString(" | ")
@@ -56,7 +43,7 @@ class PacksGoldenTest {
             for (c in g["format1"]!!.jsonArray.map { it.jsonObject }) {
                 val q = c["query"]!!.str!!
                 val limit = c["limit"]!!.jsonPrimitive.int
-                val r = Packs.searchFormat1(db, "local-fixture", q, hashVec(q), limit)
+                val r = Packs.searchFormat1(db, "local-fixture", q, GoldenEmbedding.hashVec(q), limit)
                 assertEquals("lexical $q", c["lexical"]!!.jsonArray.map { chunkLine(it.jsonObject) }, r.lexical.map(::chunkLine))
                 assertEquals("semantic $q", c["semantic"]!!.jsonArray.map { chunkLine(it.jsonObject) }, r.semantic.map(::chunkLine))
                 if (r.lexical.isNotEmpty() || r.semantic.isNotEmpty()) nonEmpty++

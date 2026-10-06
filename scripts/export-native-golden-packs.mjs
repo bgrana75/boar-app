@@ -16,9 +16,12 @@ import ts from "typescript";
 const STUBS = {
   "expo-file-system/legacy": `import { readdirSync, statSync } from "node:fs";
     export const documentDirectory = globalThis.__docs;
-    export const readDirectoryAsync = async (u) => readdirSync(u.replace("file://", ""));
+    export const readDirectoryAsync = async (u) => readdirSync(u.replace("file://", "")).sort();
     export const getInfoAsync = async (u) => { try { return { exists: true, size: statSync(u.replace("file://", "")).size }; } catch { return { exists: false }; } };`,
-  "expo-sqlite": `export const openDatabaseAsync = async (name, opts, dir) => globalThis.__openDb(dir + "/" + name);`,
+  "expo-sqlite": `export const openDatabaseAsync = async (name, opts, dir) => globalThis.__openDb(dir ? dir + "/" + name : globalThis.__kbPath);`,
+  // retrieve.ts: the embedder and the lexicon asset.
+  "./embed": `export const embeddingEngine = { embed: async (t) => globalThis.__embed(t) };`,
+  "./ptLexiconAsset": `export const ptLexicon = () => globalThis.__lexicon;`,
 };
 registerHooks({
   resolve(specifier, context, next) {
@@ -93,7 +96,8 @@ const queries = [
   ...evalSet.EVAL_SET.map((q) => q.query),
   "burn scald what to do", "Earthquake Plate tectonics", "How to treat a burn", "O que fazer com uma queimadura?",
   "Como tratar queimaduras?", "stop", "What is ERC20?", "BIP32 wallets", "Hotels in Tokyo near Tokyo Station",
-  "Victoria, British Columbia: where do tourists stay?", "Compare the French Revolution and the Industrial Revolution.",
+  "Victoria, British Columbia: where do tourists stay?", "Scald: what to do?", "Burn: what should I do?", "How to treat a Burn",
+  "Scald first aid", "What do I do for a Burn from boiling water?", "Queimadura: o que fazer?", "Compare the French Revolution and the Industrial Revolution.",
 ];
 
 const hitOut = (h) => ({ ...h, url: h.url ?? null, license: h.license ?? null });
@@ -134,12 +138,14 @@ for (const [name, file] of Object.entries(packs)) {
     helpers.resolve = await Promise.all(["black hole", "Black Hole", "holes black", "Quantum computing", "Post quantum", "nothing here at all"].map(async (t) => [t, (await pack.resolveTitle(t)) ?? null]));
   }
 }
-// Format-1 packs (scripts/build-knowledge-pack.mjs): FTS5 + int8 vectors. The vectors here are word hashes, so
-// cosine follows word overlap, enough to exercise the semantic floor and ordering.
+// Format-1 packs (scripts/build-knowledge-pack.mjs): FTS5 + int8 vectors. The stand-in embedding hashes content
+// words, and stored chunks embed their title only, so a question naming a title passes the 0.7 relevance gate.
 const DIMS = 384;
+const STOP = new Set("what when where which who whom why how is are was were be the a an of in on at to and or for from with does do did can could should would tell me about it its this that there qual quais o os a as que é um uma de do da dos das em no na por para com como".split(" "));
 function hashVec(text) {
   const v = new Float32Array(DIMS);
   for (const w of text.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []) {
+    if (STOP.has(w)) continue;
     let h = 2166136261;
     for (const ch of w) h = Math.imul(h ^ ch.codePointAt(0), 16777619) >>> 0;
     v[h % DIMS] += 1;
@@ -166,7 +172,7 @@ rmSync(f1, { force: true });
     for (const line of readFileSync(join(root, f), "utf8").split("\n").filter(Boolean)) {
       const a = JSON.parse(line);
       for (const para of a.text.split(/\n\n+/).filter((p) => !p.startsWith("#") && p.length > 40)) {
-        ins.run(++id, a.title, para, `Wikipedia — https://en.wikipedia.org/wiki/${a.title}`, 1, int8(hashVec(`${a.title} ${para}`)));
+        ins.run(++id, a.title, para, `Wikipedia — https://en.wikipedia.org/wiki/${a.title}`, 1, int8(hashVec(a.title)));
       }
     }
   }
@@ -180,6 +186,8 @@ rmSync(f1, { force: true });
   db.close();
 }
 writeFileSync(join(docs, "corpus/fixture.sqlite"), readFileSync(f1));
+// retrieve() searches every pack in corpus/ (in name order) besides the knowledge base.
+for (const name of ["mini", "sources", "dest"]) writeFileSync(join(docs, `corpus/${name}.sqlite`), readFileSync(packs[name]));
 globalThis.__docs = `file://${docs}/`;
 globalThis.__openDb = (path) => nodeSqliteDatabase(path);
 const packsTs = await import(join(root, "src/rag/packs.ts"));
@@ -191,6 +199,32 @@ for (const q of queries) {
     format1.push({ query: q, limit, ...r });
   }
 }
+
+// Full retrieval (src/rag/retrieve.ts) over a knowledge base seeded with the bundled corpus (hash vectors as
+// embeddings) and the packs above, on every question; Portuguese questions take the lexicon path.
+const kb = join(out, "kb.sqlite");
+rmSync(kb, { force: true });
+globalThis.__kbPath = kb;
+globalThis.__embed = async (t) => hashVec(t);
+globalThis.__lexicon = JSON.parse(readFileSync(join(root, "assets/lexicon/pt-en.json"), "utf8"));
+const dbTs = await import(join(root, "src/rag/db.ts"));
+const corpus = JSON.parse(readFileSync(join(root, "assets/corpus/corpus.json"), "utf8"));
+for (const [i, d] of corpus.entries()) {
+  await dbTs.insertChunk({ chunkId: `seed:${i}`, docId: `seed:${d.title}`, title: d.title, body: d.body, source: d.source }, hashVec(d.title));
+}
+const retrieveTs = await import(join(root, "src/rag/retrieve.ts"));
+const ptQueries = [
+  "O que fazer em caso de terremoto?", "Como tratar uma queimadura?", "O que é um buraco negro?", "Qual é a diferença entre pandemia e epidemia?",
+  "O que é o ERC-20?", "Por que acontecem terremotos?", "Quem foi Charles Darwin?", "Como funciona a fotossíntese?",
+];
+const titleQueries = corpus.filter((_, i) => i % 15 === 0).flatMap((d, i) => [`What is ${d.title}?`, ...(i % 4 === 0 ? [`Why did ${d.title} happen?`] : [])]);
+const retrieval = [];
+for (const q of [...queries, ...ptQueries, ...titleQueries]) {
+  for (const topK of [6]) retrieval.push({ query: q, topK, chunks: await retrieveTs.retrieve(q, topK, { queryVec: hashVec(q) }) });
+}
+const raw = (await dbTs.getDb()).raw;
+if (raw) { raw.exec("PRAGMA wal_checkpoint(TRUNCATE)"); raw.exec("PRAGMA journal_mode = DELETE"); raw.exec("VACUUM"); }
+writeFileSync(join(out, "retrieve.json"), JSON.stringify({ retrieval }, null, 1) + "\n");
 rmSync(docs, { recursive: true, force: true });
 const chunkCases = cases.flatMap((c) => c.hits).slice(0, 120).map((h, i) => ({ packId: i % 2 ? "crypto" : "wiki", hit: h, chunk: packsTs.packHitToChunk(i % 2 ? "crypto" : "wiki", { ...h, url: h.url ?? undefined, license: h.license ?? undefined }) }));
 const urls = [

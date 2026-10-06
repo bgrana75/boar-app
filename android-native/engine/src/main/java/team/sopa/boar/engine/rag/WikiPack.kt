@@ -669,7 +669,7 @@ class WikiPack private constructor(
             PackSource.ENWIKI, PackSource.ENWIKIVOYAGE, PackSource.ENWIKIBOOKS, PackSource.APPROPEDIA, PackSource.USGOV,
             PackSource.EIPS, PackSource.ETHSPECS, PackSource.ETHEREUMORG, PackSource.BIPS,
         )
-        private val DISAMBIG = Regex("(?i)\\(disambiguation\\)$")
+        private val DISAMBIG = Regex("(?i)\\(disambiguation\\)\\z")
         private val UPPER_START = Regex("^\\p{Lu}")
         private val REGION_BEFORE = Regex("\\p{Lu}[\\p{L}\\p{N}.'’-]*,${Js.WS}*\\z")
         private val REGION_AFTER = Regex("^,${Js.WS}*(\\p{Lu}[\\p{L}.'’-]*(?:${Js.WS}+\\p{Lu}[\\p{L}.'’-]*){0,3})")

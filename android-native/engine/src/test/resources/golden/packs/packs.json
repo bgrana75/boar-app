@@ -4064,6 +4064,177 @@
   },
   {
    "pack": "mini",
+   "query": "Scald: what to do?",
+   "stems": [],
+   "named": [],
+   "terms": [],
+   "hits": []
+  },
+  {
+   "pack": "mini",
+   "query": "Burn: what should I do?",
+   "stems": [],
+   "named": [],
+   "terms": [],
+   "hits": []
+  },
+  {
+   "pack": "mini",
+   "query": "How to treat a Burn",
+   "stems": [
+    {
+     "stem": "treat",
+     "idf": 6.251903883165888
+    }
+   ],
+   "named": [],
+   "terms": [
+    "treat"
+   ],
+   "hits": [
+    {
+     "articleId": 6,
+     "chunkId": 270,
+     "title": "Falcon (signature scheme)",
+     "section": "Details",
+     "text": "that is treated as a submatrix as described before. The coefficients of \n  \n    \n      \n        h\n      \n    \n    {\\displaystyle h}\n  \n are reduced modulo \n  \n    \n      \n        q\n        =\n        12289\n      \n    \n    {\\displaystyle q=12289}\n  \n.",
+     "start": 2161,
+     "end": 2412,
+     "score": 6.72,
+     "via": "bm25",
+     "source": "enwiki",
+     "views": 0,
+     "lead": false,
+     "action": false,
+     "url": null,
+     "license": null
+    },
+    {
+     "articleId": 10,
+     "chunkId": 647,
+     "title": "RSA cryptosystem",
+     "section": "Padding > Padding schemes",
+     "text": "Use of PSS no longer seems to be encumbered by patents. Note that using different RSA key pairs for encryption and signing is potentially more secure.",
+     "start": 36760,
+     "end": 36910,
+     "score": 6.46,
+     "via": "bm25",
+     "source": "enwiki",
+     "views": 0,
+     "lead": false,
+     "action": true,
+     "url": null,
+     "license": null
+    },
+    {
+     "articleId": 6,
+     "chunkId": 265,
+     "title": "Falcon (signature scheme)",
+     "section": "Details",
+     "text": "n\n      \n    \n    {\\displaystyle n}\n  \n that is either 512 for Falcon-512 or 1024 for Falcon-1024. Polynomials are sometimes treated as \n  \n    \n      \n        n\n        ×\n        n\n      \n    \n    {\\displaystyle n\\times n}\n  \n square matricies whose \n  \n    \n      \n        i",
+     "start": 755,
+     "end": 1052,
+     "score": 6.15,
+     "via": "bm25",
+     "source": "enwiki",
+     "views": 0,
+     "lead": false,
+     "action": false,
+     "url": null,
+     "license": null
+    },
+    {
+     "articleId": 18,
+     "chunkId": 1867,
+     "title": "Grover's algorithm",
+     "section": "Algorithm",
+     "text": "Apply the Grover diffusion operator \n  \n    \n      \n        \n          U\n          \n            s\n          \n        \n        =\n        2\n        \n          |\n          s\n          ⟩\n        \n        \n        \n        \n          ⟨\n          s\n          |\n        \n        −\n        I\n      \n    \n    {\\displaystyle U_{s}=2\\left|s\\right\\rangle \\!\\!\\left\\langle s\\right|-I}",
+     "start": 24812,
+     "end": 25186,
+     "score": 5.94,
+     "via": "bm25",
+     "source": "enwiki",
+     "views": 0,
+     "lead": false,
+     "action": true,
+     "url": null,
+     "license": null
+    }
+   ]
+  },
+  {
+   "pack": "mini",
+   "query": "Scald first aid",
+   "stems": [
+    {
+     "stem": "aid",
+     "idf": 6.945051063725834
+    },
+    {
+     "stem": "first",
+     "idf": 3.0532307656152073
+    }
+   ],
+   "named": [],
+   "terms": [
+    "aid",
+    "first"
+   ],
+   "hits": [
+    {
+     "articleId": 13,
+     "chunkId": 919,
+     "title": "Quantum computing",
+     "section": "",
+     "text": "Quantum computers have the potential to complete some calculations exponentially faster than classical computers. For example, a large-scale quantum computer could break widely used encryption schemes and aid physicists in performing physical simulations.",
+     "start": 212,
+     "end": 468,
+     "score": 6.59,
+     "via": "bm25",
+     "source": "enwiki",
+     "views": 0,
+     "lead": false,
+     "action": false,
+     "url": null,
+     "license": null
+    },
+    {
+     "articleId": 11,
+     "chunkId": 748,
+     "title": "Public-key cryptography",
+     "section": "Weaknesses > Algorithms",
+     "text": "Some special and specific algorithms have been developed to aid in attacking some public key encryption algorithms; both RSA and ElGamal encryption have known attacks that are much faster than the brute-force approach. None of these are sufficiently improved to be actually practical, however.",
+     "start": 7801,
+     "end": 8095,
+     "score": 5.66,
+     "via": "bm25",
+     "source": "enwiki",
+     "views": 0,
+     "lead": false,
+     "action": false,
+     "url": null,
+     "license": null
+    }
+   ]
+  },
+  {
+   "pack": "mini",
+   "query": "What do I do for a Burn from boiling water?",
+   "stems": [],
+   "named": [],
+   "terms": [],
+   "hits": []
+  },
+  {
+   "pack": "mini",
+   "query": "Queimadura: o que fazer?",
+   "stems": [],
+   "named": [],
+   "terms": [],
+   "hits": []
+  },
+  {
+   "pack": "mini",
    "query": "Compare the French Revolution and the Industrial Revolution.",
    "stems": [
     {
@@ -6235,6 +6406,446 @@
   },
   {
    "pack": "sources",
+   "query": "Scald: what to do?",
+   "stems": [
+    {
+     "stem": "scald",
+     "idf": 0.8649974374866045
+    }
+   ],
+   "named": [
+    {
+     "id": 9,
+     "share": 1
+    }
+   ],
+   "terms": [
+    "scald"
+   ],
+   "hits": [
+    {
+     "articleId": 9,
+     "chunkId": 9,
+     "title": "Scald",
+     "section": "",
+     "text": "A scald is a burn from hot liquid such as boiling water. Scald filler sentence number 0 about unrelated matters. Scald filler sentence number 1 about unrelated matters. Scald filler sentence number 2 about unrelated matters. Scald filler sentence number 3 about unrelated matters. Scald filler sentence number 4 about unrelated matters. Scald filler sentence number 5 about unrelated matters.",
+     "start": 9,
+     "end": 401,
+     "score": 1,
+     "via": "title",
+     "source": "enwiki",
+     "views": 0,
+     "lead": true,
+     "action": false,
+     "url": null,
+     "license": null
+    },
+    {
+     "articleId": 9,
+     "chunkId": 12,
+     "title": "Scald",
+     "section": "Treatment",
+     "text": "Cool the scald under cool running water for twenty minutes, remove tight clothing, and cover it loosely. Cooling filler sentence number 0 about unrelated matters. Cooling filler sentence number 1 about unrelated matters. Cooling filler sentence number 2 about unrelated matters.",
+     "start": 951,
+     "end": 1230,
+     "score": 1,
+     "via": "title",
+     "source": "enwiki",
+     "views": 0,
+     "lead": false,
+     "action": true,
+     "url": null,
+     "license": null
+    },
+    {
+     "articleId": 9,
+     "chunkId": 10,
+     "title": "Scald",
+     "section": "Prevention",
+     "text": "To prevent a scald from boiling water, keep children away from boiling water and turn pot handles inward. Boiling water spills cause most child scalds. Prevention filler sentence number 0 about unrelated matters. Prevention filler sentence number 1 about unrelated matters.",
+     "start": 418,
+     "end": 692,
+     "score": 0.17,
+     "via": "title",
+     "source": "enwiki",
+     "views": 0,
+     "lead": false,
+     "action": false,
+     "url": null,
+     "license": null
+    },
+    {
+     "articleId": 11,
+     "chunkId": 19,
+     "title": "Burns and scalds (Ready.gov)",
+     "section": "Treat a burn",
+     "text": "Cool the burn under cool running water. Remove rings and tight clothing. Cover it with a clean cloth. Do not use ice. Care filler sentence number 0 about unrelated matters. Care filler sentence number 1 about unrelated matters. Care filler sentence number 2 about unrelated matters. Care filler sentence number 3 about unrelated matters. Care filler sentence number 4 about unrelated matters. Care filler sentence number 5 about unrelated matters.",
+     "start": 409,
+     "end": 856,
+     "score": 0.42,
+     "via": "bm25",
+     "source": "usgov",
+     "views": 0,
+     "lead": false,
+     "action": true,
+     "url": "https://www.ready.gov/burns",
+     "license": "Public domain"
+    }
+   ]
+  },
+  {
+   "pack": "sources",
+   "query": "Burn: what should I do?",
+   "stems": [
+    {
+     "stem": "burn",
+     "idf": 1.55814461804655
+    }
+   ],
+   "named": [
+    {
+     "id": 7,
+     "share": 1
+    }
+   ],
+   "terms": [
+    "burn"
+   ],
+   "hits": [
+    {
+     "articleId": 7,
+     "chunkId": 7,
+     "title": "Burn",
+     "section": "",
+     "text": "A burn is an injury to skin caused by heat. Cool the burn with running water for twenty minutes. Burn filler sentence number 0 about unrelated matters. Burn filler sentence number 1 about unrelated matters. Burn filler sentence number 2 about unrelated matters. Burn filler sentence number 3 about unrelated matters. Burn filler sentence number 4 about unrelated matters. Burn filler sentence number 5 about unrelated matters.",
+     "start": 8,
+     "end": 434,
+     "score": 1,
+     "via": "title",
+     "source": "enwiki",
+     "views": 0,
+     "lead": true,
+     "action": false,
+     "url": null,
+     "license": null
+    },
+    {
+     "articleId": 11,
+     "chunkId": 19,
+     "title": "Burns and scalds (Ready.gov)",
+     "section": "Treat a burn",
+     "text": "Cool the burn under cool running water. Remove rings and tight clothing. Cover it with a clean cloth. Do not use ice. Care filler sentence number 0 about unrelated matters. Care filler sentence number 1 about unrelated matters. Care filler sentence number 2 about unrelated matters. Care filler sentence number 3 about unrelated matters. Care filler sentence number 4 about unrelated matters. Care filler sentence number 5 about unrelated matters.",
+     "start": 409,
+     "end": 856,
+     "score": 1.98,
+     "via": "bm25",
+     "source": "usgov",
+     "views": 0,
+     "lead": false,
+     "action": true,
+     "url": "https://www.ready.gov/burns",
+     "license": "Public domain"
+    },
+    {
+     "articleId": 11,
+     "chunkId": 18,
+     "title": "Burns and scalds (Ready.gov)",
+     "section": "",
+     "text": "Guidance for families. Guide filler sentence number 0 about unrelated matters. Guide filler sentence number 1 about unrelated matters. Guide filler sentence number 2 about unrelated matters. Guide filler sentence number 3 about unrelated matters. Guide filler sentence number 4 about unrelated matters. Guide filler sentence number 5 about unrelated matters.",
+     "start": 32,
+     "end": 390,
+     "score": 1.72,
+     "via": "bm25",
+     "source": "usgov",
+     "views": 0,
+     "lead": false,
+     "action": false,
+     "url": "https://www.ready.gov/burns",
+     "license": "Public domain"
+    },
+    {
+     "articleId": 9,
+     "chunkId": 12,
+     "title": "Scald",
+     "section": "Treatment",
+     "text": "Cool the scald under cool running water for twenty minutes, remove tight clothing, and cover it loosely. Cooling filler sentence number 0 about unrelated matters. Cooling filler sentence number 1 about unrelated matters. Cooling filler sentence number 2 about unrelated matters.",
+     "start": 951,
+     "end": 1230,
+     "score": 1.22,
+     "via": "bm25",
+     "source": "enwiki",
+     "views": 0,
+     "lead": false,
+     "action": true,
+     "url": null,
+     "license": null
+    }
+   ]
+  },
+  {
+   "pack": "sources",
+   "query": "How to treat a Burn",
+   "stems": [
+    {
+     "stem": "burn",
+     "idf": 1.55814461804655
+    },
+    {
+     "stem": "treat",
+     "idf": 2.9444389791664403
+    }
+   ],
+   "named": [
+    {
+     "id": 7,
+     "share": 1
+    }
+   ],
+   "terms": [
+    "treat",
+    "burn"
+   ],
+   "hits": [
+    {
+     "articleId": 7,
+     "chunkId": 7,
+     "title": "Burn",
+     "section": "",
+     "text": "A burn is an injury to skin caused by heat. Cool the burn with running water for twenty minutes. Burn filler sentence number 0 about unrelated matters. Burn filler sentence number 1 about unrelated matters. Burn filler sentence number 2 about unrelated matters. Burn filler sentence number 3 about unrelated matters. Burn filler sentence number 4 about unrelated matters. Burn filler sentence number 5 about unrelated matters.",
+     "start": 8,
+     "end": 434,
+     "score": 1,
+     "via": "title",
+     "source": "enwiki",
+     "views": 0,
+     "lead": true,
+     "action": false,
+     "url": null,
+     "license": null
+    }
+   ]
+  },
+  {
+   "pack": "sources",
+   "query": "Scald first aid",
+   "stems": [
+    {
+     "stem": "scald",
+     "idf": 0.8649974374866045
+    }
+   ],
+   "named": [
+    {
+     "id": 9,
+     "share": 1
+    }
+   ],
+   "terms": [
+    "scald"
+   ],
+   "hits": [
+    {
+     "articleId": 9,
+     "chunkId": 9,
+     "title": "Scald",
+     "section": "",
+     "text": "A scald is a burn from hot liquid such as boiling water. Scald filler sentence number 0 about unrelated matters. Scald filler sentence number 1 about unrelated matters. Scald filler sentence number 2 about unrelated matters. Scald filler sentence number 3 about unrelated matters. Scald filler sentence number 4 about unrelated matters. Scald filler sentence number 5 about unrelated matters.",
+     "start": 9,
+     "end": 401,
+     "score": 1,
+     "via": "title",
+     "source": "enwiki",
+     "views": 0,
+     "lead": true,
+     "action": false,
+     "url": null,
+     "license": null
+    },
+    {
+     "articleId": 9,
+     "chunkId": 12,
+     "title": "Scald",
+     "section": "Treatment",
+     "text": "Cool the scald under cool running water for twenty minutes, remove tight clothing, and cover it loosely. Cooling filler sentence number 0 about unrelated matters. Cooling filler sentence number 1 about unrelated matters. Cooling filler sentence number 2 about unrelated matters.",
+     "start": 951,
+     "end": 1230,
+     "score": 1,
+     "via": "title",
+     "source": "enwiki",
+     "views": 0,
+     "lead": false,
+     "action": true,
+     "url": null,
+     "license": null
+    },
+    {
+     "articleId": 9,
+     "chunkId": 10,
+     "title": "Scald",
+     "section": "Prevention",
+     "text": "To prevent a scald from boiling water, keep children away from boiling water and turn pot handles inward. Boiling water spills cause most child scalds. Prevention filler sentence number 0 about unrelated matters. Prevention filler sentence number 1 about unrelated matters.",
+     "start": 418,
+     "end": 692,
+     "score": 0.17,
+     "via": "title",
+     "source": "enwiki",
+     "views": 0,
+     "lead": false,
+     "action": false,
+     "url": null,
+     "license": null
+    },
+    {
+     "articleId": 11,
+     "chunkId": 19,
+     "title": "Burns and scalds (Ready.gov)",
+     "section": "Treat a burn",
+     "text": "Cool the burn under cool running water. Remove rings and tight clothing. Cover it with a clean cloth. Do not use ice. Care filler sentence number 0 about unrelated matters. Care filler sentence number 1 about unrelated matters. Care filler sentence number 2 about unrelated matters. Care filler sentence number 3 about unrelated matters. Care filler sentence number 4 about unrelated matters. Care filler sentence number 5 about unrelated matters.",
+     "start": 409,
+     "end": 856,
+     "score": 0.42,
+     "via": "bm25",
+     "source": "usgov",
+     "views": 0,
+     "lead": false,
+     "action": true,
+     "url": "https://www.ready.gov/burns",
+     "license": "Public domain"
+    }
+   ]
+  },
+  {
+   "pack": "sources",
+   "query": "What do I do for a Burn from boiling water?",
+   "stems": [
+    {
+     "stem": "boil",
+     "idf": 1.8458266904983307
+    },
+    {
+     "stem": "burn",
+     "idf": 1.55814461804655
+    },
+    {
+     "stem": "water",
+     "idf": 1.1526795099383853
+    }
+   ],
+   "named": [
+    {
+     "id": 7,
+     "share": 0.34194953269761325
+    }
+   ],
+   "terms": [
+    "boil",
+    "burn",
+    "water"
+   ],
+   "hits": [
+    {
+     "articleId": 9,
+     "chunkId": 12,
+     "title": "Scald",
+     "section": "Treatment",
+     "text": "Cool the scald under cool running water for twenty minutes, remove tight clothing, and cover it loosely. Cooling filler sentence number 0 about unrelated matters. Cooling filler sentence number 1 about unrelated matters. Cooling filler sentence number 2 about unrelated matters.",
+     "start": 951,
+     "end": 1230,
+     "score": 3.8,
+     "via": "bm25",
+     "source": "enwiki",
+     "views": 0,
+     "lead": false,
+     "action": true,
+     "url": null,
+     "license": null
+    },
+    {
+     "articleId": 9,
+     "chunkId": 9,
+     "title": "Scald",
+     "section": "",
+     "text": "A scald is a burn from hot liquid such as boiling water. Scald filler sentence number 0 about unrelated matters. Scald filler sentence number 1 about unrelated matters. Scald filler sentence number 2 about unrelated matters. Scald filler sentence number 3 about unrelated matters. Scald filler sentence number 4 about unrelated matters. Scald filler sentence number 5 about unrelated matters.",
+     "start": 9,
+     "end": 401,
+     "score": 3.47,
+     "via": "bm25",
+     "source": "enwiki",
+     "views": 0,
+     "lead": false,
+     "action": false,
+     "url": null,
+     "license": null
+    },
+    {
+     "articleId": 7,
+     "chunkId": 7,
+     "title": "Burn",
+     "section": "",
+     "text": "A burn is an injury to skin caused by heat. Cool the burn with running water for twenty minutes. Burn filler sentence number 0 about unrelated matters. Burn filler sentence number 1 about unrelated matters. Burn filler sentence number 2 about unrelated matters. Burn filler sentence number 3 about unrelated matters. Burn filler sentence number 4 about unrelated matters. Burn filler sentence number 5 about unrelated matters.",
+     "start": 8,
+     "end": 434,
+     "score": 3.09,
+     "via": "bm25",
+     "source": "enwiki",
+     "views": 0,
+     "lead": false,
+     "action": false,
+     "url": null,
+     "license": null
+    },
+    {
+     "articleId": 11,
+     "chunkId": 19,
+     "title": "Burns and scalds (Ready.gov)",
+     "section": "Treat a burn",
+     "text": "Cool the burn under cool running water. Remove rings and tight clothing. Cover it with a clean cloth. Do not use ice. Care filler sentence number 0 about unrelated matters. Care filler sentence number 1 about unrelated matters. Care filler sentence number 2 about unrelated matters. Care filler sentence number 3 about unrelated matters. Care filler sentence number 4 about unrelated matters. Care filler sentence number 5 about unrelated matters.",
+     "start": 409,
+     "end": 856,
+     "score": 2.63,
+     "via": "bm25",
+     "source": "usgov",
+     "views": 0,
+     "lead": false,
+     "action": true,
+     "url": "https://www.ready.gov/burns",
+     "license": "Public domain"
+    }
+   ]
+  },
+  {
+   "pack": "sources",
+   "query": "Queimadura: o que fazer?",
+   "stems": [],
+   "named": [
+    {
+     "id": 7,
+     "share": 1
+    }
+   ],
+   "terms": [],
+   "hits": [
+    {
+     "articleId": 7,
+     "chunkId": 7,
+     "title": "Burn",
+     "section": "",
+     "text": "A burn is an injury to skin caused by heat. Cool the burn with running water for twenty minutes. Burn filler sentence number 0 about unrelated matters. Burn filler sentence number 1 about unrelated matters. Burn filler sentence number 2 about unrelated matters. Burn filler sentence number 3 about unrelated matters. Burn filler sentence number 4 about unrelated matters. Burn filler sentence number 5 about unrelated matters.",
+     "start": 8,
+     "end": 434,
+     "score": 1,
+     "via": "title",
+     "source": "enwiki",
+     "views": 0,
+     "lead": true,
+     "action": false,
+     "url": null,
+     "license": null
+    }
+   ]
+  },
+  {
+   "pack": "sources",
    "query": "Compare the French Revolution and the Industrial Revolution.",
    "stems": [],
    "named": [],
@@ -8237,6 +8848,172 @@
    "named": [],
    "terms": [],
    "hits": []
+  },
+  {
+   "pack": "dest",
+   "query": "Scald: what to do?",
+   "stems": [],
+   "named": [],
+   "terms": [],
+   "hits": []
+  },
+  {
+   "pack": "dest",
+   "query": "Burn: what should I do?",
+   "stems": [
+    {
+     "stem": "burn",
+     "idf": 3.258096538021482
+    }
+   ],
+   "named": [
+    {
+     "id": 11,
+     "share": 1
+    }
+   ],
+   "terms": [
+    "burn"
+   ],
+   "hits": [
+    {
+     "articleId": 11,
+     "chunkId": 23,
+     "title": "Burn",
+     "section": "",
+     "text": "A burn is an injury to skin caused by heat. Cool the burn with running water for twenty minutes. Burn filler sentence number 0 about unrelated matters. Burn filler sentence number 1 about unrelated matters. Burn filler sentence number 2 about unrelated matters. Burn filler sentence number 3 about unrelated matters. Burn filler sentence number 4 about unrelated matters. Burn filler sentence number 5 about unrelated matters.",
+     "start": 8,
+     "end": 434,
+     "score": 1,
+     "via": "title",
+     "source": "enwiki",
+     "views": 0,
+     "lead": true,
+     "action": false,
+     "url": null,
+     "license": null
+    }
+   ]
+  },
+  {
+   "pack": "dest",
+   "query": "How to treat a Burn",
+   "stems": [
+    {
+     "stem": "burn",
+     "idf": 3.258096538021482
+    }
+   ],
+   "named": [
+    {
+     "id": 11,
+     "share": 1
+    }
+   ],
+   "terms": [
+    "burn"
+   ],
+   "hits": [
+    {
+     "articleId": 11,
+     "chunkId": 23,
+     "title": "Burn",
+     "section": "",
+     "text": "A burn is an injury to skin caused by heat. Cool the burn with running water for twenty minutes. Burn filler sentence number 0 about unrelated matters. Burn filler sentence number 1 about unrelated matters. Burn filler sentence number 2 about unrelated matters. Burn filler sentence number 3 about unrelated matters. Burn filler sentence number 4 about unrelated matters. Burn filler sentence number 5 about unrelated matters.",
+     "start": 8,
+     "end": 434,
+     "score": 1,
+     "via": "title",
+     "source": "enwiki",
+     "views": 0,
+     "lead": true,
+     "action": false,
+     "url": null,
+     "license": null
+    }
+   ]
+  },
+  {
+   "pack": "dest",
+   "query": "Scald first aid",
+   "stems": [],
+   "named": [],
+   "terms": [],
+   "hits": []
+  },
+  {
+   "pack": "dest",
+   "query": "What do I do for a Burn from boiling water?",
+   "stems": [
+    {
+     "stem": "burn",
+     "idf": 3.258096538021482
+    },
+    {
+     "stem": "water",
+     "idf": 2.5649493574615367
+    }
+   ],
+   "named": [
+    {
+     "id": 11,
+     "share": 0.5595175783431163
+    }
+   ],
+   "terms": [
+    "burn",
+    "water"
+   ],
+   "hits": [
+    {
+     "articleId": 11,
+     "chunkId": 23,
+     "title": "Burn",
+     "section": "",
+     "text": "A burn is an injury to skin caused by heat. Cool the burn with running water for twenty minutes. Burn filler sentence number 0 about unrelated matters. Burn filler sentence number 1 about unrelated matters. Burn filler sentence number 2 about unrelated matters. Burn filler sentence number 3 about unrelated matters. Burn filler sentence number 4 about unrelated matters. Burn filler sentence number 5 about unrelated matters.",
+     "start": 8,
+     "end": 434,
+     "score": 1,
+     "via": "title",
+     "source": "enwiki",
+     "views": 0,
+     "lead": true,
+     "action": false,
+     "url": null,
+     "license": null
+    }
+   ]
+  },
+  {
+   "pack": "dest",
+   "query": "Queimadura: o que fazer?",
+   "stems": [],
+   "named": [
+    {
+     "id": 11,
+     "share": 1
+    }
+   ],
+   "terms": [],
+   "hits": [
+    {
+     "articleId": 11,
+     "chunkId": 23,
+     "title": "Burn",
+     "section": "",
+     "text": "A burn is an injury to skin caused by heat. Cool the burn with running water for twenty minutes. Burn filler sentence number 0 about unrelated matters. Burn filler sentence number 1 about unrelated matters. Burn filler sentence number 2 about unrelated matters. Burn filler sentence number 3 about unrelated matters. Burn filler sentence number 4 about unrelated matters. Burn filler sentence number 5 about unrelated matters.",
+     "start": 8,
+     "end": 434,
+     "score": 1,
+     "via": "title",
+     "source": "enwiki",
+     "views": 0,
+     "lead": true,
+     "action": false,
+     "url": null,
+     "license": null
+    }
+   ]
   },
   {
    "pack": "dest",
@@ -10372,6 +11149,79 @@
   },
   {
    "pack": "voyage",
+   "query": "Scald: what to do?",
+   "stems": [],
+   "named": [],
+   "terms": [],
+   "hits": []
+  },
+  {
+   "pack": "voyage",
+   "query": "Burn: what should I do?",
+   "stems": [],
+   "named": [],
+   "terms": [],
+   "hits": []
+  },
+  {
+   "pack": "voyage",
+   "query": "How to treat a Burn",
+   "stems": [],
+   "named": [],
+   "terms": [],
+   "hits": []
+  },
+  {
+   "pack": "voyage",
+   "query": "Scald first aid",
+   "stems": [],
+   "named": [],
+   "terms": [],
+   "hits": []
+  },
+  {
+   "pack": "voyage",
+   "query": "What do I do for a Burn from boiling water?",
+   "stems": [
+    {
+     "stem": "water",
+     "idf": 3.58351893845611
+    }
+   ],
+   "named": [],
+   "terms": [
+    "water"
+   ],
+   "hits": [
+    {
+     "articleId": 16,
+     "chunkId": 35,
+     "title": "Georgia (country)",
+     "section": "Stay healthy",
+     "text": "Tap water is safe to drink in most cities. Water filler sentence number 0 about unrelated matters. Water filler sentence number 1 about unrelated matters. Water filler sentence number 2 about unrelated matters. Water filler sentence number 3 about unrelated matters. Water filler sentence number 4 about unrelated matters. Water filler sentence number 5 about unrelated matters.",
+     "start": 483,
+     "end": 861,
+     "score": 5.87,
+     "via": "bm25",
+     "source": "enwikivoyage",
+     "views": 0,
+     "lead": false,
+     "action": false,
+     "url": null,
+     "license": null
+    }
+   ]
+  },
+  {
+   "pack": "voyage",
+   "query": "Queimadura: o que fazer?",
+   "stems": [],
+   "named": [],
+   "terms": [],
+   "hits": []
+  },
+  {
+   "pack": "voyage",
    "query": "Compare the French Revolution and the Industrial Revolution.",
    "stems": [],
    "named": [],
@@ -11478,6 +12328,45 @@
     "Columbia",
     "tourists",
     "stay"
+   ],
+   "Scald: what to do?": [
+    "Scald"
+   ],
+   "Burn: what should I do?": [
+    "Burn"
+   ],
+   "How to treat a Burn": [
+    "treat a Burn",
+    "treat",
+    "Burn"
+   ],
+   "Scald first aid": [
+    "Scald first aid",
+    "Scald first",
+    "first aid",
+    "Scald",
+    "first",
+    "aid"
+   ],
+   "What do I do for a Burn from boiling water?": [
+    "Burn from boiling water",
+    "Burn from boiling",
+    "boiling water",
+    "Burn",
+    "boiling",
+    "water"
+   ],
+   "Queimadura: o que fazer?": [
+    "Queimadura o que fazer",
+    "Queimadura o que",
+    "o que fazer",
+    "Queimadura o",
+    "o que",
+    "que fazer",
+    "Queimadura",
+    "o",
+    "que",
+    "fazer"
    ]
   },
   "isTravel": {
@@ -11555,7 +12444,13 @@
    "stop": false,
    "BIP32 wallets": false,
    "Hotels in Tokyo near Tokyo Station": true,
-   "Victoria, British Columbia: where do tourists stay?": true
+   "Victoria, British Columbia: where do tourists stay?": true,
+   "Scald: what to do?": false,
+   "Burn: what should I do?": false,
+   "How to treat a Burn": false,
+   "Scald first aid": false,
+   "What do I do for a Burn from boiling water?": false,
+   "Queimadura: o que fazer?": false
   },
   "instructionShare": {
    "A black hole is a region of spacetime where gravity is so strong that nothing, not even light, can escape. The boundary is called the event horizon.": 0,
@@ -11665,6 +12560,8 @@
    "There are a handful of implementations using various other programming languages from third-party developers, including JavaScript and Java.\nVarious (free) optimized hardware implementations exist, including one that is resistant to side-channel attacks.": 0,
    "Post-quantum cryptography (PQC), sometimes referred to as quantum-proof, quantum-safe, or quantum-resistant, is the development of cryptographic algorithms (usually public-key algorithms) that are currently thought, but not proven, to be secure against a cryptanalytic attack by a quantum computer.": 0,
    "Such a failure in random number generation caused users of Android Bitcoin Wallet to lose their funds in August 2013. \nTo ensure that \n  \n    \n      \n        k\n      \n    \n    {\\displaystyle k}": 0,
+   "Quantum computers have the potential to complete some calculations exponentially faster than classical computers. For example, a large-scale quantum computer could break widely used encryption schemes and aid physicists in performing physical simulations.": 0,
+   "Some special and specific algorithms have been developed to aid in attacking some public key encryption algorithms; both RSA and ElGamal encryption have known attacks that are much faster than the brute-force approach. None of these are sufficiently improved to be actually practical, however.": 0,
    "Vaults hold ERC-20 tokens; users approve the vault, which calls transfer and transferFrom on the ERC-20 token. Vaults hold ERC-20 tokens; users approve the vault, which calls transfer and transferFrom on the ERC-20 token. Vaults hold ERC-20 tokens; users approve the vault, which calls transfer and transferFrom on the ERC-20 token. Vaults hold ERC-20 tokens; users approve the vault, which calls transfer and transferFrom on the ERC-20 token.": 0,
    "A burn is an injury to skin caused by heat. Cool the burn with running water for twenty minutes. Burn filler sentence number 0 about unrelated matters. Burn filler sentence number 1 about unrelated matters. Burn filler sentence number 2 about unrelated matters. Burn filler sentence number 3 about unrelated matters. Burn filler sentence number 4 about unrelated matters. Burn filler sentence number 5 about unrelated matters.": 0.125,
    "Como plantar uma horta de verduras e parar de comprar. Como regar uma horta de manhã. Horta filler sentence number 0 about unrelated matters. Horta filler sentence number 1 about unrelated matters. Horta filler sentence number 2 about unrelated matters. Horta filler sentence number 3 about unrelated matters. Horta filler sentence number 4 about unrelated matters. Horta filler sentence number 5 about unrelated matters.": 0,
@@ -11678,6 +12575,7 @@
    "Scalds from boiling water were described in ancient medicine. History filler sentence number 0 about unrelated matters. History filler sentence number 1 about unrelated matters. History filler sentence number 2 about unrelated matters. History filler sentence number 3 about unrelated matters. History filler sentence number 4 about unrelated matters. History filler sentence number 5 about unrelated matters.": 0,
    "Guidance for families. Guide filler sentence number 0 about unrelated matters. Guide filler sentence number 1 about unrelated matters. Guide filler sentence number 2 about unrelated matters. Guide filler sentence number 3 about unrelated matters. Guide filler sentence number 4 about unrelated matters. Guide filler sentence number 5 about unrelated matters.": 0,
    "Describes deriving a tree of keypairs from a single seed. Wallet filler sentence number 0 about unrelated matters. Wallet filler sentence number 1 about unrelated matters. Wallet filler sentence number 2 about unrelated matters. Wallet filler sentence number 3 about unrelated matters. Wallet filler sentence number 4 about unrelated matters. Wallet filler sentence number 5 about unrelated matters.": 0,
+   "A scald is a burn from hot liquid such as boiling water. Scald filler sentence number 0 about unrelated matters. Scald filler sentence number 1 about unrelated matters. Scald filler sentence number 2 about unrelated matters. Scald filler sentence number 3 about unrelated matters. Scald filler sentence number 4 about unrelated matters. Scald filler sentence number 5 about unrelated matters.": 0,
    "Charles Darwin was a naturalist who published On the Origin of Species in 1859. Naturalist filler sentence number 0 about unrelated matters. Naturalist filler sentence number 1 about unrelated matters. Naturalist filler sentence number 2 about unrelated matters. Naturalist filler sentence number 3 about unrelated matters. Naturalist filler sentence number 4 about unrelated matters. Naturalist filler sentence number 5 about unrelated matters.": 0,
    "Outlets accept flat and round plugs; the voltage is 127 V or 220 V depending on the state. Power filler sentence number 0 about unrelated matters. Power filler sentence number 1 about unrelated matters. Power filler sentence number 2 about unrelated matters. Power filler sentence number 3 about unrelated matters. Power filler sentence number 4 about unrelated matters. Power filler sentence number 5 about unrelated matters.": 0,
    "Como is a destination. Como filler sentence number 0 about unrelated matters. Como filler sentence number 1 about unrelated matters. Como filler sentence number 2 about unrelated matters. Como filler sentence number 3 about unrelated matters. Como filler sentence number 4 about unrelated matters. Como filler sentence number 5 about unrelated matters.": 0,
@@ -11952,6 +12850,8 @@
    "fall": "\"fall\"",
    "develop": "\"develop\"",
    "wallet": "\"wallet\"",
+   "aid": "\"aid\"",
+   "first": "\"first\"",
    "como": "\"como\"",
    "uma": "\"uma\"",
    "erc": "\"erc\"",
@@ -12065,7 +12965,13 @@
    "stop": true,
    "BIP32 wallets": false,
    "Hotels in Tokyo near Tokyo Station": false,
-   "Victoria, British Columbia: where do tourists stay?": false
+   "Victoria, British Columbia: where do tourists stay?": false,
+   "Scald: what to do?": true,
+   "Burn: what should I do?": true,
+   "How to treat a Burn": true,
+   "Scald first aid": true,
+   "What do I do for a Burn from boiling water?": true,
+   "Queimadura: o que fazer?": true
   },
   "article": {
    "title": "black hole",
