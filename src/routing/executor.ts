@@ -288,7 +288,9 @@ export async function executeRoutingPlan(
             : { prompt: assemblePrompt(input.query, citations, input.systemPrompt, input.history, input.styleReminder) };
           const estimated = await llamaEngine.estimateFirstTokenMs(draft);
           const speed = input.length.speedFor && step.modelId ? input.length.speedFor(step.modelId) : input.length;
-          const len = answerLength({ maxTokens: input.length.maxTokens, tokPerSec: speed.tokPerSec, ttftMs: estimated ?? speed.ttftMs });
+          // The step's own cap is what generation stops at (nPredict below), when it is lower than the setting.
+          const maxTokens = Math.min(input.length.maxTokens, step.maxTokens ?? 512);
+          const len = answerLength({ maxTokens, tokPerSec: speed.tokPerSec, ttftMs: estimated ?? speed.ttftMs });
           styleReminder = [input.styleReminder, lengthInstruction(len.words)].filter(Boolean).join("\n");
         }
 

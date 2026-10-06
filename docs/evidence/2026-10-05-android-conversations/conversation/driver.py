@@ -235,6 +235,9 @@ def pull(label, since_ms):
     os.makedirs(dbdir, exist_ok=True)
     for f in ["aoair_knowledge.db", "aoair_knowledge.db-wal", "aoair_knowledge.db-shm"]:
         data = adb("exec-out", f"run-as {PKG} cat files/SQLite/{f}", binary=True, check=False)
+        # The -wal/-shm files may not exist; the database itself must come back.
+        if f == "aoair_knowledge.db" and not data.startswith(b"SQLite format 3"):
+            sys.exit(f"could not pull files/SQLite/{f} from {PKG} (adb run-as failed?)")
         with open(os.path.join(dbdir, f), "wb") as fh:
             fh.write(data)
     c = sqlite3.connect(os.path.join(dbdir, "aoair_knowledge.db"))

@@ -126,6 +126,18 @@ describe("executeRoutingPlan", () => {
     expect(generateMock.mock.calls[0][0].messages.at(-1).content).toContain("about 220 words");
   });
 
+  it("sizes the answer to the step's token cap when it is below the setting", async () => {
+    const p = plan({
+      steps: [{ id: "generate-0", type: "generate", modelId: "qwen-1.5b", required: true, maxTokens: 200 }],
+      selectedModelIds: ["qwen-1.5b"],
+    });
+    mockFirstTokenMs = null;
+    // 4 tok/s for 90 s would be 360 tokens (~220 words); the step stops at 200 tokens -> ~120 words.
+    await executeRoutingPlan(p, { query: "Compare them.", length: { maxTokens: 512, tokPerSec: 4, ttftMs: 11_500 } }, resolveModel);
+    expect(generateMock.mock.calls[0][0].messages.at(-1).content).toContain("about 120 words");
+    expect(generateMock.mock.calls[0][0].nPredict).toBe(200);
+  });
+
   it("sizes the answer with the speed of the model the router picked, not the base model's", async () => {
     const p = plan({
       steps: [{ id: "generate-0", type: "generate", modelId: "qwen-1.5b", required: true }],
