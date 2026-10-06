@@ -13,7 +13,7 @@ import {
   contextSizeForRam,
   shouldRepack,
 } from "./memoryFit";
-import { BackendInfo, cpuDeviceNames, initWithCpuFallback, kvBytesPerElem, kvCacheParams } from "./initFallback";
+import { BackendInfo, cpuDeviceNames, initWithCpuFallback, kvCacheParams } from "./initFallback";
 import { describeModelFile, type LoadGuard, type LoadMeta } from "./loadMarker";
 import { MODEL_CATALOG } from "../models/manifest";
 import { listDiscoveredModels } from "../models/discoveredModels";
@@ -294,8 +294,10 @@ export class LlamaEngine {
           n_ctx: nCtx,
           n_threads: nThreads,
           n_gpu_layers: 0, // CPU-only for broad device compatibility; adjust per-device
-          ...kvCacheParams(Platform.OS),
-          // Repacked weights live in the app's own memory; on a tight phone keep them as the mapped file (memoryFit.ts).
+          // A model too big for memory streams from its mapped file (memoryFit.ts shouldRepack), and there the
+          // 8-bit KV cache's ~half-size cache matters. Elsewhere it isn't worth it: on a Pixel 6a the 4B read its
+          // prompts ~19% slower with it (first word 11.6 s vs 9.5 s median, eval:device standard set, 2026-10-05).
+          ...(repack ? {} : kvCacheParams(Platform.OS)),
           no_extra_bufts: !repack,
         },
         { platform: Platform.OS, cpuDevices: () => cpuDeviceNames(getBackendDevicesInfo), log: (m) => console.warn(m) }
@@ -372,7 +374,6 @@ export class LlamaEngine {
     return estimateMemoryFit({
       fileBytes,
       nCtx,
-      kvBytesPerElem: kvBytesPerElem(kvCacheParams(Platform.OS)),
       shape,
       totalRamBytes,
       availableRamBytes: availableRamFrom({ totalBytes: totalRamBytes, rssBytes, availBytes }),
