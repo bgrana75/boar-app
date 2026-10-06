@@ -1,0 +1,17 @@
+{
+  "requestId": "req-20261006t014017-qi7q",
+  "state": "done",
+  "configs": [
+    "model:qwen3-4b-instruct-2507-q4km"
+  ],
+  "total": 17,
+  "completed": 17,
+  "runId": "eval-2026-10-06T01-40-22-114Z",
+  "resultPath": "files/eval/eval-2026-10-06T01-40-22-114Z.jsonl",
+  "stopped": false,
+  "installedModels": [
+    "qwen3-4b-instruct-2507-q4km",
+    "qwen2.5-1.5b-instruct-q4km"
+  ],
+  "updatedAt": 1791251272859
+}
