@@ -230,14 +230,27 @@ export function estimateMemoryFit(i: FitInputs): MemoryFit {
  * work repacked at all (an 11 GB mixture of experts on a 12 GB phone would need its whole file in RAM instead
  * of streaming its experts), so it stays the mapped file.
  *
- * Only that case. A stricter rule (file + buffers + 0.75 GB) kept Qwen3-4B mapped on a Pixel 6a (6 GB): no
- * stalls or load-time kills in long conversations, but prompt reading ~2x slower, so single questions took
- * 23 s to the first word instead of 9 s (eval:device standard set, 2026-10-05). Repacked, that phone can run
- * short of memory in long sessions (~1 answer in 6 stalled at 0.1 tok/s); switching to the mapped file under
- * memory pressure would be the follow-up.
+ * Only that case, even when little memory is free right now. On a Pixel 6a with the 4B and 1.8-2.1 GB free
+ * (background apps open), the mapped file took 25 s to the first word against 10 s repacked, and the repacked
+ * load was not killed in three tries (eval:device standard set, 2026-10-06); a stricter rule (file + buffers +
+ * 0.75 GB) cost single questions 23 s instead of 9 s (2026-10-05). When a repacked load does get the app
+ * killed, or stalls, LlamaEngine keeps the mapped file for that model instead (loadMarker.ts, isDecodeStall).
  */
 export function shouldRepack(f: Pick<MemoryFit, "fileBytes" | "availableBytes">): boolean {
   return f.fileBytes <= f.availableBytes;
+}
+
+/** Decode below this rate, for at least STALL_MIN_MS, is a stall (normal on a 6 GB phone: 3.5-6 tok/s for a 4B). */
+export const STALL_TOK_PER_SEC = 1;
+export const STALL_MIN_MS = 10_000;
+
+/**
+ * Whether an answer's writing stalled: with repacked weights in swap, every token waits for them to be
+ * decompressed (0.1 tok/s on a Pixel 6a with the 4B, ~1 answer in 6 on long conversations, 2026-10-04).
+ */
+export function isDecodeStall(t: { predictedTokens: number; predictedMs: number }): boolean {
+  if (t.predictedMs < STALL_MIN_MS) return false;
+  return (t.predictedTokens * 1000) / t.predictedMs < STALL_TOK_PER_SEC;
 }
 
 /** Kept for the system and the app you came from: a quarter of the phone's RAM, at least 2.5 GB. */

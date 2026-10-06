@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   availableRamFrom,
   shouldRepack,
+  isDecodeStall,
   describeFit,
   estimateMemoryFit,
   expertFractionOf,
@@ -189,5 +190,15 @@ describe("shouldRepack", () => {
 
   it("keeps a dense model bigger than the budget mapped (7B on a 6 GB phone)", () => {
     expect(shouldRepack({ fileBytes: 4.36 * GiB, availableBytes: budget })).toBe(false);
+  });
+});
+
+describe("isDecodeStall", () => {
+  it("under 1 tok/s for 10 s or more", () => {
+    expect(isDecodeStall({ predictedTokens: 9, predictedMs: 120_000 })).toBe(true);
+    expect(isDecodeStall({ predictedTokens: 400, predictedMs: 90_000 })).toBe(false);
+  });
+  it("not a short slow start (prompt still reading, one token)", () => {
+    expect(isDecodeStall({ predictedTokens: 1, predictedMs: 3_000 })).toBe(false);
   });
 });

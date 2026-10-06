@@ -11,6 +11,7 @@ import {
   parseGgufShape,
   toGb,
   contextSizeForRam,
+  isDecodeStall,
   shouldRepack,
 } from "./memoryFit";
 import { BackendInfo, cpuDeviceNames, initWithCpuFallback, kvCacheParams } from "./initFallback";
@@ -218,6 +219,10 @@ export class LlamaEngine {
   }
 
   private lastLoad: LoadResult = { fit: null, warning: null };
+  /** How the loaded model was loaded (not its progress callback), to reload it as the mapped file after a stall. */
+  private lastLoadOpts: Omit<LoadOptions, "onProgress"> | undefined;
+  /** Models that stalled repacked in this process: they keep the mapped file until the app restarts. */
+  private keepMapped = new Set<string>();
   // general.architecture of the loaded model (from the GGUF header), for its thinking tags.
   private arch: string | null = null;
   private lastHeaderArch: string | null = null;
@@ -241,7 +246,8 @@ export class LlamaEngine {
       this.context &&
       this.modelInfo?.filename === modelFilename &&
       this.modelInfo.nCtx === nCtx &&
-      this.modelInfo.nThreads === nThreads
+      this.modelInfo.nThreads === nThreads &&
+      !(this.modelInfo.repacked && this.keepMapped.has(modelFilename))
     ) {
       return this.lastLoad;
     }
@@ -270,8 +276,6 @@ export class LlamaEngine {
       throw new ModelLoadError(message, "memory", message);
     }
 
-    // No RAM readouts: repack, as before this check existed.
-    const repack = fit ? shouldRepack(fit) : true;
     let backend: BackendInfo = { kind: "default" };
     // A caller without meta (the chat's preload, the catalog screen) still gets the model's id and label.
     const known =
@@ -280,8 +284,16 @@ export class LlamaEngine {
         : describeModelFile(modelFilename, [...MODEL_CATALOG, ...(await listDiscoveredModels().catch(() => []))]);
     const given = Object.fromEntries(Object.entries(opts?.meta ?? {}).filter(([, v]) => v !== undefined));
     const meta: LoadMeta = { filename: modelFilename, ...known, ...given };
+    // The mapped file after a repacked load killed the app (once) or stalled (this process); otherwise from
+    // memory (memoryFit.ts shouldRepack). No RAM readouts: repack, as before this check existed.
+    const afterCrash = (await this.guard?.takeKeepMapped?.(meta).catch(() => false)) === true;
+    const repack = !afterCrash && !this.keepMapped.has(modelFilename) && (fit ? shouldRepack(fit) : true);
+    if (fit) {
+      const why = afterCrash ? "the last repacked load closed the app" : this.keepMapped.has(modelFilename) ? "it stalled repacked" : `${toGb(fit.availableBytes)}GB budget`;
+      console.log(`[engine] ${repack ? "repacking" : "keeping the mapped file for"} ${modelFilename} (${toGb(fit.fileBytes)}GB; ${why})`);
+    }
     // Marker on disk while initLlama runs: if the OS kills the app here, the next start knows (CR-2).
-    await this.guard?.begin(meta, previous).catch((e: any) => console.warn("[engine] load marker:", e?.message ?? e));
+    await this.guard?.begin(meta, previous, { repacked: repack }).catch((e: any) => console.warn("[engine] load marker:", e?.message ?? e));
     let loadedOk = false;
     try {
       const onProgress = opts?.onProgress;
@@ -305,6 +317,7 @@ export class LlamaEngine {
       this.context = loaded.context;
       backend = loaded.backend;
       this.modelInfo = { filename: modelFilename, nCtx, nThreads, backend, repacked: repack };
+      this.lastLoadOpts = { nCtx, nThreads, meta: opts?.meta };
       this.loadedMeta = meta;
       loadedOk = true;
       this.arch = fit ? this.lastHeaderArch : await this.readArch(modelPath);
@@ -593,6 +606,9 @@ export class LlamaEngine {
       const t = (result as { timings?: any; tokens_cached?: number }).timings;
       // Prompt reading speed for the next answer's length (prompt_n: tokens evaluated, the cached prefix excluded).
       if (t?.prompt_n >= MIN_PREFILL_SAMPLE_TOKENS && firstTokenAt !== null) this.lastPrefill = { tokens: t.prompt_n, ms: firstTokenAt - startedAt };
+      if (t && Platform.OS === "android" && this.modelInfo?.repacked && isDecodeStall({ predictedTokens: t.predicted_n ?? 0, predictedMs: t.predicted_ms ?? 0 })) {
+        this.reloadMapped(this.modelInfo.filename, t);
+      }
       if (t && onTimings) {
         onTimings({
           promptTokens: t.prompt_n ?? 0,
@@ -607,6 +623,22 @@ export class LlamaEngine {
       if (this.inFlight === completion) this.inFlight = null;
       if (timer) clearTimeout(timer);
     }
+  }
+
+  /**
+   * The answer stalled with repacked weights (swapped out: Android can only compress them, not drop and re-read
+   * them). Reload the model as the mapped file before the next generation: prompt reading ~2x slower, but its
+   * weights are page cache, which the kernel re-reads from storage instead of stalling. Android only: iOS has no
+   * swap (jetsam ends the app instead), so a slow answer there is a slow model, not a stall.
+   */
+  private reloadMapped(filename: string, t: { predicted_n?: number; predicted_ms?: number }): void {
+    if (this.keepMapped.has(filename)) return;
+    this.keepMapped.add(filename);
+    console.warn(`[engine] ${filename} stalled repacked (${t.predicted_n ?? 0} tokens in ${Math.round(t.predicted_ms ?? 0)} ms); reloading it as the mapped file`);
+    const opts = this.lastLoadOpts;
+    // On the generation queue: questions sent meanwhile wait for the reload instead of finding no model.
+    const run = this.genQueue.then(() => this.load(filename, opts));
+    this.genQueue = run.catch((e: any) => console.warn("[engine] reload as mapped file failed:", e?.message ?? e));
   }
 
   /**

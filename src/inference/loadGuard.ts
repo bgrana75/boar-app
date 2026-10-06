@@ -4,7 +4,7 @@
  * calls once after start to tell the user a model closed the app.
  */
 import * as FileSystem from "expo-file-system/legacy";
-import { recordLoadCrash, recordLoadSuccess, takePendingLoadCrash } from "../models/settings";
+import { recordLoadCrash, recordLoadSuccess, recordRepackCrash, takeKeepMapped, takePendingLoadCrash } from "../models/settings";
 import { createLoadGuard, LoadCrash, MarkerStore } from "./loadMarker";
 
 const MARKER = `${FileSystem.documentDirectory}model-load.marker.json`;
@@ -22,6 +22,8 @@ export const loadGuard = createLoadGuard(fileStore, {
   recordCrash: recordLoadCrash,
   recordSuccess: recordLoadSuccess,
   takePending: takePendingLoadCrash,
+  recordRepackCrash,
+  takeKeepMapped,
 });
 
 /** The last load that killed the app, once (null afterwards, or when there was none). */

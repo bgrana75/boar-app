@@ -7,7 +7,14 @@ function memory() {
   const crashes: LoadCrash[] = [];
   const successes: string[] = [];
   let pending: LoadCrash | null = null;
+  let keepMapped: string[] = [];
   const ledger: CrashLedger = {
+    recordRepackCrash: async (id) => void keepMapped.push(id),
+    takeKeepMapped: async (id) => {
+      const had = keepMapped.includes(id);
+      keepMapped = keepMapped.filter((k) => k !== id);
+      return had;
+    },
     recordCrash: async (c) => void (crashes.push(c), (pending = c)),
     recordSuccess: async (id) => void successes.push(id),
     takePending: async () => {
@@ -16,7 +23,7 @@ function memory() {
       return c;
     },
   };
-  return { store, ledger, crashes, successes, file: () => file };
+  return { store, ledger, crashes, successes, file: () => file, keepMapped: () => keepMapped };
 }
 
 describe("load marker (CR-2)", () => {
@@ -52,6 +59,30 @@ describe("load marker (CR-2)", () => {
     await next.begin(q15, null);
     expect(m.crashes.map((c) => c.crashedModelId)).toEqual(["qwen3-4b"]);
     expect(JSON.parse(m.file()!).modelId).toBe("qwen2.5-1.5b");
+  });
+});
+
+describe("a repacked load that killed the app", () => {
+  const q15 = { filename: "models/q15.gguf", modelId: "qwen2.5-1.5b", label: "Qwen2.5 1.5B" };
+  const q4 = { filename: "models/q4.gguf", modelId: "qwen3-4b", label: "Qwen3 4B" };
+
+  it("is not a CR-2 crash: the model loads once more as the mapped file instead of falling back", async () => {
+    const m = memory();
+    await createLoadGuard(m.store, m.ledger).begin(q4, q15, { repacked: true }); // ... killed while repacking
+    const next = createLoadGuard(m.store, m.ledger);
+    expect(await next.consume()).toBeNull();
+    expect(m.crashes).toEqual([]);
+    expect(await next.takeKeepMapped(q4)).toBe(true);
+    expect(await next.takeKeepMapped(q4)).toBe(false); // once: the load after that decides from memory again
+  });
+
+  it("if the mapped load dies too, that one is a CR-2 crash", async () => {
+    const m = memory();
+    await createLoadGuard(m.store, m.ledger).begin(q4, q15, { repacked: true });
+    const second = createLoadGuard(m.store, m.ledger);
+    expect(await second.takeKeepMapped(q4)).toBe(true);
+    await second.begin(q4, q15, { repacked: false }); // ... killed again
+    expect((await createLoadGuard(m.store, m.ledger).consume())?.crashedModelId).toBe("qwen3-4b");
   });
 });
 

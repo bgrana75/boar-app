@@ -46,6 +46,8 @@ interface Settings {
   loadCrashedIds?: string[];
   /** The last load crash, until the chat shows it once (src/inference/loadGuard.ts consumeLoadCrash). */
   pendingLoadCrash?: StoredLoadCrash | null;
+  /** Models whose repacked load killed the app: their next load keeps the mapped file (loadMarker.ts). */
+  keepMappedIds?: string[];
   /** Random id created the first time this install shares results (src/eval/shareResults.ts). */
   installId?: string;
   /** The server's id for this phone's sharing key, once it has accepted the key (src/eval/shareResults.ts). */
@@ -562,6 +564,29 @@ export async function recordLoadSuccess(modelId: string): Promise<void> {
     if (!ids.includes(modelId)) return;
     s.loadCrashedIds = ids.filter((id) => id !== modelId);
     await writeSettings(s);
+  });
+}
+
+/**
+ * A load with repacked weights killed the app: the next load of that model keeps the mapped file instead
+ * (no repack copy in app memory), and the model stays usable. Not a CR-2 crash: if that load dies too, it is.
+ */
+export async function recordRepackCrash(modelId: string): Promise<void> {
+  return serialized(async () => {
+    const s = await readSettings();
+    s.keepMappedIds = [...new Set([...(s.keepMappedIds ?? []), modelId])];
+    await writeSettings(s);
+  });
+}
+
+/** Whether this model's next load keeps the mapped file, once: the load after it decides from memory again. */
+export async function takeKeepMapped(modelId: string): Promise<boolean> {
+  return serialized(async () => {
+    const s = await readSettings();
+    if (!(s.keepMappedIds ?? []).includes(modelId)) return false;
+    s.keepMappedIds = (s.keepMappedIds ?? []).filter((id) => id !== modelId);
+    await writeSettings(s);
+    return true;
   });
 }
 

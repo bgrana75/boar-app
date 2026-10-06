@@ -14,6 +14,8 @@ export interface LoadMeta {
 export interface LoadMarker extends LoadMeta {
   /** The model that was loaded before (the one the app falls back to). */
   previous?: LoadMeta | null;
+  /** The load repacked the weights into app memory (LlamaEngine, memoryFit.ts shouldRepack). */
+  repacked?: boolean;
   at: number;
 }
 
@@ -37,6 +39,9 @@ export interface CrashLedger {
   recordCrash(crash: LoadCrash): Promise<void>;
   recordSuccess(modelId: string): Promise<void>;
   takePending(): Promise<LoadCrash | null>;
+  /** A repacked load killed the app: load that model once more without repacking, instead of blocking it. */
+  recordRepackCrash(modelId: string): Promise<void>;
+  takeKeepMapped(modelId: string): Promise<boolean>;
 }
 
 /**
@@ -70,7 +75,11 @@ export function createLoadGuard(store: MarkerStore, ledger: CrashLedger, now: ()
       const raw = await store.read().catch(() => null);
       if (!raw) return;
       try {
-        await ledger.recordCrash(toLoadCrash(JSON.parse(raw) as LoadMarker));
+        const marker = JSON.parse(raw) as LoadMarker;
+        // Repacking is what needs the memory (~the file size in app memory at the load's peak, on top of what
+        // the phone holds); the same model as a mapped file usually loads. Try that before giving up on it.
+        if (marker.repacked) await ledger.recordRepackCrash(marker.modelId ?? marker.filename);
+        else await ledger.recordCrash(toLoadCrash(marker));
       } catch (e: any) {
         console.warn("[loadMarker] could not record the crashed load:", e?.message ?? e);
       }
@@ -81,14 +90,19 @@ export function createLoadGuard(store: MarkerStore, ledger: CrashLedger, now: ()
 
   return {
     ensureChecked,
-    async begin(meta: LoadMeta, previous: LoadMeta | null): Promise<void> {
+    async begin(meta: LoadMeta, previous: LoadMeta | null, opts?: { repacked?: boolean }): Promise<void> {
       await ensureChecked();
-      const marker: LoadMarker = { ...meta, previous, at: now() };
+      const marker: LoadMarker = { ...meta, previous, at: now(), ...(opts?.repacked ? { repacked: true } : {}) };
       await store.write(JSON.stringify(marker));
     },
     async end(meta: LoadMeta, loaded: boolean): Promise<void> {
       await store.clear();
       if (loaded && meta.modelId) await ledger.recordSuccess(meta.modelId);
+    },
+    /** Whether this load should keep the mapped file because the last repacked load of the model killed the app. */
+    async takeKeepMapped(meta: LoadMeta): Promise<boolean> {
+      await ensureChecked();
+      return ledger.takeKeepMapped(meta.modelId ?? meta.filename);
     },
     /** The last crash, once: the next call returns null. */
     async consume(): Promise<LoadCrash | null> {
