@@ -1,0 +1,7981 @@
+{
+ "parse": [
+  {
+   "text": "{}",
+   "error": "requestId must be 1-64 lowercase letters, digits or dashes"
+  },
+  {
+   "text": "[]",
+   "error": "requestId must be 1-64 lowercase letters, digits or dashes"
+  },
+  {
+   "text": "\"x\"",
+   "error": "request must be a JSON object"
+  },
+  {
+   "text": "{\"requestId\":\"\"}",
+   "error": "requestId must be 1-64 lowercase letters, digits or dashes"
+  },
+  {
+   "text": "{\"requestId\":\"Bad_ID\"}",
+   "error": "requestId must be 1-64 lowercase letters, digits or dashes"
+  },
+  {
+   "text": "{\"requestId\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+   "error": "requestId must be 1-64 lowercase letters, digits or dashes"
+  },
+  {
+   "text": "{\"requestId\":\"ok-1\"}",
+   "ok": {
+    "requestId": "ok-1",
+    "models": null,
+    "adaptive": null,
+    "queries": null,
+    "pipeline": null
+   }
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"adaptive\":\"yes\"}",
+   "error": "\"adaptive\" must be a boolean"
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"adaptive\":null}",
+   "error": "\"adaptive\" must be a boolean"
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"adaptive\":true}",
+   "ok": {
+    "requestId": "r1",
+    "models": null,
+    "adaptive": true,
+    "queries": null,
+    "pipeline": null
+   }
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"pipeline\":\"fast\"}",
+   "error": "\"pipeline\" must be \"legacy\" or \"answer\""
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"pipeline\":\"legacy\"}",
+   "ok": {
+    "requestId": "r1",
+    "models": null,
+    "adaptive": null,
+    "queries": null,
+    "pipeline": "legacy"
+   }
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"pipeline\":\"answer\"}",
+   "ok": {
+    "requestId": "r1",
+    "models": null,
+    "adaptive": null,
+    "queries": null,
+    "pipeline": "answer"
+   }
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"answerAnyway\":true}",
+   "error": "answerAnyway need \"pipeline\": \"answer\""
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"questions\":[],\"install\":{}}",
+   "error": "questions, install need \"pipeline\": \"answer\""
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"pipeline\":\"answer\",\"answerAnyway\":\"no\"}",
+   "error": "\"answerAnyway\" must be a boolean"
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"pipeline\":\"answer\",\"evalSetVersion\":\"dataset v2\"}",
+   "error": "\"evalSetVersion\" must be 1-64 letters, digits, dots, dashes or underscores"
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"pipeline\":\"answer\",\"evalSetVersion\":\"dataset-v2.1\"}",
+   "ok": {
+    "requestId": "r1",
+    "models": null,
+    "adaptive": null,
+    "queries": null,
+    "pipeline": "answer"
+   }
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"confirmLargeModels\":1}",
+   "error": "\"confirmLargeModels\" must be a boolean"
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"models\":\"qwen\"}",
+   "error": "\"models\" must be a list of non-empty strings"
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"models\":[\"qwen\",\"\"]}",
+   "error": "\"models\" must be a list of non-empty strings"
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"models\":[\"  qwen3-4b  \"]}",
+   "ok": {
+    "requestId": "r1",
+    "models": [
+     "qwen3-4b"
+    ],
+    "adaptive": null,
+    "queries": null,
+    "pipeline": null
+   }
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"models\":[null]}",
+   "error": "\"models\" must be a list of non-empty strings"
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"queries\":[\"greeting-1\",\" factual \"]}",
+   "ok": {
+    "requestId": "r1",
+    "models": null,
+    "adaptive": null,
+    "queries": [
+     "greeting-1",
+     "factual"
+    ],
+    "pipeline": null
+   }
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"queries\":[]}",
+   "ok": {
+    "requestId": "r1",
+    "models": null,
+    "adaptive": null,
+    "queries": [],
+    "pipeline": null
+   }
+  },
+  {
+   "text": "{\"requestId\":\"r1\",\"models\":null}",
+   "error": "\"models\" must be a list of non-empty strings"
+  }
+ ],
+ "resolve": [
+  {
+   "installed": 0,
+   "models": [],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-1.5b-instruct-q4km",
+      "label": "Qwen2.5-1.5B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-7b-instruct-q4km",
+      "label": "Qwen2.5-7B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:lfm2.5-8b-a1b-q4km",
+      "label": "LFM2.5-8B-A1B (Q4_K_M)"
+     },
+     {
+      "id": "model:gemma-4-e4b-it-q4_0",
+      "label": "Gemma 4 E4B (QAT Q4_0)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-1.5b-instruct-q4km",
+      "label": "Qwen2.5-1.5B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-7b-instruct-q4km",
+      "label": "Qwen2.5-7B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:lfm2.5-8b-a1b-q4km",
+      "label": "LFM2.5-8B-A1B (Q4_K_M)"
+     },
+     {
+      "id": "model:gemma-4-e4b-it-q4_0",
+      "label": "Gemma 4 E4B (QAT Q4_0)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-1.5b-instruct-q4km",
+      "label": "Qwen2.5-1.5B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-7b-instruct-q4km",
+      "label": "Qwen2.5-7B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:lfm2.5-8b-a1b-q4km",
+      "label": "LFM2.5-8B-A1B (Q4_K_M)"
+     },
+     {
+      "id": "model:gemma-4-e4b-it-q4_0",
+      "label": "Gemma 4 E4B (QAT Q4_0)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-1.5b-instruct-q4km",
+      "label": "Qwen2.5-1.5B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-7b-instruct-q4km",
+      "label": "Qwen2.5-7B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:lfm2.5-8b-a1b-q4km",
+      "label": "LFM2.5-8B-A1B (Q4_K_M)"
+     },
+     {
+      "id": "model:gemma-4-e4b-it-q4_0",
+      "label": "Gemma 4 E4B (QAT Q4_0)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-1.5b-instruct-q4km",
+      "label": "Qwen2.5-1.5B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-7b-instruct-q4km",
+      "label": "Qwen2.5-7B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:lfm2.5-8b-a1b-q4km",
+      "label": "LFM2.5-8B-A1B (Q4_K_M)"
+     },
+     {
+      "id": "model:gemma-4-e4b-it-q4_0",
+      "label": "Gemma 4 E4B (QAT Q4_0)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 0,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:phi-3.5-mini-instruct-q4km",
+      "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen3-4b-instruct-2507-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b-instruct-2507-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b-instruct-2507-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b-instruct-2507-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b-instruct-2507-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b-instruct-2507-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen3-4b-instruct-2507-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b-instruct-2507-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b-instruct-2507-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b-instruct-2507-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b-instruct-2507-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b-instruct-2507-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 1,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-1.5b-instruct-q4km",
+      "label": "Qwen2.5-1.5B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-7b-instruct-q4km",
+      "label": "Qwen2.5-7B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-1.5b-instruct-q4km",
+      "label": "Qwen2.5-1.5B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-7b-instruct-q4km",
+      "label": "Qwen2.5-7B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-1.5b-instruct-q4km",
+      "label": "Qwen2.5-1.5B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-7b-instruct-q4km",
+      "label": "Qwen2.5-7B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-1.5b-instruct-q4km",
+      "label": "Qwen2.5-1.5B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-7b-instruct-q4km",
+      "label": "Qwen2.5-7B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-1.5b-instruct-q4km",
+      "label": "Qwen2.5-1.5B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "model:qwen2.5-7b-instruct-q4km",
+      "label": "Qwen2.5-7B-Instruct (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" is ambiguous (qwen3-4b-instruct-2507-q4km, qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "model:qwen3-4b-instruct-2507-q4km",
+      "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+     },
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 2,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" is ambiguous (qwen2.5-1.5b-instruct-q4km, qwen2.5-7b-instruct-q4km)"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 3,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 3,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 3,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 3,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 3,
+   "models": [],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "factual-1",
+     "factual-2",
+     "explanation-1",
+     "explanation-2",
+     "comparison-1",
+     "comparison-2",
+     "synthesis-1",
+     "synthesis-2",
+     "synthesis-3",
+     "reasoning-1",
+     "reasoning-2",
+     "reasoning-3",
+     "grounded-1",
+     "grounded-2",
+     "no-kb-1",
+     "no-kb-2"
+    ]
+   }
+  },
+  {
+   "installed": 3,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1"
+    ]
+   }
+  },
+  {
+   "installed": 3,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "factual-1",
+     "factual-2"
+    ]
+   }
+  },
+  {
+   "installed": 3,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "vitalik-about-x",
+     "vitalik-zk-snark",
+     "vitalik-quadratic-funding",
+     "vitalik-far-uvc",
+     "vitalik-zuzalu",
+     "vitalik-vegan-buenos-aires"
+    ]
+   }
+  },
+  {
+   "installed": 3,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "configs": [
+     {
+      "id": "adaptive",
+      "label": "Adaptive (balanced)"
+     }
+    ],
+    "queries": [
+     "greeting-1",
+     "vitalik-about-x"
+    ]
+   }
+  },
+  {
+   "installed": 3,
+   "models": [],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "unknown query id or category: nope"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "Qwen3-4B-Instruct-2507"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"Qwen3-4B-Instruct-2507\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "qwen3-4b",
+    "qwen3-4b"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"qwen3-4b\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "nope"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "nope"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"nope\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "phi-3.5-mini-instruct-q4km",
+    "qwen3-4b-instruct-2507-q4km"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"phi-3.5-mini-instruct-q4km\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": null,
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": null,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": null,
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "vitalik"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "greeting-1",
+    "vitalik-about-x"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  },
+  {
+   "installed": 3,
+   "models": [
+    "QWEN-2.5"
+   ],
+   "adaptive": true,
+   "queries": [
+    "nope",
+    "factual"
+   ],
+   "out": {
+    "error": "model \"QWEN-2.5\" matches no installed model"
+   }
+  }
+ ],
+ "misc": {
+  "runIds": [
+   {
+    "t": 0,
+    "id": "eval-1970-01-01T00-00-00-000Z"
+   },
+   {
+    "t": 1791317254163,
+    "id": "eval-2026-10-06T20-07-34-163Z"
+   },
+   {
+    "t": 1700000000001,
+    "id": "eval-2023-11-14T22-13-20-001Z"
+   }
+  ],
+  "kbHit": [
+   {
+    "e": [],
+    "r": [],
+    "out": null
+   },
+   {
+    "e": [
+     "A"
+    ],
+    "r": [],
+    "out": false
+   },
+   {
+    "e": [
+     "A"
+    ],
+    "r": [
+     "A",
+     "B"
+    ],
+    "out": true
+   },
+   {
+    "e": [
+     "A",
+     "B"
+    ],
+    "r": [
+     "A"
+    ],
+    "out": false
+   }
+  ],
+  "tps": [
+   {
+    "t": 0,
+    "ms": 100,
+    "out": null
+   },
+   {
+    "t": 10,
+    "ms": 0,
+    "out": null
+   },
+   {
+    "t": 10,
+    "ms": 1000,
+    "out": 10
+   },
+   {
+    "t": 55,
+    "ms": 7502.3,
+    "out": 7.331085133892273
+   },
+   {
+    "t": 3,
+    "ms": null,
+    "out": null
+   }
+  ],
+  "plan": [
+   {
+    "retrieve": true,
+    "codes": [
+     "eval:fixed-model",
+     "retrieve:relevant-to-task",
+     "generate:fixed-m1"
+    ]
+   },
+   {
+    "retrieve": false,
+    "codes": [
+     "eval:fixed-model",
+     "retrieve:skipped-task-not-knowledge-based",
+     "generate:fixed-m1"
+    ]
+   }
+  ],
+  "installedSets": [
+   [
+    {
+     "id": "phi-3.5-mini-instruct-q4km",
+     "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+    },
+    {
+     "id": "qwen3-4b-instruct-2507-q4km",
+     "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+    },
+    {
+     "id": "qwen2.5-1.5b-instruct-q4km",
+     "label": "Qwen2.5-1.5B-Instruct (Q4_K_M)"
+    },
+    {
+     "id": "qwen2.5-7b-instruct-q4km",
+     "label": "Qwen2.5-7B-Instruct (Q4_K_M)"
+    },
+    {
+     "id": "lfm2.5-8b-a1b-q4km",
+     "label": "LFM2.5-8B-A1B (Q4_K_M)"
+    },
+    {
+     "id": "gemma-4-e4b-it-q4_0",
+     "label": "Gemma 4 E4B (QAT Q4_0)"
+    }
+   ],
+   [
+    {
+     "id": "phi-3.5-mini-instruct-q4km",
+     "label": "Phi-3.5-mini-instruct (Q4_K_M)"
+    }
+   ],
+   [
+    {
+     "id": "qwen3-4b-instruct-2507-q4km",
+     "label": "Qwen3-4B-Instruct-2507 (Q4_K_M)"
+    },
+    {
+     "id": "qwen2.5-1.5b-instruct-q4km",
+     "label": "Qwen2.5-1.5B-Instruct (Q4_K_M)"
+    },
+    {
+     "id": "qwen2.5-7b-instruct-q4km",
+     "label": "Qwen2.5-7B-Instruct (Q4_K_M)"
+    }
+   ],
+   []
+  ]
+ }
+}

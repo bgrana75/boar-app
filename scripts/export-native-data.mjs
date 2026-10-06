@@ -1,6 +1,6 @@
 // Writes the data the native Android app shares with the TypeScript engine (android-native/) as JSON
 // assets, so both read one source of truth until the cutover: the model and corpus catalog, the setup
-// tiers and the storage/RAM budgets, and the answer styles (personalities). Node 24 imports the .ts files directly.
+// tiers and the storage/RAM budgets, the answer styles (personalities) and the evaluation set. Node 24 imports the .ts files directly.
 //   node scripts/export-native-data.mjs          # write
 //   node scripts/export-native-data.mjs --check  # exit 1 if the assets are out of date
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
@@ -12,6 +12,7 @@ const out = join(root, "android-native/app/src/main/assets/boar-data");
 
 const manifest = await import(join(root, "src/models/manifest.ts"));
 const personalities = await import(join(root, "src/constants/personalities.ts"));
+const evalSet = await import(join(root, "src/eval/evalSet.ts"));
 // settings.ts imports Expo modules: its default token cap is read from the source.
 const defaultMaxTokens = Number(/export const DEFAULT_MAX_TOKENS = (\d+);/.exec(readFileSync(join(root, "src/models/settings.ts"), "utf8"))[1]);
 
@@ -27,6 +28,11 @@ const files = {
     defaultId: personalities.DEFAULT_PERSONALITY_ID,
     maxTokensOptions: personalities.MAX_TOKENS_OPTIONS,
     defaultMaxTokens,
+  },
+  // The device evaluation's questions (scripts/eval-device.mjs sends ids and categories, the app holds the set).
+  "eval-set.json": {
+    evalSet: evalSet.EVAL_SET.map((q) => ({ ...q, setVersion: evalSet.setVersionOf(q) })),
+    extraSets: evalSet.VITALIK_SET.map((q) => ({ ...q, setVersion: evalSet.setVersionOf(q) })),
   },
 };
 
