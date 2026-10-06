@@ -1,6 +1,6 @@
 // Writes the data the native Android app shares with the TypeScript engine (android-native/) as JSON
 // assets, so both read one source of truth until the cutover: the model and corpus catalog, the setup
-// tiers and the storage/RAM budgets. Node 24 imports the .ts files directly.
+// tiers and the storage/RAM budgets, and the answer styles (personalities). Node 24 imports the .ts files directly.
 //   node scripts/export-native-data.mjs          # write
 //   node scripts/export-native-data.mjs --check  # exit 1 if the assets are out of date
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
@@ -11,6 +11,9 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const out = join(root, "android-native/app/src/main/assets/boar-data");
 
 const manifest = await import(join(root, "src/models/manifest.ts"));
+const personalities = await import(join(root, "src/constants/personalities.ts"));
+// settings.ts imports Expo modules: its default token cap is read from the source.
+const defaultMaxTokens = Number(/export const DEFAULT_MAX_TOKENS = (\d+);/.exec(readFileSync(join(root, "src/models/settings.ts"), "utf8"))[1]);
 
 const files = {
   "catalog.json": {
@@ -18,6 +21,12 @@ const files = {
     ramBudgetBytes: manifest.RAM_BUDGET_BYTES,
     models: manifest.MODEL_CATALOG,
     tiers: manifest.TIERS,
+  },
+  "personalities.json": {
+    personalities: personalities.PERSONALITIES,
+    defaultId: personalities.DEFAULT_PERSONALITY_ID,
+    maxTokensOptions: personalities.MAX_TOKENS_OPTIONS,
+    defaultMaxTokens,
   },
 };
 
