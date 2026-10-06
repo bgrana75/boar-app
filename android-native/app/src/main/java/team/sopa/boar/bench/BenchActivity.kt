@@ -39,6 +39,8 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import team.sopa.boar.engine.BoarEngine
 import team.sopa.boar.engine.CpuVariants
+import team.sopa.boar.engine.routing.Classify
+import team.sopa.boar.engine.routing.TaskType
 import team.sopa.boar.engine.ChatMessage
 import team.sopa.boar.engine.CpuTopology
 import team.sopa.boar.engine.EngineParams
@@ -67,7 +69,17 @@ class BenchActivity : ComponentActivity() {
         val models = modelFiles()
 
         // Only on a fresh start: a recreated activity must not load a second copy of the model.
-        if (savedInstanceState == null) intent.getStringExtra("run")?.let { run ->
+        if (savedInstanceState == null && intent.getStringExtra("run") == "eval") {
+            // scripts/eval-device.mjs --package team.sopa.aoair.native --no-reload: wait for its request, answer it.
+            val runner = team.sopa.boar.eval.DeviceEvalRunner(
+                this,
+                classify = { q -> Classify.classifyTask(q).value },
+                retrievalIrrelevant = { t -> Classify.isRetrievalIrrelevant(TaskType.of(t)) },
+                log = { line -> log.value += line + "\n"; Log.i(team.sopa.boar.eval.DeviceEvalRunner.TAG, line) },
+            )
+            val waitMs = intent.getIntExtra("waitmin", 10) * 60_000L
+            lifecycleScope.launch { if (!runner.pollOnce(waitMs)) log.value += "no evaluation request within the wait\n" }
+        } else if (savedInstanceState == null) intent.getStringExtra("run")?.let { run ->
             val params = paramsFromIntent(topology)
             val model = intent.getStringExtra("model")?.let { name -> models.firstOrNull { it.name == name } } ?: models.firstOrNull()
             lifecycleScope.launch { runHeadless(run, model, params, log) }
