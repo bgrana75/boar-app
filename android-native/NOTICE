@@ -1,0 +1,21 @@
+BOAR native (android-native/)
+Copyright (c) 2026 aoair contributors. Licensed under the MIT License (see ../LICENSE).
+
+This directory includes or is derived from the following third-party work, each under its own terms.
+
+AndroidLM — https://github.com/Phineas1500/AndroidLM
+  Licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0).
+  The format-2 knowledge-pack retrieval in engine/src/main/java/team/sopa/boar/engine/rag/WikiPack.kt is a port
+  of src/rag/wikiPack.ts, whose design is derived from AndroidLM's Corpus.kt and rag.py: rarest-first query stems
+  with a document-frequency cut, whole-index BM25 with a title-column weight and a popularity prior, titles
+  resolved through redirects, and per-article passages. BOAR's changes and additions are described in that file.
+
+llama.cpp / ggml — https://github.com/ggml-org/llama.cpp
+  MIT License, Copyright (c) 2023-2026 The ggml authors. Git submodule under engine/src/main/cpp/llama.cpp.
+
+SQLite — https://sqlite.org
+  Public domain. Amalgamation under engine/src/main/cpp/sqlite.
+
+Zstandard — https://github.com/facebook/zstd
+  BSD License, Copyright (c) Meta Platforms, Inc. and affiliates. Decompression sources under
+  engine/src/main/cpp/zstd.
