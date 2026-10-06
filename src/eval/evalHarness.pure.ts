@@ -46,6 +46,15 @@ export interface EvalResultRow extends Omit<ExecutionTelemetryRecord, "id" | "cr
   /** Context tokens before and after keeping only the answering sentences (approximate). */
   contextTokensBefore?: number;
   contextTokensAfter?: number;
+  /**
+   * llama.cpp's timings of the answer: prompt tokens it evaluated (cached ones excluded) and how long that took, tokens
+   * reused from the cache, tokens generated and their time. Undefined if no generate step ran.
+   */
+  promptTokens?: number;
+  promptMs?: number;
+  cachedTokens?: number;
+  predictedTokens?: number;
+  predictedMs?: number;
   /** Prompt format the answer was generated with: the model's own chat template, or the plain fallback. Undefined if no generate step ran. */
   promptFormat?: PromptFormat;
   retrievedTitles: string[];
@@ -128,6 +137,11 @@ export const EVAL_CSV_COLUMNS: Array<keyof EvalResultRow> = [
   "contextTokensBefore",
   "contextTokensAfter",
   "generationLatencyMs",
+  "promptTokens",
+  "promptMs",
+  "cachedTokens",
+  "predictedTokens",
+  "predictedMs",
   "totalLatencyMs",
   "tokensGenerated",
   "tokPerSec",

@@ -18,7 +18,7 @@
  * working exactly as before; this is new, separate infrastructure existing
  * alongside it, not a replacement.
  */
-import { llamaEngine } from "../inference/LlamaEngine";
+import { llamaEngine, type GenerationTimings } from "../inference/LlamaEngine";
 import { retrieve } from "../rag/retrieve";
 import { assemblePrompt, assembleChatMessages, ConversationHistory, ANSWER_CONTEXT_CHUNKS } from "../rag/pure";
 import { compressForAnswer } from "../rag/compress";
@@ -127,6 +127,8 @@ export interface PipelineResult {
   generationLatencyMs?: number;
   /** Which prompt format the generate step actually used: the model's own chat template, or assemblePrompt's plain text. */
   promptFormat?: PromptFormat;
+  /** llama.cpp's own timings of the generate step: prompt tokens evaluated (after the cache) and their time, tokens generated. */
+  engineTimings?: GenerationTimings;
   timedOut: boolean;
   stopped: boolean;
 }
@@ -165,6 +167,7 @@ export async function executeRoutingPlan(
   let contextTokensAfter: number | undefined;
   let generationLatencyMs: number | undefined;
   let promptFormat: PromptFormat | undefined;
+  let engineTimings: GenerationTimings | undefined;
   let genLoadCaptured = false;
 
   const markTimedOut = () => {
@@ -218,7 +221,7 @@ export async function executeRoutingPlan(
 
   for (const step of plan.steps) {
     if (callbacks.shouldStop?.()) {
-      return { answer, plan, citations, verification, warnings, stepsExecuted, modelSwitches, timedOut, crossMessageModelSwitch: crossMessageModelSwitch(), modelResidency, modelLoadMs, ttftMs, retrievalMs, contextTokensBefore, contextTokensAfter, generationLatencyMs, promptFormat, stopped: true };
+      return { answer, plan, citations, verification, warnings, stepsExecuted, modelSwitches, timedOut, crossMessageModelSwitch: crossMessageModelSwitch(), modelResidency, modelLoadMs, ttftMs, retrievalMs, contextTokensBefore, contextTokensAfter, generationLatencyMs, promptFormat, engineTimings, stopped: true };
     }
     callbacks.onStepStart?.(step);
 
@@ -239,7 +242,7 @@ export async function executeRoutingPlan(
         if (!ok) {
           if (step.required) {
             warnings.push("generate-step-failed-no-model");
-            return { answer, plan, citations, verification, warnings, stepsExecuted, modelSwitches, timedOut, crossMessageModelSwitch: crossMessageModelSwitch(), modelResidency, modelLoadMs, ttftMs, retrievalMs, contextTokensBefore, contextTokensAfter, generationLatencyMs, promptFormat, stopped: false };
+            return { answer, plan, citations, verification, warnings, stepsExecuted, modelSwitches, timedOut, crossMessageModelSwitch: crossMessageModelSwitch(), modelResidency, modelLoadMs, ttftMs, retrievalMs, contextTokensBefore, contextTokensAfter, generationLatencyMs, promptFormat, engineTimings, stopped: false };
           }
           break;
         }
@@ -273,6 +276,7 @@ export async function executeRoutingPlan(
               messages: assembleChatMessages(input.query, citations, input.systemPrompt, input.history, input.styleReminder),
               nPredict: step.maxTokens ?? 512,
               onToken: timedOnToken,
+              onTimings: (t: GenerationTimings) => (engineTimings = t),
               timeoutMs: step.timeoutMs ?? STEP_TIMEOUT_MS,
               onTimeout: markTimedOut,
             })
@@ -280,6 +284,7 @@ export async function executeRoutingPlan(
               prompt: assemblePrompt(input.query, citations, input.systemPrompt, input.history, input.styleReminder),
               nPredict: step.maxTokens ?? 512,
               onToken: timedOnToken,
+              onTimings: (t: GenerationTimings) => (engineTimings = t),
               timeoutMs: step.timeoutMs ?? STEP_TIMEOUT_MS,
               onTimeout: markTimedOut,
             });
@@ -336,7 +341,7 @@ export async function executeRoutingPlan(
     }
   }
 
-  return { answer, plan, citations, verification, warnings, stepsExecuted, modelSwitches, timedOut, crossMessageModelSwitch: crossMessageModelSwitch(), modelResidency, modelLoadMs, ttftMs, retrievalMs, contextTokensBefore, contextTokensAfter, generationLatencyMs, promptFormat, stopped: false };
+  return { answer, plan, citations, verification, warnings, stepsExecuted, modelSwitches, timedOut, crossMessageModelSwitch: crossMessageModelSwitch(), modelResidency, modelLoadMs, ttftMs, retrievalMs, contextTokensBefore, contextTokensAfter, generationLatencyMs, promptFormat, engineTimings, stopped: false };
 }
 
 export { buildVerificationPrompt, parseVerificationVerdict } from "./verify";
