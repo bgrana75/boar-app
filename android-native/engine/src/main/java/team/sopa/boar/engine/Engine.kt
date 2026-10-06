@@ -187,15 +187,21 @@ class LlamaSession private constructor(private var handle: Long, val params: Eng
 object BoarEngine {
     @Volatile private var initialized = false
 
+    /** The CPU build loaded: a variant name, or "best" when ggml chose. Null before [init]. */
+    @Volatile var loadedVariant: String? = null
+        private set
+
     /**
-     * Loads the ggml CPU backend best suited to this phone (from the app's native library folder), or the one
-     * [cpuVariant] names ("android_armv8.6_1") for benchmarks. Call once per process.
+     * Loads the ggml CPU build for [cpuSetting] (see [CpuVariants]: "auto", "best" or a variant name) from the app's
+     * native library folder. Once per process: a changed setting applies after the app restarts.
      */
-    fun init(nativeLibraryDir: String, cpuVariant: String? = null) {
+    fun init(nativeLibraryDir: String, cpuSetting: String? = CpuVariants.AUTO) {
         if (initialized) return
         synchronized(this) {
             if (!initialized) {
-                BoarNative.backendInit(nativeLibraryDir, cpuVariant)
+                val variant = CpuVariants.resolve(cpuSetting, CpuVariants.readFeatures())
+                BoarNative.backendInit(nativeLibraryDir, variant)
+                loadedVariant = variant ?: CpuVariants.BEST
                 initialized = true
             }
         }

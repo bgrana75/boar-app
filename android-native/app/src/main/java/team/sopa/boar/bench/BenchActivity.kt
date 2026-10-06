@@ -38,6 +38,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import team.sopa.boar.engine.BoarEngine
+import team.sopa.boar.engine.CpuVariants
 import team.sopa.boar.engine.ChatMessage
 import team.sopa.boar.engine.CpuTopology
 import team.sopa.boar.engine.EngineParams
@@ -60,7 +61,7 @@ class BenchActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        BoarEngine.init(applicationInfo.nativeLibraryDir, intent.getStringExtra("variant"))
+        BoarEngine.init(applicationInfo.nativeLibraryDir, intent.getStringExtra("variant") ?: CpuVariants.AUTO)
         val topology = CpuTopology.read()
         val log = mutableStateOf("${BoarEngine.systemInfo()}\ncores: ${topology.cores.joinToString { "${it.id}@${it.maxKhz / 1000}MHz" }}\nbig: ${topology.bigCores}\n")
         val models = modelFiles()
@@ -116,7 +117,7 @@ class BenchActivity : ComponentActivity() {
         val loadMs = (System.nanoTime() - t0) / 1e6
         say("loaded ${model.name} in ${"%.0f".format(loadMs)} ms · ${s.info}")
         val out = JSONObject()
-            .put("model", model.name).put("params", JSONObject(params.toJson())).put("loadMs", loadMs)
+            .put("model", model.name).put("params", JSONObject(params.toJson())).put("cpuBuild", BoarEngine.loadedVariant).put("loadMs", loadMs)
             .put("device", android.os.Build.MODEL).put("soc", if (android.os.Build.VERSION.SDK_INT >= 31) android.os.Build.SOC_MODEL else android.os.Build.HARDWARE)
             .put("system", BoarEngine.systemInfo())
         when (run) {
