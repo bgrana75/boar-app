@@ -60,7 +60,7 @@ class BenchActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        BoarEngine.init(applicationInfo.nativeLibraryDir)
+        BoarEngine.init(applicationInfo.nativeLibraryDir, intent.getStringExtra("variant"))
         val topology = CpuTopology.read()
         val log = mutableStateOf("${BoarEngine.systemInfo()}\ncores: ${topology.cores.joinToString { "${it.id}@${it.maxKhz / 1000}MHz" }}\nbig: ${topology.bigCores}\n")
         val models = modelFiles()

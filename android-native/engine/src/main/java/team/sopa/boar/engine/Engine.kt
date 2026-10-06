@@ -187,12 +187,15 @@ class LlamaSession private constructor(private var handle: Long, val params: Eng
 object BoarEngine {
     @Volatile private var initialized = false
 
-    /** Loads the ggml CPU backend best suited to this phone (from the app's native library folder). Call once. */
-    fun init(nativeLibraryDir: String) {
+    /**
+     * Loads the ggml CPU backend best suited to this phone (from the app's native library folder), or the one
+     * [cpuVariant] names ("android_armv8.6_1") for benchmarks. Call once per process.
+     */
+    fun init(nativeLibraryDir: String, cpuVariant: String? = null) {
         if (initialized) return
         synchronized(this) {
             if (!initialized) {
-                BoarNative.backendInit(nativeLibraryDir)
+                BoarNative.backendInit(nativeLibraryDir, cpuVariant)
                 initialized = true
             }
         }

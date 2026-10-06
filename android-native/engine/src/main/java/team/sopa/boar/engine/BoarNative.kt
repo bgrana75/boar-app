@@ -11,7 +11,7 @@ internal object BoarNative {
         System.loadLibrary("boar_engine")
     }
 
-    external fun backendInit(nativeLibDir: String)
+    external fun backendInit(nativeLibDir: String, cpuVariant: String?)
     external fun systemInfo(): String
     external fun load(path: String, paramsJson: String): Long
     external fun free(handle: Long)

@@ -131,12 +131,19 @@ int sync_prompt(Session * s, const std::vector<llama_token> & tokens) {
 extern "C" {
 
 JNIEXPORT void JNICALL
-Java_team_sopa_boar_engine_BoarNative_backendInit(JNIEnv * env, jobject, jstring nativeLibDir) {
+Java_team_sopa_boar_engine_BoarNative_backendInit(JNIEnv * env, jobject, jstring nativeLibDir, jstring jvariant) {
     llama_log_set(log_cb, nullptr);
     std::string dir = jstr(env, nativeLibDir);
-    ggml_backend_load_all_from_path(dir.c_str());  // picks the best CPU variant (dotprod, i8mm, sve2, sme)
+    std::string variant = jvariant ? jstr(env, jvariant) : "";
+    if (variant.empty()) {
+        ggml_backend_load_all_from_path(dir.c_str());  // picks the best CPU variant (dotprod, i8mm, sve2, sme)
+    } else {
+        // One named variant (e.g. "android_armv8.6_1"), for benchmarking variants against each other.
+        std::string lib = dir + "/libggml-cpu-" + variant + ".so";
+        if (!ggml_backend_load(lib.c_str())) LOGE("could not load %s", lib.c_str());
+    }
     llama_backend_init();
-    LOGI("backends loaded from %s", dir.c_str());
+    LOGI("backends loaded from %s (%s)", dir.c_str(), variant.empty() ? "best" : variant.c_str());
 }
 
 JNIEXPORT jstring JNICALL
