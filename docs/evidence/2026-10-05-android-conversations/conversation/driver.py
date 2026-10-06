@@ -1,13 +1,24 @@
 #!/usr/bin/env python3
 """Before/after measurement driver for BOAR over adb (Pixel 6a).
 
-  bench.py cool                      wait until battery <= BENCH_MAX_C (33.0) C and thermal status 0
-  bench.py convo LABEL               run the 6-question conversation in the real chat UI
-  bench.py pull LABEL SINCE_MS       export telemetry + answers created after SINCE_MS (phone clock)
-  bench.py now                       print the phone clock in ms
+  ANDROID_SERIAL=<adb serial> driver.py COMMAND
+
+  driver.py cool                     wait until battery <= BENCH_MAX_C (33.0) C and thermal status 0
+  driver.py chat                     bring the app back to the chat screen
+  driver.py convo LABEL              run the 6-question conversation in the real chat UI, then pull
+  driver.py pull LABEL SINCE_MS      export telemetry + answers created after SINCE_MS (phone clock)
+  driver.py now                      print the phone clock in ms
+
+Writes bench/LABEL.convo.json (timing of each send) and bench/LABEL.results.json (telemetry rows and chat
+messages) next to this script. The conversation/*.json files in this folder are the results.json files,
+renamed to LABEL.json.
 """
 import json, os, re, sqlite3, subprocess, sys, time
 
+USAGE = __doc__.split("\n\n", 1)[1].rstrip()
+NARGS = {"cool": 0, "chat": 0, "now": 0, "convo": 1, "pull": 2}
+if "ANDROID_SERIAL" not in os.environ or len(sys.argv) < 2 or len(sys.argv) - 2 < NARGS.get(sys.argv[1], 99):
+    sys.exit(USAGE)
 D = os.environ["ANDROID_SERIAL"]  # adb serial of the phone
 PKG = "team.sopa.aoair"
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -213,7 +224,8 @@ def convo(label):
                 time.sleep(10)
     record["temp_after"] = thermal()
     path = os.path.join(OUT, f"{label}.convo.json")
-    json.dump(record, open(path, "w"), indent=2)
+    with open(path, "w") as fh:
+        json.dump(record, fh, indent=2)
     log(f"wrote {path}")
     return since
 
@@ -223,7 +235,8 @@ def pull(label, since_ms):
     os.makedirs(dbdir, exist_ok=True)
     for f in ["aoair_knowledge.db", "aoair_knowledge.db-wal", "aoair_knowledge.db-shm"]:
         data = adb("exec-out", f"run-as {PKG} cat files/SQLite/{f}", binary=True, check=False)
-        open(os.path.join(dbdir, f), "wb").write(data)
+        with open(os.path.join(dbdir, f), "wb") as fh:
+            fh.write(data)
     c = sqlite3.connect(os.path.join(dbdir, "aoair_knowledge.db"))
     c.row_factory = sqlite3.Row
     rows = [dict(r) for r in c.execute(
@@ -233,7 +246,8 @@ def pull(label, since_ms):
         "SELECT created_at, role, text FROM chat_messages WHERE created_at >= ? ORDER BY created_at", (int(since_ms),))]
     out = {"label": label, "since_ms": int(since_ms), "telemetry": rows, "messages": msgs}
     path = os.path.join(OUT, f"{label}.results.json")
-    json.dump(out, open(path, "w"), indent=2)
+    with open(path, "w") as fh:
+        json.dump(out, fh, indent=2)
     log(f"{label}: {len(rows)} telemetry rows, {len(msgs)} messages -> {path}")
     for r in rows:
         print(f"  {r['model_id']:<30} ttft {r['ttft_ms'] or 0:>8.0f} ms  tok/s {r['tok_per_sec'] or 0:>5.1f}  tokens {r['tokens_generated'] or 0:>4}  total {r['total_latency_ms'] or 0:>8.0f} ms  {r['outcome']}")

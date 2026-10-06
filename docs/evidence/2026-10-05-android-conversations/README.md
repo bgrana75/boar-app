@@ -22,7 +22,7 @@ one new chat, six questions in order, a 30 s pause after each answer, personalit
 1. How do vaccines work?  2. What are the side effects?  3. Who proposed the theory of evolution by natural selection?
 4. What did he publish?  5. Compare the French Revolution and the Industrial Revolution.  6. What is the capital of Australia?
 
-Each `*.json` holds the telemetry rows (`ttft_ms`, `tok_per_sec`, `tokens_generated`, `total_latency_ms`, …) and the
+Each `*.json` (the driver's `bench/LABEL.results.json`, renamed) holds the telemetry rows (`ttft_ms`, `tok_per_sec`, `tokens_generated`, `total_latency_ms`, …) and the
 chat messages of the run. "Finished" means the answer ends with sentence punctuation instead of mid-sentence.
 
 | Run | Model | What changed | Code | First word, median | Slowest decode | Longest answer | Tokens | Finished |
