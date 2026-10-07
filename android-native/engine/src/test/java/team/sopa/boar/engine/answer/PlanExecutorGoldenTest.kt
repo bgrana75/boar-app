@@ -58,7 +58,7 @@ class PlanExecutorGoldenTest {
             var k = 0
             val engine = object : StepEngine {
                 override val hasChatTemplate = template
-                override suspend fun generate(req: GenRequest, onToken: ((String) -> Unit)?): Pair<String, GenerationMetrics?> {
+                override suspend fun generate(req: GenRequest, onToken: ((String) -> Unit)?): GenResult {
                     val want = calls[n++]
                     val msgs = want["messages"]!!.let { if (it is JsonNull) null else it.jsonArray.map { m -> m.jsonObject["role"]!!.str + ": " + m.jsonObject["content"]!!.str } }
                     assertEquals("$where call $n messages", msgs, req.messages?.map { "${it.role}: ${it.content}" })
@@ -70,7 +70,7 @@ class PlanExecutorGoldenTest {
                     assertEquals("$where call $n stops", stops, req.stops)
                     val reply = want["reply"]!!.str!!
                     onToken?.invoke(reply)
-                    return reply to null
+                    return GenResult(reply)
                 }
             }
             val host = object : ModelHost {

@@ -58,4 +58,12 @@ class EngineTweaksTest {
         assertNull(CpuVariants.resolve("android_armv8.6_1", f3Features))
         assertEquals("android_armv8.6_1", CpuVariants.resolve("android_armv9.2_2", x6Features))
     }
+
+    @Test fun `generation time limit - Auto grows with the token cap, the user can fix it or turn it off`() {
+        assertEquals(120_000L + 512 * 500L, EngineTweaks().stageTimeoutMs(512))
+        assertEquals(120_000L + 2048 * 500L, EngineTweaks().stageTimeoutMs(2048))
+        assertEquals(300_000L, EngineTweaks(stageTimeoutSeconds = 300).stageTimeoutMs(2048))
+        assertNull(EngineTweaks(stageTimeoutSeconds = 0).stageTimeoutMs(2048))
+        assertEquals(EngineTweaks(stageTimeoutSeconds = 0), EngineTweaks.fromJson(EngineTweaks(stageTimeoutSeconds = 0).toJson()))
+    }
 }

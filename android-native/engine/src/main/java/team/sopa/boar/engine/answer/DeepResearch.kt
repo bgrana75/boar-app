@@ -1,5 +1,6 @@
 package team.sopa.boar.engine.answer
 
+import team.sopa.boar.engine.EngineTweaks
 import team.sopa.boar.engine.rag.Chunk
 import team.sopa.boar.engine.rag.ConversationHistory
 import team.sopa.boar.engine.rag.Js
@@ -10,7 +11,8 @@ import team.sopa.boar.engine.routing.ResearchContext
  * for a model without one (src/inference/format.ts taskRequest). Returns the text; [onToken] streams it.
  */
 fun interface StageGenerator {
-    suspend fun generate(system: String, user: String, nPredict: Int, temperature: Float, onToken: ((String) -> Unit)?): String
+    /** Generates within [timeoutMs] (null: no limit); on timeout it returns what was written and reports it through [GenResult.timedOut]. */
+    suspend fun generate(system: String, user: String, nPredict: Int, temperature: Float, timeoutMs: Long?, onToken: ((String) -> Unit)?): GenResult
 }
 
 enum class ResearchStage { DECOMPOSING, RESEARCHING, SYNTHESIZING }
@@ -30,6 +32,8 @@ data class ResearchResult(
     val citations: List<Chunk>,
     /** The same sources as retrieved, before compression. */
     val fullCitations: List<Chunk>,
+    /** A stage hit its time limit and was cut off. */
+    val timedOut: Boolean = false,
 )
 
 /**
@@ -41,6 +45,8 @@ class DeepResearch(
     private val generator: StageGenerator,
     /** retrieve(query, topK) */
     private val retrieve: (String, Int) -> List<Chunk>,
+    /** Time limit for a stage of n tokens (EngineTweaks.stageTimeoutMs, the user's setting); null = none. */
+    private val timeoutFor: (Int) -> Long? = EngineTweaks()::stageTimeoutMs,
 ) {
     suspend fun run(
         query: String,
@@ -55,6 +61,7 @@ class DeepResearch(
         onSources: (List<Chunk>) -> Unit = {},
         onPartialSources: (List<Chunk>, Int, Int) -> Unit = { _, _, _ -> },
     ): ResearchResult {
+        timedOut = false
         onProgress(ResearchProgress(ResearchStage.DECOMPOSING))
         val subQuestions = decompose(query)
         val subResults = ArrayList<Pair<String, String>>()
@@ -63,7 +70,7 @@ class DeepResearch(
         val fullById = LinkedHashMap<String, Chunk>()
         fun full() = all.map { fullById[it.chunkId] ?: it }
         for ((i, sub) in subQuestions.withIndex()) {
-            if (shouldStop()) return ResearchResult("", subQuestions, all, full())
+            if (shouldStop()) return ResearchResult("", subQuestions, all, full(), timedOut)
             onProgress(ResearchProgress(ResearchStage.RESEARCHING, i, subQuestions.size, sub))
             val retrieved = retrieve(sub, retrieveK)
             for (c in retrieved) fullById.putIfAbsent(c.chunkId, c)
@@ -79,10 +86,18 @@ class DeepResearch(
             subResults += sub to researchSubQuestion(sub, chunks, merged.indexMaps[i], systemPrompt, history)
         }
         onSources(all)
-        if (shouldStop()) return ResearchResult("", subQuestions, all, full())
+        if (shouldStop()) return ResearchResult("", subQuestions, all, full(), timedOut)
         onProgress(ResearchProgress(ResearchStage.SYNTHESIZING))
         val answer = synthesize(query, subResults, systemPrompt, maxTokens, onToken, answerLanguage)
-        return ResearchResult(answer, subQuestions, all, full())
+        return ResearchResult(answer, subQuestions, all, full(), timedOut)
+    }
+
+    private var timedOut = false
+
+    private suspend fun stage(system: String, user: String, nPredict: Int, temperature: Float, onToken: ((String) -> Unit)?): String {
+        val r = generator.generate(system, user, nPredict, temperature, timeoutFor(nPredict), onToken)
+        if (r.timedOut) timedOut = true
+        return r.text
     }
 
     private suspend fun decompose(query: String): List<String> {
@@ -90,7 +105,7 @@ class DeepResearch(
             "together cover it well (e.g. technical analysis, counter-arguments, " +
             "practical implications — whichever fit this question). One per line, " +
             "no numbering, no extra commentary.\n\nQuestion: $query\n\nSub-questions:"
-        return parseSubQuestions(generator.generate("You plan research.", prompt, 150, 0.4f, null), query)
+        return parseSubQuestions(stage("You plan research.", prompt, 150, 0.4f, null), query)
     }
 
     private suspend fun researchSubQuestion(sub: String, chunks: List<Chunk>, globalIndices: List<Int>, systemPrompt: String?, history: ConversationHistory?): String {
@@ -99,7 +114,7 @@ class DeepResearch(
         val system = "${instructionOf(systemPrompt)} Answer the question in a short paragraph using the context. " +
             "Cite sources with the exact bracket numbers shown in the context, like [3]. " +
             "If the context does not cover it, say so."
-        return generator.generate(system, "$summary${context}Question: $sub", 300, 0.6f, null)
+        return stage(system, "$summary${context}Question: $sub", 300, 0.6f, null)
     }
 
     private suspend fun synthesize(query: String, results: List<Pair<String, String>>, systemPrompt: String?, maxTokens: Int, onToken: (String) -> Unit, answerLanguage: String?): String {
@@ -108,7 +123,7 @@ class DeepResearch(
             "Compare them, reconcile any conflicts, and write one unified, well-reasoned answer. " +
             "Keep the source numbers exactly as the perspectives cite them, like [3]; do not renumber or invent sources."
         val language = answerLanguage?.let { Js.trim(it) }?.takeIf { it.isNotEmpty() }?.let { "\n\n($it)" } ?: ""
-        return generator.generate(system, "Original question: $query\n\n$perspectives$language", maxTokens, 0.6f, onToken)
+        return stage(system, "Original question: $query\n\n$perspectives$language", maxTokens, 0.6f, onToken)
     }
 
     companion object {

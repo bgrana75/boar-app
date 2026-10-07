@@ -1,5 +1,6 @@
 package team.sopa.boar.engine.answer
 
+import team.sopa.boar.engine.EngineTweaks
 import team.sopa.boar.engine.GenerationMetrics
 import team.sopa.boar.engine.rag.Chunk
 import team.sopa.boar.engine.rag.Compress
@@ -10,13 +11,21 @@ import team.sopa.boar.engine.rag.RagPure
 import team.sopa.boar.engine.routing.Router
 import team.sopa.boar.engine.routing.RoutingStepType
 
-/** One generation: role messages for the model's chat template, or a plain prompt with stop words. */
-data class GenRequest(val messages: List<PromptMessage>?, val prompt: String?, val nPredict: Int, val temperature: Float, val stops: List<String>)
+/**
+ * One generation: role messages for the model's chat template, or a plain prompt with stop words. [timeoutMs]: stop
+ * the generation after this long and keep what it wrote (EngineTweaks.stageTimeoutMs), null for none.
+ */
+data class GenRequest(
+    val messages: List<PromptMessage>?, val prompt: String?, val nPredict: Int, val temperature: Float, val stops: List<String>,
+    val timeoutMs: Long? = null,
+)
+
+data class GenResult(val text: String, val metrics: GenerationMetrics? = null, val timedOut: Boolean = false)
 
 /** A loaded model the executor generates with. */
 interface StepEngine {
     val hasChatTemplate: Boolean
-    suspend fun generate(req: GenRequest, onToken: ((String) -> Unit)?): Pair<String, GenerationMetrics?>
+    suspend fun generate(req: GenRequest, onToken: ((String) -> Unit)?): GenResult
 }
 
 /** Which model is resident, and loading one by catalog id (null when it isn't installed). */
@@ -55,7 +64,7 @@ data class PipelineResult(
 /**
  * Runs a routing plan step by step (port of src/routing/executor.ts executeRoutingPlan): retrieve and compress, generate
  * with the plan's model (loading it if another is resident), verify the answer against its sources. Timing and residency
- * are measured around the generate step only. The 2-minute step timeout of the TS is not ported yet.
+ * are measured around the generate step only. Each generation has the user's time limit (Auto grows with its token cap).
  */
 class PlanExecutor(
     private val host: ModelHost,
@@ -63,6 +72,8 @@ class PlanExecutor(
     /** classifyTask's name for the query (the compression budget depends on it). */
     private val classify: (String) -> String,
     private val clock: () -> Double = { System.nanoTime() / 1e6 },
+    /** Time limit for a generation of n tokens (EngineTweaks.stageTimeoutMs, the user's setting); null = none. */
+    private val timeoutFor: (Int) -> Long? = EngineTweaks()::stageTimeoutMs,
 ) {
     suspend fun execute(
         plan: Router.RoutingPlan,
@@ -90,10 +101,11 @@ class PlanExecutor(
         var format: String? = null
         var metrics: GenerationMetrics? = null
         var captured = false
+        var timedOut = false
 
         fun crossSwitch() = residentBefore != null && host.residentFilename() != residentBefore
         fun result(stopped: Boolean) = PipelineResult(
-            answer, plan, citations, verification, warnings.toList(), steps, switches, false, crossSwitch(), residency, loadMs,
+            answer, plan, citations, verification, warnings.toList(), steps, switches, timedOut, crossSwitch(), residency, loadMs,
             ttft, retrievalMs, before, after, genLatency, format, metrics, stopped,
         )
 
@@ -138,16 +150,17 @@ class PlanExecutor(
                     // Every model uses its own chat template when its GGUF ships one ("if-embedded").
                     format = if (e.hasChatTemplate) "chat-template" else "plain"
                     val req = if (e.hasChatTemplate) {
-                        GenRequest(RagPure.assembleChatMessages(input.query, citations, input.systemPrompt, input.history, input.styleReminder), null, step.maxTokens ?: 512, 0.7f, emptyList())
+                        GenRequest(RagPure.assembleChatMessages(input.query, citations, input.systemPrompt, input.history, input.styleReminder), null, step.maxTokens ?: 512, 0.7f, emptyList(), step.timeoutMs ?: timeoutFor(step.maxTokens ?: 512))
                     } else {
-                        GenRequest(null, RagPure.assemblePrompt(input.query, citations, input.systemPrompt, input.history, input.styleReminder), step.maxTokens ?: 512, 0.7f, AnswerPipeline.DEFAULT_STOP_SEQUENCES)
+                        GenRequest(null, RagPure.assemblePrompt(input.query, citations, input.systemPrompt, input.history, input.styleReminder), step.maxTokens ?: 512, 0.7f, AnswerPipeline.DEFAULT_STOP_SEQUENCES, step.timeoutMs ?: timeoutFor(step.maxTokens ?: 512))
                     }
                     var first: Double? = null
                     val start = clock()
-                    val (text, m) = e.generate(req) { piece -> if (first == null) first = clock(); onToken?.invoke(piece) }
+                    val g = e.generate(req) { piece -> if (first == null) first = clock(); onToken?.invoke(piece) }
                     val end = clock()
-                    answer = text
-                    metrics = m
+                    answer = g.text
+                    metrics = g.metrics
+                    if (g.timedOut) timedOut = true
                     ttft = (first ?: end) - start
                     genLatency = end - start - ttft!!
                     steps++
@@ -157,11 +170,13 @@ class PlanExecutor(
                     val e = engine!!
                     val input2 = Verify.buildInput(input.query, answer, citations)
                     val req = if (e.hasChatTemplate) {
-                        GenRequest(listOf(PromptMessage("system", Verify.INSTRUCTION), PromptMessage("user", input2)), null, step.maxTokens ?: 200, 0.2f, emptyList())
+                        GenRequest(listOf(PromptMessage("system", Verify.INSTRUCTION), PromptMessage("user", input2)), null, step.maxTokens ?: 200, 0.2f, emptyList(), step.timeoutMs ?: timeoutFor(step.maxTokens ?: 200))
                     } else {
-                        GenRequest(null, "${Verify.INSTRUCTION}\n\n$input2\n\nVerdict:", step.maxTokens ?: 200, 0.2f, AnswerPipeline.DEFAULT_STOP_SEQUENCES)
+                        GenRequest(null, "${Verify.INSTRUCTION}\n\n$input2\n\nVerdict:", step.maxTokens ?: 200, 0.2f, AnswerPipeline.DEFAULT_STOP_SEQUENCES, step.timeoutMs ?: timeoutFor(step.maxTokens ?: 200))
                     }
-                    verification = Verify.parse(e.generate(req, null).first)
+                    val g = e.generate(req, null)
+                    if (g.timedOut) timedOut = true
+                    verification = Verify.parse(g.text)
                     steps++
                 }
                 else -> warnings += "unhandled-step-type:${step.type.value}"

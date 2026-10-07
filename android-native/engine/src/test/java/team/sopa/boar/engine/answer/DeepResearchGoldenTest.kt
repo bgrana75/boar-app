@@ -69,13 +69,13 @@ class DeepResearchGoldenTest {
             val retrievals = r["retrievals"]!!.jsonArray.map { it.jsonObject }
             var n = 0
             var k = 0
-            val generator = StageGenerator { system, user, nPredict, temperature, onToken ->
+            val generator = StageGenerator { system, user, nPredict, temperature, _, onToken ->
                 val want = calls[n++]
                 assertEquals("$q stage $n system", want["system"]!!.str, system)
                 assertEquals("$q stage $n user", want["user"]!!.str, user)
                 assertEquals("$q stage $n nPredict", want["nPredict"]!!.jsonPrimitive.int, nPredict)
                 assertEquals("$q stage $n temperature", want["temperature"]!!.jsonPrimitive.double, temperature.toDouble(), 1e-6)
-                want["reply"]!!.str!!.also { onToken?.invoke(it) }
+                GenResult(want["reply"]!!.str!!.also { onToken?.invoke(it) })
             }
             val retrieve = { sq: String, topK: Int ->
                 val want = retrievals[k++]

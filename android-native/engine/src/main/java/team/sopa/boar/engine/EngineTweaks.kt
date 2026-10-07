@@ -34,7 +34,19 @@ data class EngineTweaks(
     val loadMode: LoadMode? = null,
     /** MoE expert streaming. Auto: off. */
     val lazyExperts: LazyMode? = null,
+    /**
+     * Time limit for one generation (an answer, a Deep Research stage, a verification), in seconds; 0 = no limit. Auto:
+     * [autoStageTimeoutMs], which grows with the token cap, so a long answer or Deep Research isn't cut off on a slow
+     * phone. A generation that hits the limit keeps what it wrote.
+     */
+    val stageTimeoutSeconds: Int? = null,
 ) {
+    /** The limit for a generation of up to [nPredict] tokens, or null for none. */
+    fun stageTimeoutMs(nPredict: Int): Long? = when {
+        stageTimeoutSeconds == null -> autoStageTimeoutMs(nPredict)
+        stageTimeoutSeconds <= 0 -> null
+        else -> stageTimeoutSeconds * 1000L
+    }
     data class Resolved(val params: EngineParams, val cpuSetting: String, val notes: List<String>)
 
     /** The engine parameters these tweaks give on this phone, with a note for each value that was clamped. */
@@ -76,6 +88,12 @@ data class EngineTweaks(
     fun toJson(): String = json.encodeToString(serializer(), this)
 
     companion object {
+        /**
+         * Auto time limit: 2 minutes (the TS app's fixed STEP_TIMEOUT_MS) plus half a second per token allowed, i.e. room
+         * for a phone generating at 2 tok/s. 512 tokens: about 6 minutes; 2048: about 19.
+         */
+        fun autoStageTimeoutMs(nPredict: Int): Long = 120_000L + nPredict.coerceAtLeast(0) * 500L
+
         const val AUTO = "auto"
         const val ALL = "all"
         private val json = Json { ignoreUnknownKeys = true; encodeDefaults = false }
