@@ -65,10 +65,30 @@ data class CatalogAsset(
     val bundled: Boolean = false,
     val format: String? = null,
     val requires: List<String> = emptyList(),
+    /** Curated capabilities (manifest.ts); null = not yet assessed, never an assumed capability set. */
+    val capabilities: ModelCapabilities? = null,
 ) {
     /** Short UI name ("Qwen3 4B"), falling back to the technical label (manifest.ts displayNameOf). */
     val shortName: String get() = displayName ?: label
 }
+
+/**
+ * What a model is good for (src/routing/types.ts ModelCapabilities): explicit, curated data, never inferred from the
+ * filename. [roles] holds ModelRole strings ("fast", "general", ...); empty = not yet assessed, not "no roles".
+ */
+@Serializable
+data class ModelCapabilities(
+    val roles: List<String> = emptyList(),
+    val supportsStructuredOutput: Boolean? = null,
+    val supportsLongContext: Boolean? = null,
+    val supportsToolLikeTasks: Boolean? = null,
+    /** True only for models confirmed to need (and embed) a chat template; absent = the plain prompt shape. */
+    val usesChatTemplate: Boolean? = null,
+    /** Rough working-set estimate, same basis as the engine's pre-flight RAM check. */
+    val estimatedMemoryMb: Double? = null,
+    /** Only from real telemetry or a benchmark, never invented. */
+    val estimatedTokensPerSecond: Double? = null,
+)
 
 @Serializable
 data class SetupTier(
