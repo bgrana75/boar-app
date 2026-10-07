@@ -32,6 +32,11 @@ class KnowledgeBase(private val db: SqlDatabase) {
         db.execute("INSERT OR REPLACE INTO chunk_embeddings (chunk_id, embedding, dim) VALUES (?, ?, ?)", listOf(chunk.chunkId, toBlob(embedding), embedding.size))
     }
 
+    /** Seed chunks (bundled corpus and corpus packs, not imported documents). */
+    fun seedChunkCount(): Long = db.query("SELECT COUNT(*) FROM chunks WHERE collection_id IS NULL") { it.long(0) }.first()
+
+    fun hasChunk(chunkId: String): Boolean = db.query("SELECT 1 FROM chunks WHERE chunk_id = ?", listOf(chunkId)) { 1 }.isNotEmpty()
+
     fun chunkCount(): Long = db.query("SELECT COUNT(*) FROM chunks") { it.long(0) }.first()
 
     /** Deletes seed-corpus chunks (never user-imported ones) by id. */
