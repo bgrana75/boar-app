@@ -19,3 +19,6 @@ SQLite — https://sqlite.org
 Zstandard — https://github.com/facebook/zstd
   BSD License, Copyright (c) Meta Platforms, Inc. and affiliates. Decompression sources under
   engine/src/main/cpp/zstd.
+
+Baloo 2 and Lexend fonts — https://github.com/EkType/Baloo2, https://github.com/googlefonts/lexend
+  SIL Open Font License 1.1. Copied from the @expo-google-fonts packages into app/src/main/res/font.
