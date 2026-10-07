@@ -18,6 +18,8 @@ data class Chunk(
     val similarity: Double? = null,
     /** A what-to-do passage (a preparedness pack section like "During an earthquake"). */
     val action: Boolean = false,
+    /** Share of the question's words its title and best sentence cover (0..1), what the UI shows; set by compression. */
+    val relevance: Double? = null,
 )
 
 enum class MatchType { LEXICAL, SEMANTIC, HYBRID }

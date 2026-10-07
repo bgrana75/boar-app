@@ -106,10 +106,22 @@ object Compress {
         }
     }
 
+    private const val NAMED_ARTICLE_RELEVANCE = 0.75
+    private val TITLE_SEP = Regex(":${Js.WS}+")
+    private val TRAILING_PAREN = Regex("${Js.WS}*\\([^)]*\\)${Js.WS}*\\z")
+
     /** ~4 characters per token (UTF-16 length, as in JS). */
     fun approxTokens(s: String): Int = ceil(s.length / 4.0).toInt()
 
-    fun compress(query: String, chunks: List<Chunk>, tokenBudget: Int = 1200, maxSentencesPerChunk: Int = 4, pinned: Set<String> = emptySet(), count: (String) -> Int = ::approxTokens): Result {
+    /**
+     * [openingMustFitWithMatch]: a new passage is opened only when its first sentence fits together with the one that
+     * matched (src/rag/compress.ts); false keeps src/routing/context.ts's older check (title and match only).
+     * [withRelevance]: set [Chunk.relevance] as context.ts's compressContext does.
+     */
+    fun compress(
+        query: String, chunks: List<Chunk>, tokenBudget: Int = 1200, maxSentencesPerChunk: Int = 4, pinned: Set<String> = emptySet(),
+        count: (String) -> Int = ::approxTokens, openingMustFitWithMatch: Boolean = true, withRelevance: Boolean = false,
+    ): Result {
         val tokensBefore = chunks.sumOf { count("${it.title}\n${it.body}") }
         val scored = scoreSentences(query, chunks)
         val anyMatch = scored.any { it.score > 0 }
@@ -143,7 +155,7 @@ object Compress {
             if (set == null) {
                 val titleCost = count(chunks[s.chunkIndex].title) + 1
                 val first = scored.firstOrNull { it.chunkIndex == s.chunkIndex && it.position == 0 }
-                val firstCost = if (first != null && first != s) cost(first) else 0
+                val firstCost = if (openingMustFitWithMatch && first != null && first != s) cost(first) else 0
                 if (used + titleCost + firstCost + cost(s) > tokenBudget) continue
                 used += titleCost
                 if (first != null && first != s && !tryAdd(first)) { used -= titleCost; continue }
@@ -165,9 +177,21 @@ object Compress {
         val kept = picked.keys.sortedWith(
             compareByDescending<Int> { if (it in pinnedIdx) 1 else 0 }.thenByDescending { chunkBest[it] }.thenBy { it },
         )
+        val qTerms = tokenizeTerms(query).distinct()
+        // The article the question names never reads as weak (context.ts NAMED_ARTICLE_RELEVANCE).
+        fun shownRelevance(ci: Int): Double {
+            val best = scored.filter { it.chunkIndex == ci }.sortedByDescending { it.score }.firstOrNull()
+            val have = (tokenizeTerms(chunks[ci].title) + tokenizeTerms(best?.text ?: "")).toSet()
+            val share = if (qTerms.isNotEmpty()) qTerms.count { it in have }.toDouble() / qTerms.size else 0.0
+            val named = chunks[ci].title.split(TITLE_SEP).any { seg ->
+                val st = tokenizeTerms(seg.replace(TRAILING_PAREN, ""))
+                st.isNotEmpty() && st.all { it in qTerms }
+            }
+            return if (named) maxOf(share, NAMED_ARTICLE_RELEVANCE) else share
+        }
         val out = kept.map { ci ->
             val body = picked[ci]!!.sorted().joinToString(" ") { p -> scored.first { it.chunkIndex == ci && it.position == p }.text }
-            chunks[ci].copy(body = body)
+            chunks[ci].copy(body = body, relevance = if (withRelevance && anyMatch) shownRelevance(ci) else chunks[ci].relevance)
         }
         return Result(out, kept, tokensBefore, out.sumOf { count("${it.title}\n${it.body}") })
     }
