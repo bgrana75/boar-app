@@ -89,6 +89,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(modelLabel = services.activeModel()?.shortName, noModel = services.activeModel() == null) }
     }
 
+    /** After setup or a model change: the active model's name, or that there's none. */
+    fun refreshModel() {
+        _state.update { it.copy(modelLabel = services.activeModel()?.shortName, noModel = services.activeModel() == null) }
+    }
+
     fun setDeepResearch(on: Boolean) {
         services.settings.deepResearchMode = on
         _state.update { it.copy(deepResearch = on) }

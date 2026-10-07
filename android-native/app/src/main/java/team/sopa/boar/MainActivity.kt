@@ -8,6 +8,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import team.sopa.boar.engine.settings.AppSettings
 import team.sopa.boar.ui.settings.DisplayPrefs
 import team.sopa.boar.ui.settings.SettingsScreen
+import team.sopa.boar.setup.SetupViewModel
+import team.sopa.boar.ui.setup.SetupScreen
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalView
 import java.io.File
 import java.util.Locale
 import androidx.activity.ComponentActivity
@@ -49,7 +53,7 @@ import team.sopa.boar.ui.t
 import team.sopa.boar.ui.theme.Boar
 import team.sopa.boar.ui.theme.BoarTheme
 
-/** The app: the chat, past chats and settings in the drawer. Setup and the other screens come next (week 3). */
+/** The app: first-run setup until the required models are on disk, then the chat with past chats and settings in the drawer. */
 class MainActivity : ComponentActivity() {
     /** The app language from settings ("en", "pt"), else the phone's. */
     override fun attachBaseContext(base: Context) {
@@ -79,9 +83,18 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun App(services: BoarServices, prefs: DisplayPrefs, vm: ChatViewModel = viewModel()) {
+private fun App(services: BoarServices, prefs: DisplayPrefs, vm: ChatViewModel = viewModel(), setup: SetupViewModel = viewModel()) {
     val state by vm.state.collectAsState()
-    var screen by rememberSaveable { mutableStateOf("chat") }
+    var screen by rememberSaveable { mutableStateOf(if (setup.ready()) "chat" else "setup") }
+    if (screen == "setup") {
+        val setupState by setup.state.collectAsState()
+        // Downloads pause in the background on MIUI: the screen stays on while setup runs.
+        val view = LocalView.current
+        DisposableEffect(Unit) { view.keepScreenOn = true; onDispose { view.keepScreenOn = false } }
+        BackHandler(setupState.step == 2) { setup.back() }
+        SetupScreen(setupState, setup) { vm.refreshModel(); screen = "chat" }
+        return
+    }
     if (screen == "settings") {
         BackHandler { screen = "chat" }
         SettingsScreen(services, prefs) { screen = "chat" }
