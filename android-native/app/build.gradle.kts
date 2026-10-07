@@ -37,10 +37,23 @@ android {
 
 kotlin { jvmToolchain(17) }
 
+// Data the Expo app ships in the repo's assets/, copied at build time so it stays in one place: the Portuguese name
+// lexicon (assets/lexicon/pt-en.json) and the bundled corpus (assets/corpus).
+val sharedAssets = layout.buildDirectory.dir("generated/sharedAssets")
+val copySharedAssets by tasks.registering(Copy::class) {
+    from(rootProject.file("../assets")) {
+        include("lexicon/pt-en.json", "corpus/*.json")
+    }
+    into(sharedAssets)
+}
+android.sourceSets["main"].assets.srcDir(sharedAssets)
+tasks.named("preBuild") { dependsOn(copySharedAssets) }
+
 dependencies {
     implementation(project(":engine"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.ui)
     implementation(libs.compose.material3)

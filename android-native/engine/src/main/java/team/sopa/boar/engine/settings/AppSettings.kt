@@ -47,6 +47,10 @@ class AppSettings(private val file: File) {
         put("activeModelId", JsonObject(m))
     }
 
+    /** modelRoleAssignments: role ("fast", "general"…) to model id. */
+    fun modelRoleAssignments(): Map<String, String> =
+        (data["modelRoleAssignments"] as? JsonObject)?.mapNotNull { (k, v) -> (v as? JsonPrimitive)?.contentOrNull?.ifEmpty { null }?.let { k to it } }?.toMap() ?: emptyMap()
+
     var personalityId: String? get() = str("personalityId"); set(v) = set("personalityId", v?.let(::JsonPrimitive))
     var customSystemPrompt: String? get() = str("customSystemPrompt"); set(v) = set("customSystemPrompt", v?.let(::JsonPrimitive))
     /** DEFAULT_MAX_TOKENS when unset. */
