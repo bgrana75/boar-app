@@ -13,6 +13,7 @@ const out = join(root, "android-native/app/src/main/assets/boar-data");
 const manifest = await import(join(root, "src/models/manifest.ts"));
 const personalities = await import(join(root, "src/constants/personalities.ts"));
 const evalSet = await import(join(root, "src/eval/evalSet.ts"));
+const suggestions = await import(join(root, "src/ui-android/chat/suggestions.ts"));
 // settings.ts imports Expo modules: its default token cap is read from the source.
 const defaultMaxTokens = Number(/export const DEFAULT_MAX_TOKENS = (\d+);/.exec(readFileSync(join(root, "src/models/settings.ts"), "utf8"))[1]);
 
@@ -28,6 +29,12 @@ const files = {
     defaultId: personalities.DEFAULT_PERSONALITY_ID,
     maxTokensOptions: personalities.MAX_TOKENS_OPTIONS,
     defaultMaxTokens,
+  },
+  // The empty chat's suggested questions: which were validated per model and language, and where their answers come from.
+  "suggestions.json": {
+    validation: suggestions.SUGGESTION_VALIDATION,
+    sources: suggestions.SUGGESTION_SOURCES,
+    minSuggestions: suggestions.MIN_SUGGESTIONS,
   },
   // The device evaluation's questions (scripts/eval-device.mjs sends ids and categories, the app holds the set).
   "eval-set.json": {

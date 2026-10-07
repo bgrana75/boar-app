@@ -125,8 +125,9 @@ const fonts = {
   "lexend_600semibold.ttf": "@expo-google-fonts/lexend/600SemiBold/Lexend_600SemiBold.ttf",
   "lexend_700bold.ttf": "@expo-google-fonts/lexend/700Bold/Lexend_700Bold.ttf",
 };
+const images = ["mascot.png", "boar.png"];
 if (process.argv.includes("--check")) {
-  const stale = !existsSync(ktPath) || readFileSync(ktPath, "utf8") !== kt || Object.keys(fonts).some((f) => !existsSync(join(app, "res/font", f)));
+  const stale = !existsSync(ktPath) || readFileSync(ktPath, "utf8") !== kt || Object.keys(fonts).some((f) => !existsSync(join(app, "res/font", f))) || images.some((f) => !existsSync(join(app, "res/drawable-nodpi", f)));
   if (stale) { console.error("theme out of date: run node scripts/export-native-theme.mjs"); process.exit(1); }
   process.exit(0);
 }
@@ -134,4 +135,7 @@ mkdirSync(dirname(ktPath), { recursive: true });
 writeFileSync(ktPath, kt);
 mkdirSync(join(app, "res/font"), { recursive: true });
 for (const [name, src] of Object.entries(fonts)) copyFileSync(join(root, "node_modules", src), join(app, "res/font", name));
+// The mascot images the Expo screens show (assets/mascot.png in the header, empty chat and answers; boar.png in theme previews).
+mkdirSync(join(app, "res/drawable-nodpi"), { recursive: true });
+for (const img of images) copyFileSync(join(root, "assets", img), join(app, "res/drawable-nodpi", img));
 console.log(`wrote ${ktPath} (${themes.length} themes, ${fields.length} color tokens) and ${Object.keys(fonts).length} fonts`);

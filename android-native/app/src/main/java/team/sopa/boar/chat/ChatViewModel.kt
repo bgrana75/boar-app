@@ -39,8 +39,8 @@ import team.sopa.boar.engine.routing.Profiles
 import team.sopa.boar.engine.routing.RoutingPreset
 import team.sopa.boar.engine.routing.TaskType
 
-/** A source as the chat shows it (and stores with the answer). */
-data class Source(val title: String, val source: String?, val relevance: Double?)
+/** A source as the chat shows it (and stores with the answer): the passage the model read, and its similarity to the question. */
+data class Source(val title: String, val source: String?, val relevance: Double?, val similarity: Double? = null, val docId: String? = null, val body: String = "")
 
 data class UiMessage(
     val id: String,
@@ -71,6 +71,13 @@ data class ChatState(
     val noModel: Boolean = false,
     val deepResearch: Boolean = false,
     val error: String? = null,
+    /** While the model loads or the corpus indexes: the line the Expo app shows under the header (chatScreen.*). */
+    val loadingKey: String? = null,
+    val personalityId: String = "succinct",
+    val toneIcon: String = "",
+    val online: Boolean = false,
+    /** Suggested question keys for the empty chat (chat.suggestions.*). */
+    val suggestions: List<String> = emptyList(),
 )
 
 /**
@@ -85,13 +92,68 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private var job: Job? = null
     @Volatile private var stopRequested = false
 
+    private val suggestionData = team.sopa.boar.engine.chat.Suggestions.parse(app.assets.open("boar-data/suggestions.json").bufferedReader().use { it.readText() })
+
     init {
-        _state.update { it.copy(modelLabel = services.activeModel()?.shortName, noModel = services.activeModel() == null) }
+        refreshModel()
+        refreshTone()
+        watchConnectivity(app)
+        preload()
+    }
+
+    /** Loads the model when the chat opens, as the Expo app does, so the first answer doesn't wait for it. */
+    private fun preload() {
+        if (services.activeModel() == null) return
+        _state.update { it.copy(loadingKey = "chatScreen.mountingWeights") }
+        viewModelScope.launch(Dispatchers.Default) {
+            runCatching { services.activeSession() }
+            _state.update { it.copy(loadingKey = null) }
+        }
+    }
+
+    private fun refreshTone() {
+        val id = services.settings.personalityId ?: services.personalities.defaultId
+        _state.update { it.copy(personalityId = id, toneIcon = services.personalities.get(id).icon) }
+    }
+
+    /** Back from settings: the tone, Deep Research and model may have changed. */
+    fun refreshSettings() {
+        refreshTone()
+        refreshModel()
+        _state.update { it.copy(deepResearch = services.settings.deepResearchMode) }
+    }
+
+    /** The header's tone button: the next style ("custom" only when a custom prompt is written). */
+    fun cycleTone() {
+        val custom = services.settings.customSystemPrompt.orEmpty().isNotBlank()
+        val order = services.personalities.personalities.map { it.id }.filter { it != "custom" || custom }
+        val next = order[(order.indexOf(_state.value.personalityId) + 1) % order.size]
+        services.settings.personalityId = next
+        refreshTone()
+    }
+
+    /** ONLINE / OFFLINE in the header (connectivity.pure.ts isOnline: connected and the internet not known unreachable). */
+    private fun watchConnectivity(app: Application) {
+        val cm = app.getSystemService(android.net.ConnectivityManager::class.java) ?: return
+        fun current() = cm.getNetworkCapabilities(cm.activeNetwork)?.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+        _state.update { it.copy(online = current()) }
+        runCatching {
+            cm.registerDefaultNetworkCallback(object : android.net.ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: android.net.Network) { _state.update { it.copy(online = current()) } }
+                override fun onLost(network: android.net.Network) { _state.update { it.copy(online = current()) } }
+                override fun onCapabilitiesChanged(network: android.net.Network, caps: android.net.NetworkCapabilities) { _state.update { it.copy(online = current()) } }
+            })
+        }
     }
 
     /** After setup or a model change: the active model's name, or that there's none. */
     fun refreshModel() {
-        _state.update { it.copy(modelLabel = services.activeModel()?.shortName, noModel = services.activeModel() == null) }
+        val m = services.activeModel()
+        val lang = getApplication<Application>().resources.configuration.locales[0]?.language
+        val installed = services.catalog.corpusCatalog.filter { services.fileOf(it).isFile }.map { it.id }
+        // shortModelLabel: the catalog label without its parenthesis ("Qwen3-4B-Instruct-2507").
+        val label = m?.label?.replace(Regex("\\s*\\([^)]*\\)"), "")?.replace(Regex("\\s{2,}"), " ")?.trim()?.ifEmpty { m.label.trim() }
+        _state.update { it.copy(modelLabel = label, noModel = m == null, suggestions = suggestionData.forModel(m?.id, lang, installed)) }
     }
 
     fun setDeepResearch(on: Boolean) {
@@ -196,7 +258,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             } catch (e: Throwable) {
                 _state.update { it.copy(error = e.message ?: e.toString()) }
             }
-            val shown = sources.map { Source(it.title, it.source, it.relevance) }
+            val shown = sources.map { Source(it.title, it.source, it.relevance, it.similarity, it.docId, it.body) }
             val stopped = stopRequested
             chats.upsertMessage(sessionId, "assistant", text.toString(), answerId)
             if (shown.isNotEmpty()) chats.setMessageMeta(answerId, metaOf(shown))
@@ -230,13 +292,19 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     }.getOrDefault(0L)
 
     private fun metaOf(sources: List<Source>): String = JsonObject(mapOf("sources" to JsonArray(sources.map { s ->
-        JsonObject(listOfNotNull("title" to JsonPrimitive(s.title), s.source?.let { "source" to JsonPrimitive(it) }, s.relevance?.let { "relevance" to JsonPrimitive(it) }).toMap())
+        JsonObject(listOfNotNull(
+            "title" to JsonPrimitive(s.title), s.source?.let { "source" to JsonPrimitive(it) }, s.relevance?.let { "relevance" to JsonPrimitive(it) },
+            s.similarity?.let { "similarity" to JsonPrimitive(it) }, s.docId?.let { "docId" to JsonPrimitive(it) }, "body" to JsonPrimitive(s.body),
+        ).toMap())
     }))).toString()
 
     private fun sourcesFromMeta(meta: String?): List<Source> = runCatching {
         Json.parseToJsonElement(meta ?: return emptyList()).jsonObject["sources"]!!.jsonArray.map { e ->
             val o = e.jsonObject
-            Source(o["title"]!!.jsonPrimitive.content, o["source"]?.jsonPrimitive?.content, o["relevance"]?.jsonPrimitive?.content?.toDoubleOrNull())
+            Source(
+                o["title"]!!.jsonPrimitive.content, o["source"]?.jsonPrimitive?.content, o["relevance"]?.jsonPrimitive?.content?.toDoubleOrNull(),
+                o["similarity"]?.jsonPrimitive?.content?.toDoubleOrNull(), o["docId"]?.jsonPrimitive?.content, o["body"]?.jsonPrimitive?.content ?: "",
+            )
         }
     }.getOrDefault(emptyList())
 

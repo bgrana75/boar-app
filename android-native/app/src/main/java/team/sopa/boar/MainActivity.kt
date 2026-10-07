@@ -96,8 +96,8 @@ private fun App(services: BoarServices, prefs: DisplayPrefs, vm: ChatViewModel =
         return
     }
     if (screen == "settings") {
-        BackHandler { screen = "chat" }
-        SettingsScreen(services, prefs) { screen = "chat" }
+        BackHandler { vm.refreshSettings(); screen = "chat" }
+        SettingsScreen(services, prefs) { vm.refreshSettings(); screen = "chat" }
         return
     }
     val drawer = rememberDrawerState(DrawerValue.Closed)
@@ -130,7 +130,7 @@ private fun App(services: BoarServices, prefs: DisplayPrefs, vm: ChatViewModel =
             onStop = vm::stop,
             onNewChat = vm::newChat,
             onMenu = { scope.launch { drawer.open() } },
-            onToggleDeepResearch = vm::setDeepResearch,
+            onCycleTone = vm::cycleTone,
             onRate = vm::rate,
         )
     }
