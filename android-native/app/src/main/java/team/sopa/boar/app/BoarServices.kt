@@ -124,6 +124,13 @@ class BoarServices private constructor(private val context: Context) {
 
         /** The loaded session, for the default path (AnswerPipeline). */
         fun current(): LlamaSession? = session
+
+        /** Frees the model; the next answer loads it again (with changed Advanced tweaks, or another model). */
+        suspend fun unload() = lock.withLock {
+            session?.close()
+            session = null
+            filename = null
+        }
     }
 
     /** Loads the active model if it isn't resident; null when no model is installed or it fails to load. */

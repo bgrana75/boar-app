@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Texts of the native app's own screens (not in the Expo app's locales), written by hand. Keys: native.* -->
+<resources>
+    <string name="native_tweaks_title" formatted="false">Advanced tweaks</string>
+    <string name="native_tweaks_intro" formatted="false">Every engine setting, for people who want to try them. Auto is what we measured best on real phones; anything you set here wins. A value your phone can\'t run is adjusted, never fatal.</string>
+    <string name="native_tweaks_auto" formatted="false">Auto</string>
+    <string name="native_tweaks_autoValue" formatted="false">Auto ({{value}})</string>
+    <string name="native_tweaks_resetAll" formatted="false">Reset all to Auto</string>
+    <string name="native_tweaks_appliesNext" formatted="false">Applies from the next answer (the model reloads).</string>
+    <string name="native_tweaks_appliesRestart" formatted="false">Applies after the app restarts.</string>
+    <string name="native_tweaks_adjusted" formatted="false">Adjusted for this phone: {{notes}}</string>
+    <string name="native_tweaks_cpuBuild" formatted="false">CPU build</string>
+    <string name="native_tweaks_cpuBuildNote" formatted="false">Which instruction set the engine runs. Auto skips the SVE build where it reads prompts slower.</string>
+    <string name="native_tweaks_cpuBest" formatted="false">Engine\'s pick</string>
+    <string name="native_tweaks_threads" formatted="false">Threads</string>
+    <string name="native_tweaks_threadsNote" formatted="false">More threads than fast cores pulls in the slow cores and is usually slower.</string>
+    <string name="native_tweaks_threadsBatch" formatted="false">Threads for reading the prompt</string>
+    <string name="native_tweaks_cores" formatted="false">Cores</string>
+    <string name="native_tweaks_coresFast" formatted="false">Fast cores</string>
+    <string name="native_tweaks_coresAll" formatted="false">Any core</string>
+    <string name="native_tweaks_strict" formatted="false">Keep threads on those cores only</string>
+    <string name="native_tweaks_context" formatted="false">Context window (tokens)</string>
+    <string name="native_tweaks_batch" formatted="false">Prompt batch</string>
+    <string name="native_tweaks_microBatch" formatted="false">Micro-batch</string>
+    <string name="native_tweaks_kv" formatted="false">KV cache</string>
+    <string name="native_tweaks_kvNote" formatted="false">Q8_0 and Q4_0 use less memory; on the X6 Pro, Q8_0 with flash attention generated 20% slower.</string>
+    <string name="native_tweaks_flash" formatted="false">Flash attention</string>
+    <string name="native_tweaks_on" formatted="false">On</string>
+    <string name="native_tweaks_off" formatted="false">Off</string>
+    <string name="native_tweaks_load" formatted="false">Model weights</string>
+    <string name="native_tweaks_loadMmap" formatted="false">Mapped from storage</string>
+    <string name="native_tweaks_loadLock" formatted="false">Mapped and locked in RAM</string>
+    <string name="native_tweaks_loadRead" formatted="false">Read into memory</string>
+    <string name="native_tweaks_moe" formatted="false">Stream MoE experts</string>
+    <string name="native_tweaks_timeout" formatted="false">Time limit per generation</string>
+    <string name="native_tweaks_timeoutNote" formatted="false">Auto grows with the max output tokens, so long answers and Deep Research aren\'t cut short. A generation that hits the limit keeps what it wrote.</string>
+    <string name="native_tweaks_noLimit" formatted="false">No limit</string>
+    <string name="native_tweaks_minutes" formatted="false">{{n}} min</string>
+    <string name="native_settings_back" formatted="false">Back</string>
+    <string name="native_settings_textSize" formatted="false">Text size</string>
+    <string name="native_settings_compact" formatted="false">Compact</string>
+    <string name="native_settings_standard" formatted="false">Standard</string>
+    <string name="native_settings_large" formatted="false">Large</string>
+    <string name="native_settings_adaptiveTitle" formatted="false">Adaptive routing</string>
+    <string name="native_settings_adaptiveNote" formatted="false">Picks a model per question from the ones installed, and can check the answer against its sources.</string>
+    <string name="native_drawer_settings" formatted="false">Settings</string>
+</resources>

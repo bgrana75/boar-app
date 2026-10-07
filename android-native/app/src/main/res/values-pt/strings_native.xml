@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Textos das telas próprias do app nativo (fora dos locales do app Expo), escritos à mão. Chaves: native.* -->
+<resources>
+    <string name="native_tweaks_title" formatted="false">Ajustes avançados</string>
+    <string name="native_tweaks_intro" formatted="false">Todos os ajustes do motor, para quem quer experimentar. Auto é o que medimos como melhor em celulares reais; o que você escolher aqui vale. Um valor que o seu celular não roda é ajustado, nunca trava o app.</string>
+    <string name="native_tweaks_auto" formatted="false">Auto</string>
+    <string name="native_tweaks_autoValue" formatted="false">Auto ({{value}})</string>
+    <string name="native_tweaks_resetAll" formatted="false">Voltar tudo para Auto</string>
+    <string name="native_tweaks_appliesNext" formatted="false">Vale a partir da próxima resposta (o modelo recarrega).</string>
+    <string name="native_tweaks_appliesRestart" formatted="false">Vale depois que o app reiniciar.</string>
+    <string name="native_tweaks_adjusted" formatted="false">Ajustado para este celular: {{notes}}</string>
+    <string name="native_tweaks_cpuBuild" formatted="false">Versão para a CPU</string>
+    <string name="native_tweaks_cpuBuildNote" formatted="false">Qual conjunto de instruções o motor usa. Auto evita a versão SVE onde ela lê o prompt mais devagar.</string>
+    <string name="native_tweaks_cpuBest" formatted="false">Escolha do motor</string>
+    <string name="native_tweaks_threads" formatted="false">Threads</string>
+    <string name="native_tweaks_threadsNote" formatted="false">Mais threads do que núcleos rápidos usa os núcleos lentos e costuma ficar mais devagar.</string>
+    <string name="native_tweaks_threadsBatch" formatted="false">Threads para ler o prompt</string>
+    <string name="native_tweaks_cores" formatted="false">Núcleos</string>
+    <string name="native_tweaks_coresFast" formatted="false">Núcleos rápidos</string>
+    <string name="native_tweaks_coresAll" formatted="false">Qualquer núcleo</string>
+    <string name="native_tweaks_strict" formatted="false">Manter as threads só nesses núcleos</string>
+    <string name="native_tweaks_context" formatted="false">Janela de contexto (tokens)</string>
+    <string name="native_tweaks_batch" formatted="false">Lote do prompt</string>
+    <string name="native_tweaks_microBatch" formatted="false">Microlote</string>
+    <string name="native_tweaks_kv" formatted="false">Cache KV</string>
+    <string name="native_tweaks_kvNote" formatted="false">Q8_0 e Q4_0 usam menos memória; no X6 Pro, Q8_0 com flash attention gerou 20% mais devagar.</string>
+    <string name="native_tweaks_flash" formatted="false">Flash attention</string>
+    <string name="native_tweaks_on" formatted="false">Ligado</string>
+    <string name="native_tweaks_off" formatted="false">Desligado</string>
+    <string name="native_tweaks_load" formatted="false">Pesos do modelo</string>
+    <string name="native_tweaks_loadMmap" formatted="false">Mapeados do armazenamento</string>
+    <string name="native_tweaks_loadLock" formatted="false">Mapeados e travados na RAM</string>
+    <string name="native_tweaks_loadRead" formatted="false">Lidos para a memória</string>
+    <string name="native_tweaks_moe" formatted="false">Carregar experts MoE sob demanda</string>
+    <string name="native_tweaks_timeout" formatted="false">Tempo máximo por geração</string>
+    <string name="native_tweaks_timeoutNote" formatted="false">Auto cresce com o máximo de tokens da resposta, para respostas longas e a Pesquisa profunda não serem cortadas. Uma geração que chega ao limite mantém o que já escreveu.</string>
+    <string name="native_tweaks_noLimit" formatted="false">Sem limite</string>
+    <string name="native_tweaks_minutes" formatted="false">{{n}} min</string>
+    <string name="native_settings_back" formatted="false">Voltar</string>
+    <string name="native_settings_textSize" formatted="false">Tamanho do texto</string>
+    <string name="native_settings_compact" formatted="false">Compacto</string>
+    <string name="native_settings_standard" formatted="false">Padrão</string>
+    <string name="native_settings_large" formatted="false">Grande</string>
+    <string name="native_settings_adaptiveTitle" formatted="false">Roteamento adaptativo</string>
+    <string name="native_settings_adaptiveNote" formatted="false">Escolhe um modelo por pergunta entre os instalados e pode conferir a resposta com as fontes.</string>
+    <string name="native_drawer_settings" formatted="false">Configurações</string>
+</resources>
