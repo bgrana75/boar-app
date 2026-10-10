@@ -86,6 +86,7 @@ class ModelsViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 row(a.id) { Row(present = true) }
                 if (a.kind == AssetKind.CORPUS && a.format != "sqlite-pack") index(a)
+                if (a.kind == AssetKind.CORPUS) services.reloadPacks()
             } catch (e: Exception) {
                 row(a.id) { Row(error = e.message ?: e.toString()) }
             }
@@ -126,6 +127,7 @@ class ModelsViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch(Dispatchers.IO) {
             if (a.id == _state.value.activeLlm) services.host.unload()
             if (a.kind == AssetKind.CORPUS && a.format != "sqlite-pack") services.knowledgeBase.deleteSeedChunksWithPrefix(SeedCorpus.chunkIdPrefix(a.id))
+            if (a.kind == AssetKind.CORPUS) services.reloadPacks()
             store.delete(a)
             row(a.id) { Row() }
             refresh()

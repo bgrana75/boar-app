@@ -62,13 +62,23 @@ class BoarServices private constructor(private val context: Context) {
 
     private val embeddingSha = catalog.models.first { it.kind == AssetKind.EMBEDDING && it.required }.sha256
 
+    @Volatile private var openPacks: List<OpenPack>? = null
+
     /** Installed knowledge packs in knowledgePacks()'s order: catalog packs first, then other files by name. */
-    val packs: List<OpenPack> by lazy {
+    val packs: List<OpenPack> get() = openPacks ?: synchronized(this) { openPacks ?: scanPacks().also { openPacks = it } }
+
+    /** After a pack is downloaded or removed: the next search opens the current set. */
+    fun reloadPacks() = synchronized(this) {
+        openPacks?.forEach { p -> runCatching { (p as? OpenPack.Format1)?.db?.close() } }
+        openPacks = null
+    }
+
+    private fun scanPacks(): List<OpenPack> {
         val dir = File(files, "corpus")
         val catalogFiles = catalog.corpusCatalog.filter { it.format == "sqlite-pack" }.map { it.id to File(files, it.filename) }
         val local = dir.listFiles { f -> f.name.endsWith(".sqlite") }.orEmpty().sortedBy { it.name }
             .filter { f -> catalogFiles.none { it.second == f } }.map { "local-${it.name.removeSuffix(".sqlite")}" to it }
-        (catalogFiles + local).filter { it.second.isFile }.mapNotNull { (id, f) ->
+        return (catalogFiles + local).filter { it.second.isFile }.mapNotNull { (id, f) ->
             runCatching {
                 val db = NativeSqlite.open(f.path, readOnly = true)
                 val meta = db.query("SELECT key, value FROM meta") { it.string(0)!! to (it.string(1) ?: "") }.toMap()
