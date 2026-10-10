@@ -80,6 +80,7 @@ fun ChatScreen(
     onMenu: () -> Unit,
     onCycleTone: () -> Unit,
     onRate: (String, String) -> Unit,
+    onDismissCrash: () -> Unit = {},
 ) {
     val c = Boar.colors
     val list = rememberLazyListState()
@@ -94,6 +95,7 @@ fun ChatScreen(
             Header(state, onMenu, onCycleTone, onNewChat)
             if (state.deepResearch) DeepResearchBanner()
             state.loadingKey?.let { LoadingBanner(t(it)) }
+            state.loadCrash?.let { CrashBanner(it, onDismissCrash) }
             if (state.messages.isEmpty()) {
                 Box(Modifier.weight(1f).fillMaxWidth()) {
                     EmptyState(state.suggestions, onAsk = { onSend(it) }, onFill = { input = it })
@@ -218,6 +220,19 @@ private fun DeepResearchBanner() {
         Text(t("chatScreen.deepResearchBanner"), style = Boar.type["mono.xs"].copy(fontSize = 9.sp, letterSpacing = 0.4.sp), color = c.frontierText, fontWeight = FontWeight.Bold)
     }
     Box(Modifier.fillMaxWidth().height(1.dp).background(c.frontierBadgeBorder))
+}
+
+@Composable
+private fun CrashBanner(crash: team.sopa.boar.engine.models.LoadGuard.Crash, onDismiss: () -> Unit) {
+    val c = Boar.colors
+    val text = if (crash.fallbackLabel.isNotEmpty()) t("native.chat.loadCrashed", "crashed" to crash.crashedLabel, "fallback" to crash.fallbackLabel)
+    else t("native.chat.loadCrashedNoFallback", "crashed" to crash.crashedLabel)
+    Row(Modifier.fillMaxWidth().background(c.amberBgSubtle).clickable(onClick = onDismiss).padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Text(text, style = Boar.type.subtext, color = c.amber400, modifier = Modifier.weight(1f))
+        Text("✕", style = Boar.type["mono.sm"], color = c.amber400)
+    }
+    Box(Modifier.fillMaxWidth().height(1.dp).background(c.amberBorder))
 }
 
 @Composable

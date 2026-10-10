@@ -50,7 +50,7 @@ const PT_EN: Array<[RegExp, string]> = [
   [/inc[êe]ndio|fogo/i, "fire"],
   [/evacua[çc][ãa]o|evacuar/i, "evacuation"],
   [/nariz/i, "nose"],
-  [/crian[çc]a|beb[êe]/i, "child"],
+  [/crian[çc]a|beb[êe]s?(?![a-zà-ÿ])/i, "child"],
   [/parar|estancar|interromper/i, "stop"],
   [/tratar|tratamento|cuidar/i, "treat"],
   [/prevenir|evitar/i, "prevent"],
