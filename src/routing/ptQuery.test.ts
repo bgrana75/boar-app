@@ -46,4 +46,12 @@ describe("canonicalHealthTerms", () => {
     expect(canonicalHealthTerms("My arm is bleeding a lot, what do I do?")).toBe("bleeding");
     expect(canonicalHealthTerms("My nose is bleeding, what do I do?")).toBe("nosebleed nose bleed");
   });
+
+  it("bebê is a baby, beber is to drink", () => {
+    expect(englishSearchTerms("Como tornar a água segura para beber?")).toBe("safe drinking water");
+    expect(englishSearchTerms("Quanta água devo beber por dia?") ?? "").not.toContain("child");
+    expect(englishSearchTerms("Meu bebê está com febre, o que fazer?")).toContain("child");
+    expect(englishSearchTerms("Meu bebe está com febre")).toContain("child");
+    expect(englishSearchTerms("Os bebês podem tomar sol?")).toContain("child");
+  });
 });

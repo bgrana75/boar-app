@@ -31,6 +31,9 @@ jobs:
           distribution: temurin
           java-version: "17"
       - uses: android-actions/setup-android@v3
+        with:
+          # The default list includes "tools", which sdkmanager no longer has (the job failed there).
+          packages: platform-tools
       # The NDK and CMake the engine module pins, read from its build file so they can't drift.
       - name: Install NDK and CMake
         run: |

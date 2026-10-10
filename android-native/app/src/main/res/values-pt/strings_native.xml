@@ -48,4 +48,10 @@
     <string name="native_drawer_evaluation" formatted="false">🧪 Avaliação</string>
     <string name="native_eval_adaptiveLater" formatted="false">O roteamento adaptativo ainda não está no app nativo; por isso só aparecem modelos fixos.</string>
     <string name="native_eval_keepScreenOn" formatted="false">Mantenha a tela ligada e o app aberto durante a execução. O modelo do chat é descarregado antes, para os dois não dividirem a memória.</string>
+    <string name="native_chat_loadCrashed" formatted="false">{{crashed}} fechou o app ao carregar (memória insuficiente); o BOAR está respondendo com {{fallback}}. Escolha-o de novo no Catálogo de Modelos para tentar outra vez.</string>
+    <string name="native_chat_loadCrashedNoFallback" formatted="false">{{crashed}} fechou o app ao carregar (memória insuficiente). Escolha um modelo menor no Catálogo de Modelos.</string>
+    <string name="native_tweaks_thinking" formatted="false">Pensar antes de responder</string>
+    <string name="native_tweaks_thinkingNote" formatted="false">Deixa um modelo que pensa raciocinar primeiro. Auto: desligado, para o limite de tokens da resposta não ir para o raciocínio.</string>
+    <string name="native_tweaks_repack" formatted="false">Pesos reempacotados</string>
+    <string name="native_tweaks_repackNote" formatted="false">Auto: ligado (o prompt é lido cerca de 2x mais rápido). Depois de um carregamento sem memória, o próximo mantém os pesos mapeados do armazenamento.</string>
 </resources>
