@@ -108,7 +108,7 @@ class SetupViewModel(app: Application) : AndroidViewModel(app) {
     /** Runs step 4 again after it failed (the embedder didn't load, or seeding stopped). */
     fun retryIndex() {
         if (job?.isActive == true) return
-        job = viewModelScope.launch { index() }
+        job = viewModelScope.launch(Dispatchers.IO) { index() }
     }
 
     private suspend fun index() {

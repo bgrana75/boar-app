@@ -71,6 +71,7 @@ class NativeSqlite private constructor(private var db: Long) : SqlDatabase {
     }
 
     override fun exec(script: String) = lock.withLock {
+        if (db == 0L) throw SqlException(SQLITE_MISUSE, "database is closed")
         val rc = SqliteNative.exec(db, script.toByteArray())
         if (rc != SQLITE_OK) throw error(rc)
     }
@@ -100,6 +101,8 @@ class NativeSqlite private constructor(private var db: Long) : SqlDatabase {
     }
 
     private fun prepare(sql: String, args: List<Any?>): Long {
+        // A pack closed by reloadPacks while a search still holds it: an error the retriever skips, never a native crash.
+        if (db == 0L) throw SqlException(SQLITE_MISUSE, "database is closed")
         val st = SqliteNative.prepare(db, sql.toByteArray())
         if (st < 0) throw SqlException((-st).toInt(), "${msg()} in: ${sql.take(200)}")
         args.forEachIndexed { k, v ->
@@ -135,6 +138,7 @@ class NativeSqlite private constructor(private var db: Long) : SqlDatabase {
 
     companion object {
         private const val SQLITE_OK = 0
+        private const val SQLITE_MISUSE = 21
         private const val SQLITE_ROW = 100
         private const val SQLITE_DONE = 101
         private const val SQLITE_NULL = 5

@@ -83,7 +83,8 @@ class DocumentsViewModel(app: Application) : AndroidViewModel(app) {
     /** exportCollection: the collection's passages as JSON, handed to the share sheet. */
     suspend fun exportIntent(col: KnowledgeBase.Collection): android.content.Intent = kotlinx.coroutines.withContext(Dispatchers.IO) {
         val app = getApplication<Application>()
-        val dir = java.io.File(app.cacheDir, "exports").apply { mkdirs() }
+        // A folder per export: the file keeps the collection's name, and a later export can't overwrite one still being shared.
+        val dir = java.io.File(app.cacheDir, "exports/${System.currentTimeMillis()}").apply { mkdirs() }
         val file = java.io.File(dir, DocumentImport.slug(col.name).ifEmpty { "collection" } + ".json")
         file.writeText(DocumentImport.exportJson(services.knowledgeBase.collectionDocs(col.id)))
         val uri = androidx.core.content.FileProvider.getUriForFile(app, "${app.packageName}.files", file)
