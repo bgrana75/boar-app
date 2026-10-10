@@ -38,6 +38,10 @@ const edge = [
   "Tell me about Australia", "\"Darwin\" books?", "«Quem» é ele?", "E isso funciona?", "Quais são os efeitos colaterais?",
   "O que ele publicou?", "Who is she?", "why", "And then?", "How about EIP-1559?", "More details", "Itself?", "it's fine",
   "Him", "Write 3 examples", "what about 2024", "and the side effects", "Ela é casada?", "Ícone?", "Ozone layer", "  that one  ",
+  // CodeRabbit on #80: existential "there", and a name as the first word.
+  "Is there an effective treatment for malaria in adults?", "Are there any side effects?", "There's a cure?", "there are many",
+  "What happened there?", "Were they there last week?", "Is it there?", "Australia capital?", "EIP-1559?", "Canberra?",
+  "«Darwin» books?", "Summarize the effects", "Há cura?", "What’s the dose?", "Quais são os livros?", "NATO members?",
 ];
 const all = [...new Set([...queries, ...conversation, ...edge])];
 

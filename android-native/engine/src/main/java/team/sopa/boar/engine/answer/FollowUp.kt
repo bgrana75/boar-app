@@ -18,11 +18,47 @@ import team.sopa.boar.engine.rag.Js
  *   that finds nothing. A question that finds sources keeps them, and one with a name never borrows another topic.
  */
 object FollowUp {
-    /** Words that only make sense with an earlier subject (English and Portuguese). */
+    /** Words that only make sense with an earlier subject (English and Portuguese); "there" is checked apart ([thereAsPlace]). */
     private val POINTS_BACK = Regex(
-        "(?:^|[^\\p{L}])(he|she|it|its|they|them|their|theirs|him|his|her|hers|this|that|these|those|there|ele|ela|eles|elas|dele|dela|deles|delas|isso|isto|aquilo|nele|nela|esse|essa|esses|essas)(?![\\p{L}])",
+        "(?:^|[^\\p{L}])(he|she|it|its|they|them|their|theirs|him|his|her|hers|this|that|these|those|ele|ela|eles|elas|dele|dela|deles|delas|isso|isto|aquilo|nele|nela|esse|essa|esses|essas)(?![\\p{L}])",
         RegexOption.IGNORE_CASE,
     )
+
+    /** Words around an existential "there" ("Is there a cure?", "There are two kinds"), which points at nothing earlier. */
+    private val EXISTENTIAL_BEFORE = setOf("is", "are", "was", "were", "be", "been", "isn't", "aren't", "wasn't", "weren't")
+    private val EXISTENTIAL_AFTER = setOf(
+        "is", "are", "was", "were", "be", "been", "isn't", "aren't", "wasn't", "weren't", "will", "would", "could", "might",
+        "may", "must", "seem", "seems", "appear", "appears", "exist", "exists", "remain", "remains", "used",
+    )
+    private val NOT_WORD = Regex("[^\\p{L}']+")
+
+    /**
+     * "there" as a place ("What happened there?", "Were they there last week?", "There?"), not the existential "is there"
+     * of a question that brings its own subject ("Is there an effective treatment for malaria?").
+     */
+    private fun thereAsPlace(query: String): Boolean {
+        val words = query.lowercase().replace('\u2019', '\'').split(NOT_WORD).filter { it.isNotEmpty() }
+        return words.withIndex().any { (i, w) -> w == "there" && words.getOrNull(i - 1) !in EXISTENTIAL_BEFORE && words.getOrNull(i + 1) !in EXISTENTIAL_AFTER }
+    }
+
+    /** Words a question or request starts with, capitalized only because they open it (English and Portuguese). */
+    private val OPENERS = setOf(
+        "what", "whats", "who", "whos", "whom", "whose", "which", "when", "whens", "where", "wheres", "why",
+        "whys", "how", "hows", "is", "are", "was", "were", "am", "be", "do", "does", "did",
+        "can", "could", "should", "would", "will", "shall", "may", "might", "must", "have", "has", "had",
+        "tell", "explain", "describe", "compare", "list", "give", "show", "define", "summarize", "summarise", "name", "find",
+        "write", "help", "please", "and", "but", "or", "so", "then", "also", "now", "ok", "okay",
+        "i", "you", "we", "they", "he", "she", "it", "there", "theres", "here", "heres", "a",
+        "an", "the", "any", "some", "my", "your", "in", "on", "at", "for", "of", "to",
+        "from", "with", "about", "between", "after", "before", "during", "if", "o", "os", "as", "um",
+        "uma", "uns", "umas", "qual", "quais", "quem", "como", "quando", "onde", "por", "porque", "porquê",
+        "que", "quê", "e", "mas", "ou", "então", "também", "agora", "me", "fale", "explique", "descreva",
+        "compare", "liste", "diga", "mostre", "defina", "resuma", "é", "são", "foi", "foram", "era", "há",
+        "tem", "têm", "existe", "existem", "eu", "você", "voce", "nós", "ele", "ela", "isso", "isto",
+        "no", "na", "nos", "nas", "do", "da", "dos", "das", "de", "em", "para", "com",
+        "sobre", "entre", "depois", "antes", "durante", "se",
+    )
+    private val AFTER_WORD = Regex("[^\\p{L}0-9]+.*$")
 
     /** At most this many content words for a question to borrow the previous one's topic when it finds nothing. */
     const val SHORT_FOLLOW_UP_TERMS = 3
@@ -51,14 +87,21 @@ object FollowUp {
         return null
     }
 
-    /** A capitalized word after the first one: a name the question brings itself ("Australia", "EIP-1559"). */
+    /**
+     * A name the question brings itself ("Australia", "EIP-1559"): a capitalized word or one starting with a digit. The first
+     * word counts too ("Australia capital?"), unless it is one a question usually opens with.
+     */
     private fun namesItsOwnSubject(query: String): Boolean =
-        Js.trim(query).split(SPACES).drop(1).any { CAPITAL_OR_DIGIT.containsMatchIn(OPENING_MARK.replaceFirst(it, "")) }
+        Js.trim(query).split(SPACES).withIndex().any { (i, w) ->
+            val bare = OPENING_MARK.replaceFirst(w, "")
+            CAPITAL_OR_DIGIT.containsMatchIn(bare) &&
+                (i > 0 || AFTER_WORD.replaceFirst(bare.lowercase().replace('\u2019', '\'').replace("'", ""), "") !in OPENERS)
+        }
 
     fun plan(query: String, history: ConversationHistory?): Plan {
         val previous = previousQuestion(query, history) ?: return Plan()
         val combined = "$previous ${Js.trim(query)}"
-        if (POINTS_BACK.containsMatchIn(query)) return Plan(direct = combined, previous = previous)
+        if (POINTS_BACK.containsMatchIn(query) || thereAsPlace(query)) return Plan(direct = combined, previous = previous)
         if (Compress.tokenizeTerms(query).size <= SHORT_FOLLOW_UP_TERMS && !namesItsOwnSubject(query)) return Plan(fallback = combined)
         return Plan()
     }
