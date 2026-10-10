@@ -53,7 +53,7 @@ data class EngineTweaks(
     fun resolve(topology: CpuTopology): Resolved {
         val notes = ArrayList<String>()
         val n = topology.cores.size.coerceAtLeast(1)
-        val big = topology.bigCores.ifEmpty { topology.cores.map { it.id } }
+        val big = topology.autoCores.ifEmpty { topology.cores.map { it.id } }
         fun clamp(name: String, v: Int, lo: Int, hi: Int): Int = v.coerceIn(lo, hi).also { if (it != v) notes += "$name $v → $it (allowed $lo–$hi)" }
 
         val coreIds: List<Int>? = when (cores) {

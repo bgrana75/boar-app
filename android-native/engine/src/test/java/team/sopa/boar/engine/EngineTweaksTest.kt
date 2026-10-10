@@ -24,6 +24,43 @@ class EngineTweaksTest {
         assertTrue(EngineTweaks().isAuto)
     }
 
+    /** Cores from (count, max kHz) groups, numbered from 0 in the order given (sysfs lists the little cores first). */
+    private fun soc(vararg groups: Pair<Int, Long>): CpuTopology {
+        var id = 0
+        return CpuTopology(groups.flatMap { (n, khz) -> List(n) { CpuTopology.Core(id++, khz) } })
+    }
+
+    @Test fun `Auto threads - 4 on the fast cores of every layout, never the little ones`() {
+        // Tensor G1 (Pixel 6, 6a, 6 Pro): 4x A55 1.80 + 2x A76 2.25 + 2x X1 2.80 GHz. bigCores keeps only the 2 X1.
+        val g1 = soc(4 to 1_803_000L, 2 to 2_253_000L, 2 to 2_802_000L)
+        // Tensor G2 (Pixel 7, 7a, 7 Pro): 4x A55 1.80 + 2x A78 2.35 + 2x X1 2.85 GHz.
+        val g2 = soc(4 to 1_803_000L, 2 to 2_348_000L, 2 to 2_850_000L)
+        // Snapdragon 870 (POCO F3): 4x A55 1.80 + 3x A77 2.42 + 1x A77 3.19 GHz.
+        val sd870 = soc(4 to 1_804_800L, 3 to 2_419_200L, 1 to 3_187_200L)
+        // Tensor G3 (Pixel 8): 4x A510 1.70 + 4x A715 2.45 + 1x X3 2.91 GHz.
+        val g3 = soc(4 to 1_704_000L, 4 to 2_450_000L, 1 to 2_910_000L)
+        // 6 little + 2 big (Helio G99 class).
+        val sixTwo = soc(6 to 2_000_000L, 2 to 2_200_000L)
+        // One cluster, or no frequency readable.
+        val flat = soc(8 to 0L)
+
+        assertEquals(listOf(6, 7), g1.bigCores)
+        assertEquals(listOf(4, 5, 6, 7), g1.autoCores)
+        assertEquals(listOf(4, 5, 6, 7), g2.autoCores)
+        assertEquals(listOf(4, 5, 6, 7), sd870.autoCores)
+        assertEquals(listOf(4, 5, 6, 7), x6.autoCores)
+        assertEquals(listOf(4, 5, 6, 7, 8), g3.autoCores)
+        assertEquals(listOf(6, 7), sixTwo.autoCores)
+        assertEquals((0..7).toList(), flat.autoCores)
+
+        for (t in listOf(g1, g2, sd870, x6, g3, flat)) assertEquals(4, EngineTweaks().resolve(t).params.threads)
+        assertEquals("4,5,6,7", EngineTweaks().resolve(g1).params.cpus)
+        assertEquals(2, EngineTweaks().resolve(sixTwo).params.threads)
+        // The user's own setting still wins.
+        assertEquals(2, EngineTweaks(threads = 2, cores = "6,7").resolve(g1).params.threads)
+        assertEquals("6,7", EngineTweaks(threads = 2, cores = "6,7").resolve(g1).params.cpus)
+    }
+
     @Test fun `every knob can be set, and impossible values are clamped with a note`() {
         val r = EngineTweaks(threads = 64, cores = "all", contextTokens = 100, batch = 256, microBatch = 1024, kvCache = KvType.Q8_0, flashAttention = FlashAttn.ON).resolve(x6)
         assertEquals(8, r.params.threads)
