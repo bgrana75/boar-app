@@ -41,7 +41,8 @@ import java.io.File
  * The native app's side of scripts/eval-device.mjs, byte-compatible with the Expo app's (src/eval/deviceEvalRequest.ts):
  * takes files/eval/requests/pending.json, reports in <requestId>.status.json, writes eval/<runId>.jsonl and
  * .run.json. Runs the legacy pipeline (the fixed-model answer path); adaptive routing and the "answer" pipeline
- * are reported as not supported yet. Debug builds only (the caller checks).
+ * are reported as not supported yet. Request polling is for debug builds only (the caller checks); [runConfigs]
+ * also backs the Evaluation screen.
  */
 class DeviceEvalRunner(
     private val context: Context,
@@ -84,13 +85,16 @@ class DeviceEvalRunner(
         true
     }
 
-    private fun installedModels(): List<Pair<ModelRef, File>> {
+    /** Installed language models from the catalog, in catalog order. */
+    fun installedModels(): List<Pair<ModelRef, File>> {
         val catalog = Json.parseToJsonElement(asset("catalog.json")).jsonObject["models"]!!.jsonArray.map { it.jsonObject }
         return catalog.filter { it["kind"]!!.jsonPrimitive.content == "llm" }.mapNotNull { m ->
             val f = File(files, m["filename"]!!.jsonPrimitive.content)
             if (f.isFile) ModelRef(m["id"]!!.jsonPrimitive.content, m["label"]!!.jsonPrimitive.content) to f else null
         }
     }
+
+    fun evalSets(): EvalSets = EvalSets.parse(asset("eval-set.json"))
 
     private suspend fun run(request: EvalRequest) {
         val installed = installedModels()
@@ -99,7 +103,7 @@ class DeviceEvalRunner(
             writeStatus(request.requestId, "state" to "failed", "error" to "this native build runs the legacy pipeline only", "installedModels" to installedIds)
             return
         }
-        val sets = EvalSets.parse(asset("eval-set.json"))
+        val sets = evalSets()
         val resolved = DeviceEval.resolve(request, installed.map { it.first }, sets.evalSet, "Adaptive routing", sets.extraSets)
         if (resolved is Resolved.Err) {
             writeStatus(request.requestId, "state" to "failed", "error" to resolved.error, "installedModels" to installedIds)
@@ -110,58 +114,100 @@ class DeviceEvalRunner(
         val total = resolved.configs.size * resolved.queries.size
         writeStatus(request.requestId, "state" to "accepted", "configs" to configs, "total" to total, "completed" to 0, "installedModels" to installedIds)
         log("[EVAL] device request ${request.requestId}: ${configs.joinToString(", ")} x ${resolved.queries.size} queries")
+        var completed = 0
+        try {
+            val result = runConfigs(resolved.configs, resolved.queries, object : Listener {
+                override fun onProgress(p: Progress) = writeStatus(request.requestId, "state" to "running", "configs" to configs, "total" to total,
+                    "completed" to completed, "current" to "${p.config.id} / ${p.query.id}", "installedModels" to installedIds)
+                override fun onRow(row: JsonObject) { completed++ }
+            })
+            writeStatus(request.requestId, "state" to "done", "configs" to configs, "total" to total, "completed" to result.rows.size, "runId" to result.runId,
+                "resultPath" to "files/eval/${result.runId}.jsonl", "stopped" to result.stopped, "installedModels" to installedIds)
+        } catch (e: Throwable) {
+            writeStatus(request.requestId, "state" to "failed", "configs" to configs, "total" to total, "completed" to completed, "error" to (e.message ?: e.toString()), "installedModels" to installedIds)
+            throw e
+        }
+    }
 
+    class Progress(val configIndex: Int, val configCount: Int, val queryIndex: Int, val queryCount: Int, val config: EvalConfig, val query: EvalQuery)
+    class RunResult(val runId: String, val rows: List<JsonObject>, val file: File, val stopped: Boolean)
+    interface Listener {
+        fun onProgress(p: Progress) {}
+        fun onRow(row: JsonObject) {}
+    }
+
+    @Volatile private var stopRequested = false
+    @Volatile private var running: LlamaSession? = null
+
+    /** Stops after the current answer, which is cut short and recorded as cancelled; the rows so far stay saved. */
+    fun stop() {
+        stopRequested = true
+        running?.cancel()
+    }
+
+    /**
+     * Answers every query with every configuration, one model loaded at a time, saving eval/<runId>.jsonl after each
+     * row (evalHarness.runEvaluation). Used by device requests and the Evaluation screen.
+     */
+    suspend fun runConfigs(configs: List<EvalConfig>, queries: List<EvalQuery>, listener: Listener): RunResult = withContext(Dispatchers.IO) {
+        stopRequested = false
         val runId = DeviceEval.newRunId()
         evalDir.mkdirs()
         val rowsFile = File(evalDir, "$runId.jsonl")
         val rows = ArrayList<JsonObject>()
+        val installed = installedModels()
         val personalities = Personalities.parse(asset("personalities.json"))
         val systemPrompt = personalities.get(personalities.defaultId).systemPrompt
         val maxTokens = personalities.defaultMaxTokens
         val topology = CpuTopology.read()
         val retrieval = openRetrieval(topology)
         try {
-            var completed = 0
-            for (config in resolved.configs) {
+            run@ for ((ci, config) in configs.withIndex()) {
                 var session: LlamaSession? = null
                 var loadMs = 0.0
                 var residency = "cold"
-                for (q in resolved.queries) {
-                    val current = "${config.id} / ${q.id}"
-                    writeStatus(request.requestId, "state" to "running", "configs" to configs, "total" to total, "completed" to completed, "current" to current, "installedModels" to installedIds)
-                    atomicWrite(File(evalDir, "$runId.run.json"), json(
-                        "runId" to runId, "configs" to configs, "queries" to resolved.queries.map { it.id }, "current" to current,
-                    ).toString())
-                    val row = when (config) {
-                        is EvalConfig.Adaptive -> failureRow(runId, config, q, personalities.defaultId, maxTokens, "adaptive routing is not in the native build yet")
-                        is EvalConfig.Model -> {
-                            if (session == null) {
-                                val file = installed.first { it.first.id == config.modelId }.second
-                                val t0 = System.nanoTime()
-                                session = LlamaSession.load(file.absolutePath, EngineTweaks().resolve(topology).params)
-                                loadMs = (System.nanoTime() - t0) / 1e6
-                            } else {
-                                residency = "resident"
-                                loadMs = 0.0
+                try {
+                    for ((qi, q) in queries.withIndex()) {
+                        if (stopRequested) break@run
+                        val current = "${config.id} / ${q.id}"
+                        listener.onProgress(Progress(ci, configs.size, qi, queries.size, config, q))
+                        atomicWrite(File(evalDir, "$runId.run.json"), json(
+                            "runId" to runId, "configs" to configs.map { it.id }, "queries" to queries.map { it.id }, "current" to current,
+                        ).toString())
+                        val row = when (config) {
+                            is EvalConfig.Adaptive -> failureRow(runId, config, q, personalities.defaultId, maxTokens, "adaptive routing is not in the native build yet")
+                            is EvalConfig.Model -> {
+                                if (session == null) {
+                                    val file = installed.firstOrNull { it.first.id == config.modelId }?.second
+                                    val t0 = System.nanoTime()
+                                    session = file?.let { LlamaSession.load(it.absolutePath, EngineTweaks().resolve(topology).params) }
+                                    loadMs = (System.nanoTime() - t0) / 1e6
+                                } else {
+                                    residency = "resident"
+                                    loadMs = 0.0
+                                }
+                                val s = session
+                                if (s == null) failureRow(runId, config, q, personalities.defaultId, maxTokens, "model failed to load")
+                                else {
+                                    running = s
+                                    val r = answerRow(s, retrieval, runId, config, q, personalities.defaultId, systemPrompt, maxTokens, residency, loadMs)
+                                    running = null
+                                    if (stopRequested) JsonObject(r + ("outcome" to JsonPrimitive("cancelled"))) else r
+                                }
                             }
-                            val s = session
-                            if (s == null) failureRow(runId, config, q, personalities.defaultId, maxTokens, "model failed to load")
-                            else answerRow(s, retrieval, runId, config, q, personalities.defaultId, systemPrompt, maxTokens, residency, loadMs)
                         }
+                        rows += row
+                        atomicWrite(rowsFile, rows.joinToString("") { it.toString() + "\n" })
+                        listener.onRow(row)
+                        log("[EVAL] ${q.id}: ${row["outcome"]} ${row["tokPerSec"] ?: ""}")
                     }
-                    rows += row
-                    completed++
-                    atomicWrite(rowsFile, rows.joinToString("") { it.toString() + "\n" })
-                    log("[EVAL] ${q.id}: ${row["outcome"]} ${row["tokPerSec"] ?: ""}")
+                } finally {
+                    running = null
+                    session?.close()
                 }
-                session?.close()
             }
             File(evalDir, "$runId.run.json").delete()
-            writeStatus(request.requestId, "state" to "done", "configs" to configs, "total" to total, "completed" to rows.size, "runId" to runId,
-                "resultPath" to "files/eval/$runId.jsonl", "stopped" to false, "installedModels" to installedIds)
-        } catch (e: Throwable) {
-            writeStatus(request.requestId, "state" to "failed", "configs" to configs, "total" to total, "completed" to rows.size, "error" to (e.message ?: e.toString()), "installedModels" to installedIds)
-            throw e
+            RunResult(runId, rows, rowsFile, stopRequested)
         } finally {
             retrieval?.close()
         }
@@ -266,6 +312,34 @@ class DeviceEvalRunner(
 
     companion object {
         const val TAG = "BOAR_EVAL"
+
+        /** evalRowsToCsv: the same columns, arrays joined with "|". */
+        val CSV_COLUMNS = listOf("runId", "evalSetVersion", "configId", "configLabel", "routingPreset", "personalityId", "maxTokens",
+            "queryId", "category", "query", "modelId", "promptFormat", "taskType", "adaptiveRoutingUsed", "retrievalUsed",
+            "retrievedTitles", "expectedKbTitles", "expectedKbHit", "reasonCodes", "modelSwitches", "crossMessageModelSwitch",
+            "modelResidency", "modelLoadMs", "ttftMs", "retrievalMs", "contextTokensBefore", "contextTokensAfter",
+            "generationLatencyMs", "promptTokens", "promptMs", "cachedTokens", "predictedTokens", "predictedMs", "totalLatencyMs",
+            "tokensGenerated", "tokPerSec", "peakRssBytes", "outcome", "errorMessage", "timedOut", "answer", "createdAt")
+
+        fun toCsv(rows: List<JsonObject>): String =
+            (listOf(CSV_COLUMNS.joinToString(",")) + rows.map { r -> CSV_COLUMNS.joinToString(",") { csvCell(r[it]) } }).joinToString("\n")
+
+        private fun csvCell(v: kotlinx.serialization.json.JsonElement?): String {
+            val s = when (v) {
+                null, kotlinx.serialization.json.JsonNull -> return ""
+                is JsonArray -> v.joinToString("|") { cellText(it) }
+                else -> cellText(v)
+            }
+            return if (s.contains(Regex("[\",\n]"))) "\"" + s.replace("\"", "\"\"") + "\"" else s
+        }
+
+        /** String(value) for a JSON value: whole numbers without ".0", as JavaScript prints them. */
+        private fun cellText(v: kotlinx.serialization.json.JsonElement): String {
+            val p = v as? JsonPrimitive ?: return v.toString()
+            if (p.isString) return p.content
+            val d = p.content.toDoubleOrNull()
+            return if (d != null && d == Math.floor(d) && !d.isInfinite() && Math.abs(d) < 1e21 && p.content.contains('.')) d.toLong().toString() else p.content
+        }
     }
 }
 

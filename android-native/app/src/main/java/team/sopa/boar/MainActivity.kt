@@ -13,6 +13,8 @@ import team.sopa.boar.models.ModelsViewModel
 import team.sopa.boar.documents.DocumentsViewModel
 import team.sopa.boar.ui.documents.DocumentsScreen
 import team.sopa.boar.ui.about.AboutScreen
+import team.sopa.boar.ui.eval.EvaluationScreen
+import team.sopa.boar.eval.EvaluationViewModel
 import team.sopa.boar.ui.models.ModelsScreen
 import team.sopa.boar.ui.setup.SetupScreen
 import androidx.compose.runtime.DisposableEffect
@@ -114,6 +116,16 @@ private fun App(services: BoarServices, prefs: DisplayPrefs, vm: ChatViewModel =
         DocumentsScreen(docsState, docs) { screen = "chat" }
         return
     }
+    if (screen == "evaluation") {
+        val eval: EvaluationViewModel = viewModel()
+        val evalState by eval.state.collectAsState()
+        // A run takes many minutes: the screen stays on, and back does nothing until it ends (as Done hides).
+        val view = LocalView.current
+        DisposableEffect(evalState.running) { view.keepScreenOn = evalState.running; onDispose { view.keepScreenOn = false } }
+        BackHandler { if (!evalState.running) { vm.refreshModel(); screen = "chat" } }
+        EvaluationScreen(evalState, eval, chatBusy = state.answeringId != null) { vm.refreshModel(); screen = "chat" }
+        return
+    }
     if (screen == "about") {
         BackHandler { screen = "chat" }
         AboutScreen { screen = "chat" }
@@ -139,6 +151,8 @@ private fun App(services: BoarServices, prefs: DisplayPrefs, vm: ChatViewModel =
                         modifier = Modifier.fillMaxWidth().clickable { screen = "models"; scope.launch { drawer.close() } }.padding(8.dp))
                     Text("📄 " + t("modelSetupScreen.sections.knowledgeBase"), style = Boar.type.body, color = Boar.colors.textSecondary,
                         modifier = Modifier.fillMaxWidth().clickable { screen = "documents"; scope.launch { drawer.close() } }.padding(8.dp))
+                    Text(t("native.drawer.evaluation"), style = Boar.type.body, color = Boar.colors.textSecondary,
+                        modifier = Modifier.fillMaxWidth().clickable { screen = "evaluation"; scope.launch { drawer.close() } }.padding(8.dp))
                     Text("🐗 " + t("aboutScreen.title"), style = Boar.type.body, color = Boar.colors.textSecondary,
                         modifier = Modifier.fillMaxWidth().clickable { screen = "about"; scope.launch { drawer.close() } }.padding(8.dp))
                     Text("⚙ " + t("native.drawer.settings"), style = Boar.type.body, color = Boar.colors.textSecondary,
