@@ -134,7 +134,9 @@ class PlanExecutor(
             when (step.type) {
                 RoutingStepType.RETRIEVE -> {
                     val t0 = clock()
-                    val c = Compress.forAnswer(input.query, retrieve(input.query, AnswerPipeline.ANSWER_CONTEXT_CHUNKS), classify(input.query))
+                    // A follow-up ("What did he publish?") is searched with the previous question (FollowUp).
+                    val found = FollowUp.search(input.query, input.history) { retrieve(it, AnswerPipeline.ANSWER_CONTEXT_CHUNKS) }
+                    val c = Compress.forAnswer(found.searchedFor, found.chunks, classify(input.query))
                     retrievalMs = clock() - t0
                     citations = c.chunks
                     before = c.tokensBefore

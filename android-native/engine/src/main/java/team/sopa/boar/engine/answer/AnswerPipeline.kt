@@ -68,8 +68,10 @@ class AnswerPipeline(
         if (retrieved) {
             emit(AnswerEvent.Stage(AnswerStage.RETRIEVING))
             val t0 = clock()
+            // A follow-up ("What did he publish?") is searched with the previous question (FollowUp).
+            val found = FollowUp.search(req.query, req.history) { retrieve(it, ANSWER_CONTEXT_CHUNKS) }
             // Only the sentences that answer: a shorter prompt brings the first word sooner.
-            val c = Compress.forAnswer(req.query, retrieve(req.query, ANSWER_CONTEXT_CHUNKS), task)
+            val c = Compress.forAnswer(found.searchedFor, found.chunks, task)
             retrievalMs = clock() - t0
             sources = c.chunks
             before = c.tokensBefore
