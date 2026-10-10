@@ -141,6 +141,9 @@ class BoarServices private constructor(private val context: Context) {
         private var session: LlamaSession? = null
         private var filename: String? = null
         private var residentId: String? = null
+        private var residentRepacked = false
+        /** Models that stalled with repacked weights in this process: mapped from storage until the app restarts (#73). */
+        private val keepMapped = java.util.Collections.synchronizedSet(HashSet<String>())
 
         override fun residentFilename(): String? = filename
         override fun filenameOf(modelId: String): String? = catalog.byId(modelId)?.takeIf { fileOf(it).isFile }?.filename
@@ -148,14 +151,16 @@ class BoarServices private constructor(private val context: Context) {
         override suspend fun load(modelId: String): StepEngine? = lock.withLock {
             val asset = catalog.byId(modelId)?.takeIf { fileOf(it).isFile } ?: return null
             val tweaks = settings.engineTweaks
-            if (filename != asset.filename || session == null) {
+            // A stall while repacked: reload as the mapped file before the next generation (the caller waits on the lock).
+            val reloadMapped = filename == asset.filename && residentRepacked && asset.id in keepMapped && tweaks.weightRepack != true
+            if (filename != asset.filename || session == null || reloadMapped) {
                 val previous = (residentId ?: settings.lastLoadedModelId)?.let(catalog::byId)?.let { LoadGuard.Meta(it.filename, it.id, it.label) }
                 session?.close()
                 session = null
                 filename = null
                 residentId = null
                 val meta = LoadGuard.Meta(asset.filename, asset.id, asset.label)
-                val repack = tweaks.weightRepack ?: !loadGuard.mappedNext(asset.id)
+                val repack = tweaks.weightRepack ?: !(loadGuard.mappedNext(asset.id) || asset.id in keepMapped)
                 loadGuard.begin(meta, previous, repack)
                 val s = LlamaSession.load(fileOf(asset).path, tweaks.resolve(topology, totalRamBytes).params.copy(repack = repack))
                 loadGuard.end(meta, s != null)
@@ -163,6 +168,11 @@ class BoarServices private constructor(private val context: Context) {
                 session = s
                 filename = asset.filename
                 residentId = asset.id
+                residentRepacked = repack
+                if (repack) s.onGenerated = { m ->
+                    if (LoadGuard.isDecodeStall(m.generatedTokens, m.decodeMs) && keepMapped.add(asset.id))
+                        android.util.Log.w("BOAR", "${asset.id} stalled with repacked weights (${m.generatedTokens} tokens in ${m.decodeMs.toInt()} ms): mapped from the next answer")
+                }
                 settings.lastLoadedModelId = asset.id
             }
             SessionEngine(session!!, tweaks.thinkingEnabled)

@@ -301,6 +301,8 @@ Java_team_sopa_boar_engine_BoarNative_generate(JNIEnv * env, jobject, jlong h, j
     double t_prefill = now_ms();
     m["promptTokensDecoded"] = decoded;
     m["prefillMs"] = t_prefill - t0;
+    LOGI("generate: %d prompt tokens, %d decoded (%d cached), prefill %.0f ms, nPredict %d",
+         (int) tokens.size(), decoded, decoded < 0 ? 0 : (int) tokens.size() - decoded, t_prefill - t0, n_predict);
     if (decoded < 0) {
         m["error"] = s->cancel.load() ? "cancelled" : "prefill failed";
         return jbytes(env, m.dump());

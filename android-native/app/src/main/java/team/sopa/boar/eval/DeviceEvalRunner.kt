@@ -244,10 +244,10 @@ class DeviceEvalRunner(
                 }
             }.getOrNull()
         }
-        val lexiconFile = File(files, "lexicon/pt-en.json")
-        val lexicon: Map<String, String> = if (lexiconFile.isFile) {
-            Json.parseToJsonElement(lexiconFile.readText()).jsonObject.mapValues { it.value.jsonPrimitive.content }
-        } else emptyMap()
+        // The Portuguese article names ship in the APK (assets/lexicon/pt-en.json), as the chat reads them.
+        val lexicon: Map<String, String> = runCatching {
+            context.assets.open("lexicon/pt-en.json").bufferedReader().use { r -> Json.parseToJsonElement(r.readText()).jsonObject.mapValues { it.value.jsonPrimitive.content } }
+        }.getOrDefault(emptyMap())
         val retriever = Retriever(KnowledgeBase(kbDb), { packs }, { text -> runBlocking { embedder.embed(text) } }, { lexicon })
         log("[EVAL] retrieval: knowledge base + ${packs.size} packs, lexicon ${lexicon.size} names")
         return Retrieval(retriever, embedder, closeables)
