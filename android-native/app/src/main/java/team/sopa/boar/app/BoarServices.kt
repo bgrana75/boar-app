@@ -94,7 +94,8 @@ class BoarServices private constructor(private val context: Context) {
     private val embedLock = Mutex()
     private var embedder: LlamaSession? = null
 
-    private suspend fun embed(text: String): FloatArray = embedLock.withLock {
+    /** The embedding model, loaded on first use; an empty vector when none is installed. */
+    suspend fun embed(text: String): FloatArray = embedLock.withLock {
         val e = embedder ?: run {
             val f = installed(AssetKind.EMBEDDING).firstOrNull()?.let(::fileOf) ?: return FloatArray(0)
             LlamaSession.load(f.path, EngineParams(nCtx = 512, threads = 2, embeddings = true)).also { embedder = it }
