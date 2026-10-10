@@ -91,7 +91,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private val _state = MutableStateFlow(ChatState(deepResearch = services.settings.deepResearchMode))
     val state: StateFlow<ChatState> = _state
     private var job: Job? = null
-    /** A chat title or summary still being written; the next question waits for it (one model, one generation). */
+    /** A chat title or summary still being written; a new question stops it (one model, one generation). */
     private var background: Job? = null
     @Volatile private var stopRequested = false
 
@@ -196,7 +196,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         if (q.isEmpty() || job?.isActive == true) return
         stopRequested = false
         job = viewModelScope.launch(Dispatchers.Default) {
-            background?.join()
+            stopBackground()
             val chats = services.chats
             val isNewSession = _state.value.sessionId == null
             // The question stands in as the title until the model writes one.
@@ -272,6 +272,20 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     messages = s.messages.map { if (it.id == answerId) it.copy(text = text.toString(), sources = shown, stopped = stopped, timedOut = timedOut) else it })
             }
         }
+    }
+
+    /**
+     * Stops a title or summary still being written, as ChatScreen.tsx does (cancelBackgroundTask), instead of making the
+     * question wait for it: a summary reads every older turn first, which on a slow phone held the next question for tens
+     * of seconds. Cancelling the job keeps one that hasn't started from starting, and makes one that has throw instead of
+     * returning, so nothing half-written is saved; the native cancel stops the prompt reading or writing in progress. A
+     * stopped title keeps the question as the chat's title; a stopped summary is written after a later answer.
+     */
+    private suspend fun stopBackground() {
+        val running = background?.takeIf { it.isActive } ?: return
+        running.cancel()
+        services.host.current()?.cancel()
+        running.join()
     }
 
     /**
