@@ -53,6 +53,20 @@ describe("followUpSearch", () => {
   it("does not read 'the' or 'there' inside other words as pointing back", () => {
     expect(followUpSearch("How does photosynthesis work in theory?", after("How do vaccines work?")).direct).toBeUndefined();
   });
+
+  it("reads 'there' as pointing back only as a place, not in 'is there' or 'there are'", () => {
+    const prev = after("How do vaccines work?");
+    expect(followUpSearch("Is there an effective treatment for malaria in adults?", prev)).toEqual({});
+    expect(followUpSearch("Are there any side effects?", prev)).toEqual({ fallback: "How do vaccines work? Are there any side effects?" });
+    expect(followUpSearch("There's a cure?", prev)).toEqual({ fallback: "How do vaccines work? There's a cure?" });
+    for (const q of ["What happened there?", "Were they there last week?", "There?"]) expect(followUpSearch(q, prev).direct).toBe(`How do vaccines work? ${q}`);
+  });
+
+  it("counts a name as the first word as the question's own subject, but not an opening word", () => {
+    const prev = after("Who proposed the theory of evolution by natural selection?");
+    for (const q of ["Australia capital?", "EIP-1559?", "Canberra?", "«Darwin» books?"]) expect(followUpSearch(q, prev)).toEqual({});
+    for (const q of ["What are his books?", "Summarize the books", "Quais são os livros?", "What's the date?"]) expect(followUpSearch(q, prev)).not.toEqual({});
+  });
 });
 
 describe("searchWithFollowUp", () => {
