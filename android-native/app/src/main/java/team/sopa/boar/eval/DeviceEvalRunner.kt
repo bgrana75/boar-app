@@ -160,6 +160,10 @@ class DeviceEvalRunner(
         val systemPrompt = personalities.get(personalities.defaultId).systemPrompt
         val maxTokens = personalities.defaultMaxTokens
         val topology = CpuTopology.read()
+        // The same Auto context as the chat (contextSizeForRam).
+        val totalRam = runCatching {
+            android.app.ActivityManager.MemoryInfo().also { context.getSystemService(android.app.ActivityManager::class.java).getMemoryInfo(it) }.totalMem
+        }.getOrDefault(0L)
         val retrieval = openRetrieval(topology)
         try {
             run@ for ((ci, config) in configs.withIndex()) {
@@ -180,7 +184,7 @@ class DeviceEvalRunner(
                                 if (session == null) {
                                     val file = installed.firstOrNull { it.first.id == config.modelId }?.second
                                     val t0 = System.nanoTime()
-                                    session = file?.let { LlamaSession.load(it.absolutePath, EngineTweaks().resolve(topology).params) }
+                                    session = file?.let { LlamaSession.load(it.absolutePath, EngineTweaks().resolve(topology, totalRam).params) }
                                     loadMs = (System.nanoTime() - t0) / 1e6
                                 } else {
                                     residency = "resident"
@@ -240,10 +244,10 @@ class DeviceEvalRunner(
                 }
             }.getOrNull()
         }
-        val lexiconFile = File(files, "lexicon/pt-en.json")
-        val lexicon: Map<String, String> = if (lexiconFile.isFile) {
-            Json.parseToJsonElement(lexiconFile.readText()).jsonObject.mapValues { it.value.jsonPrimitive.content }
-        } else emptyMap()
+        // The Portuguese article names ship in the APK (assets/lexicon/pt-en.json), as the chat reads them.
+        val lexicon: Map<String, String> = runCatching {
+            context.assets.open("lexicon/pt-en.json").bufferedReader().use { r -> Json.parseToJsonElement(r.readText()).jsonObject.mapValues { it.value.jsonPrimitive.content } }
+        }.getOrDefault(emptyMap())
         val retriever = Retriever(KnowledgeBase(kbDb), { packs }, { text -> runBlocking { embedder.embed(text) } }, { lexicon })
         log("[EVAL] retrieval: knowledge base + ${packs.size} packs, lexicon ${lexicon.size} names")
         return Retrieval(retriever, embedder, closeables)

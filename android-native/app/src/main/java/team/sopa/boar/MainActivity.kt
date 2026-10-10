@@ -176,6 +176,7 @@ private fun App(services: BoarServices, prefs: DisplayPrefs, vm: ChatViewModel =
             onMenu = { scope.launch { drawer.open() } },
             onCycleTone = vm::cycleTone,
             onRate = vm::rate,
+            onDismissCrash = vm::dismissLoadCrash,
         )
     }
 }

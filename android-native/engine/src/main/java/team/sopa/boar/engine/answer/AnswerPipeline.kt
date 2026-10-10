@@ -19,6 +19,8 @@ data class AnswerRequest(
     val styleReminder: String? = null,
     val maxTokens: Int = 512,
     val history: ConversationHistory? = null,
+    /** Advanced tweak; off by default (EngineTweaks.thinking). */
+    val enableThinking: Boolean = false,
 )
 
 enum class AnswerStage { RETRIEVING, THINKING, GENERATING }
@@ -82,8 +84,9 @@ class AnswerPipeline(
         val useTemplate = session.info.optBoolean("hasChatTemplate", false)
         val (prompt, stops) = if (useTemplate) {
             val messages = RagPure.assembleChatMessages(req.query, sources, req.systemPrompt, req.history, req.styleReminder).map { ChatMessage(it.role, it.content) }
-            // llama.rn's completion({ messages, jinja: true }) leaves enable_thinking at the template's default (on).
-            val f = session.formatChat(messages, enableThinking = true)
+            // llama.rn left enable_thinking at the template's default (on); here it's the user's tweak, off by default,
+            // so a thinking model doesn't spend the answer's token cap reasoning.
+            val f = session.formatChat(messages, enableThinking = req.enableThinking)
             f.prompt to f.stops
         } else {
             RagPure.assemblePrompt(req.query, sources, req.systemPrompt, req.history, req.styleReminder) to DEFAULT_STOP_SEQUENCES

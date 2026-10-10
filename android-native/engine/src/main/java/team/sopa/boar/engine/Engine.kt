@@ -39,6 +39,8 @@ data class EngineParams(
     val flashAttn: FlashAttn = FlashAttn.AUTO,
     val loadMode: LoadMode = LoadMode.MMAP,
     val lazyMode: LazyMode = LazyMode.OFF,
+    /** Repack weights for the fast ARM kernels (in app memory); false reads them from the mapped file, about 2x slower prompts. */
+    val repack: Boolean = true,
     val embeddings: Boolean = false,
     /** Override the GGUF's chat template (empty = the model's own). */
     val chatTemplate: String = "",
@@ -48,7 +50,7 @@ data class EngineParams(
         .put("threads", threads).put("threadsBatch", threadsBatch)
         .put("cpus", cpus).put("strictCpu", strictCpu)
         .put("typeK", typeK.ggml).put("typeV", typeV.ggml).put("flashAttn", flashAttn.code)
-        .put("loadMode", loadMode.code).put("lazyMode", lazyMode.code)
+        .put("loadMode", loadMode.code).put("lazyMode", lazyMode.code).put("repack", repack)
         .put("embeddings", embeddings).put("chatTemplate", chatTemplate)
         .toString()
 }
@@ -147,7 +149,9 @@ class LlamaSession private constructor(@Volatile private var handle: Long, val p
             val metrics = BoarNative.generate(handle, prompt.toByteArray(Charsets.UTF_8), sampling.toJson()) { bytes ->
                 trySend(GenerationEvent.Piece(String(bytes, Charsets.UTF_8))).isSuccess
             }
-            send(GenerationEvent.Done(GenerationMetrics.parse(String(metrics, Charsets.UTF_8))))
+            val m = GenerationMetrics.parse(String(metrics, Charsets.UTF_8))
+            runCatching { onGenerated?.invoke(m) }
+            send(GenerationEvent.Done(m))
         }
         close()
         awaitClose { }
@@ -164,6 +168,9 @@ class LlamaSession private constructor(@Volatile private var handle: Long, val p
             BenchResult(stats("pp"), stats("tg"), o.optInt("nPp"), o.optInt("nTg"), o.optInt("threads"))
         }
     }
+
+    /** Called after every generation with its metrics (the model host watches for stalls). */
+    @Volatile var onGenerated: ((GenerationMetrics) -> Unit)? = null
 
     fun cancel() = BoarNative.cancel(handle)
 

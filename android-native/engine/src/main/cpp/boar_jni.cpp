@@ -161,6 +161,8 @@ Java_team_sopa_boar_engine_BoarNative_load(JNIEnv * env, jobject, jstring jpath,
     mp.n_gpu_layers = 0;
     mp.load_mode = (llama_load_mode) p.value("loadMode", (int) LLAMA_LOAD_MODE_MMAP);
     mp.lazy_mode = (llama_lazy_mode) p.value("lazyMode", (int) LLAMA_LAZY_MODE_OFF);
+    // Repacked weights (llama.cpp's fast ARM layouts) live in app memory; false keeps the mapped file (llama-cli --no-repack).
+    mp.use_extra_bufts = p.value("repack", true);
     llama_model * model = llama_model_load_from_file(path.c_str(), mp);
     if (!model) { LOGE("load failed: %s", path.c_str()); return 0; }
 
@@ -299,6 +301,8 @@ Java_team_sopa_boar_engine_BoarNative_generate(JNIEnv * env, jobject, jlong h, j
     double t_prefill = now_ms();
     m["promptTokensDecoded"] = decoded;
     m["prefillMs"] = t_prefill - t0;
+    LOGI("generate: %d prompt tokens, %d decoded (%d cached), prefill %.0f ms, nPredict %d",
+         (int) tokens.size(), decoded, decoded < 0 ? 0 : (int) tokens.size() - decoded, t_prefill - t0, n_predict);
     if (decoded < 0) {
         m["error"] = s->cancel.load() ? "cancelled" : "prefill failed";
         return jbytes(env, m.dump());
