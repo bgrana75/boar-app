@@ -45,8 +45,8 @@ class DocumentsViewModel(app: Application) : AndroidViewModel(app) {
                     resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE), null, null, null)?.use { c ->
                         if (c.moveToFirst()) { fileName = c.getString(0) ?: fileName; size = c.getLong(1) }
                     }
-                    if (fileName.lowercase().endsWith(".pdf")) error("\"$fileName\": PDF import isn't in the native app yet (coming with the PDF text library). Text, Markdown, CSV and JSON work.")
-                    val text = resolver.openInputStream(uri)?.use { it.readBytes().toString(Charsets.UTF_8) } ?: error("Couldn't read \"$fileName\"")
+                    val text = if (fileName.lowercase().endsWith(".pdf")) pdfText(uri, fileName)
+                    else resolver.openInputStream(uri)?.use { it.readBytes().toString(Charsets.UTF_8) } ?: error("Couldn't read \"$fileName\"")
                     DocumentImport.File(fileName, if (size > 0) size else text.toByteArray().size.toLong(), text)
                 }
                 _state.update { it.copy(stage = "chunking") }
@@ -59,6 +59,20 @@ class DocumentsViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(stage = null) }
             refresh()
         }
+    }
+
+    /** The PDF's selectable text (no OCR); password-protected PDFs aren't supported, as in the Expo app. */
+    private fun pdfText(uri: Uri, fileName: String): String {
+        val app = getApplication<Application>()
+        com.tom_roush.pdfbox.android.PDFBoxResourceLoader.init(app)
+        val input = app.contentResolver.openInputStream(uri) ?: error("Couldn't read \"$fileName\"")
+        return try {
+            input.use { s -> com.tom_roush.pdfbox.pdmodel.PDDocument.load(s).use { doc -> com.tom_roush.pdfbox.text.PDFTextStripper().getText(doc) } }
+        } catch (e: com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException) {
+            error("\"$fileName\" is password-protected — password-protected PDFs aren't supported.")
+        } catch (e: java.io.IOException) {
+            error("Couldn't read \"$fileName\": ${e.message}")
+        }.also { if (it.isBlank()) error("\"$fileName\" has no selectable text (scanned pages need OCR, which BOAR doesn't do).") }
     }
 
     fun setActive(id: String, on: Boolean) {

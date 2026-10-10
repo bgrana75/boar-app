@@ -22,3 +22,6 @@ Zstandard — https://github.com/facebook/zstd
 
 Baloo 2 and Lexend fonts — https://github.com/EkType/Baloo2, https://github.com/googlefonts/lexend
   SIL Open Font License 1.1. Copied from the @expo-google-fonts packages into app/src/main/res/font.
+
+PdfBox-Android — https://github.com/TomRoush/PdfBox-Android
+  Apache License 2.0. Extracts the text of PDFs the user imports (a port of Apache PDFBox).
