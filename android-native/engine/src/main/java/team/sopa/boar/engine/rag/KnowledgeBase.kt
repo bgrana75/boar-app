@@ -9,6 +9,8 @@ import java.nio.ByteOrder
  * keyword search and float32 embeddings for semantic search, plus chat history, feedback, telemetry and user
  * collections. Same file and schema as the Expo app (files/SQLite/aoair_knowledge.db), so an upgrade keeps them.
  */
+data class CollectionDoc(val title: String, val source: String, val body: String)
+
 class KnowledgeBase(private val db: SqlDatabase) {
     data class Collection(
         val id: String, val name: String, val sourceFilename: String?, val docCount: Long, val chunkCount: Long,
@@ -73,6 +75,12 @@ class KnowledgeBase(private val db: SqlDatabase) {
             listOf(id, name, sourceFilename, docCount, chunkCount, sizeBytes, now),
         )
     }
+
+    /** getCollectionDocs: each distinct passage of a collection, in chunk order. */
+    fun collectionDocs(id: String): List<CollectionDoc> =
+        db.query("SELECT DISTINCT title, body, source FROM chunks WHERE collection_id = ? ORDER BY chunk_id", listOf(id)) {
+            CollectionDoc(it.string("title")!!, it.string("source") ?: "", it.string("body")!!)
+        }
 
     fun setCollectionActive(id: String, active: Boolean) {
         db.execute("UPDATE custom_collections SET active = ? WHERE id = ?", listOf(if (active) 1 else 0, id))

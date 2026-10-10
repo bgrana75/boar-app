@@ -50,6 +50,21 @@ object DocumentImport {
     private val NON_ALNUM = Regex("[^a-z0-9]+")
     private val EDGE_DASH = Regex("^-|-$")
 
+    @OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
+    private val exportJson = kotlinx.serialization.json.Json { prettyPrint = true; prettyPrintIndent = "  " }
+
+    /** exportCollection's file: JSON.stringify(docs, null, 2), keys in title, source, body order. */
+    fun exportJson(docs: List<CollectionDoc>): String = exportJson.encodeToString(
+        kotlinx.serialization.json.JsonArray.serializer(),
+        kotlinx.serialization.json.JsonArray(docs.map {
+            kotlinx.serialization.json.JsonObject(linkedMapOf(
+                "title" to kotlinx.serialization.json.JsonPrimitive(it.title),
+                "source" to kotlinx.serialization.json.JsonPrimitive(it.source),
+                "body" to kotlinx.serialization.json.JsonPrimitive(it.body),
+            ))
+        }),
+    )
+
     fun slug(s: String) = s.lowercase().replace(NON_ALNUM, "-").replace(EDGE_DASH, "").take(60)
 
     /** parseFileContent for text-based files ([File.text] is the PDF's extracted text for a .pdf). */

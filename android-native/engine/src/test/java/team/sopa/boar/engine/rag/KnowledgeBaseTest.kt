@@ -64,4 +64,18 @@ class KnowledgeBaseTest {
         val again = KnowledgeBase(db)
         assertEquals(1L, again.chunkCount())
     }
+
+    @Test fun `a collection exports its distinct passages in chunk order, as JSON stringify with 2 spaces`() {
+        val kb = kb()
+        kb.insertChunk(Chunk("c1-2", "d", "B", "x", collectionId = "c1"), vec(1f))
+        kb.insertChunk(Chunk("c1-1", "d", "Notes \"A\"", "line1\nline2\ttab é 🐗 \u2028", source = "a.md", collectionId = "c1"), vec(1f))
+        kb.insertChunk(Chunk("c1-3", "d", "B", "x", collectionId = "c1"), vec(1f))
+        kb.insertChunk(Chunk("other", "d", "C", "y", collectionId = "c2"), vec(1f))
+        val docs = kb.collectionDocs("c1")
+        assertEquals(listOf("Notes \"A\"", "B"), docs.map { it.title })
+        // Node: JSON.stringify([...], null, 2)
+        assertEquals("[\n  {\n    \"title\": \"Notes \\\"A\\\"\",\n    \"source\": \"a.md\",\n    \"body\": \"line1\\nline2\\ttab é 🐗 \u2028\"\n  },\n  {\n    \"title\": \"B\",\n    \"source\": \"\",\n    \"body\": \"x\"\n  }\n]",
+            DocumentImport.exportJson(docs))
+        assertEquals("[]", DocumentImport.exportJson(emptyList()))
+    }
 }

@@ -80,6 +80,20 @@ class DocumentsViewModel(app: Application) : AndroidViewModel(app) {
         refresh()
     }
 
+    /** exportCollection: the collection's passages as JSON, handed to the share sheet. */
+    suspend fun exportIntent(col: KnowledgeBase.Collection): android.content.Intent = kotlinx.coroutines.withContext(Dispatchers.IO) {
+        val app = getApplication<Application>()
+        val dir = java.io.File(app.cacheDir, "exports").apply { mkdirs() }
+        val file = java.io.File(dir, DocumentImport.slug(col.name).ifEmpty { "collection" } + ".json")
+        file.writeText(DocumentImport.exportJson(services.knowledgeBase.collectionDocs(col.id)))
+        val uri = androidx.core.content.FileProvider.getUriForFile(app, "${app.packageName}.files", file)
+        android.content.Intent.createChooser(android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+            type = "application/json"
+            putExtra(android.content.Intent.EXTRA_STREAM, uri)
+            addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }, "Share \"${col.name}\" knowledge base")
+    }
+
     fun remove(id: String) {
         viewModelScope.launch(Dispatchers.IO) { services.knowledgeBase.deleteCollection(id); refresh() }
     }
