@@ -19,7 +19,7 @@ jobs:
       - run: npm test
 
   native-engine:
-    # The native app's engine unit tests (android-native/), on pull requests into fullnative-dev.
+    # The native app (android-native/) on pull requests into fullnative-dev: engine unit tests, app compiles.
     if: github.base_ref == 'fullnative-dev'
     runs-on: ubuntu-latest
     steps:
@@ -42,6 +42,10 @@ jobs:
       - name: Engine unit tests
         working-directory: android-native
         run: ./gradlew :engine:testDebugUnitTest
+      # The app has no unit tests; compiling its Kotlin catches app changes that no longer build.
+      - name: Compile the app
+        working-directory: android-native
+        run: ./gradlew :app:compileDebugKotlin
       - name: Upload the test report
         if: failure()
         uses: actions/upload-artifact@v4
