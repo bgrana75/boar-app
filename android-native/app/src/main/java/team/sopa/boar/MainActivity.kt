@@ -9,6 +9,8 @@ import team.sopa.boar.engine.settings.AppSettings
 import team.sopa.boar.ui.settings.DisplayPrefs
 import team.sopa.boar.ui.settings.SettingsScreen
 import team.sopa.boar.setup.SetupViewModel
+import team.sopa.boar.models.ModelsViewModel
+import team.sopa.boar.ui.models.ModelsScreen
 import team.sopa.boar.ui.setup.SetupScreen
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalView
@@ -95,6 +97,13 @@ private fun App(services: BoarServices, prefs: DisplayPrefs, vm: ChatViewModel =
         SetupScreen(setupState, setup) { vm.refreshModel(); screen = "chat" }
         return
     }
+    if (screen == "models") {
+        val models: ModelsViewModel = viewModel()
+        val modelsState by models.state.collectAsState()
+        BackHandler { vm.refreshModel(); screen = "chat" }
+        ModelsScreen(modelsState, models) { vm.refreshModel(); screen = "chat" }
+        return
+    }
     if (screen == "settings") {
         BackHandler { vm.refreshSettings(); screen = "chat" }
         SettingsScreen(services, prefs) { vm.refreshSettings(); screen = "chat" }
@@ -111,6 +120,8 @@ private fun App(services: BoarServices, prefs: DisplayPrefs, vm: ChatViewModel =
                 Column(Modifier.fillMaxHeight().statusBarsPadding().padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(t("chatHeader.newChatSession"), style = Boar.type.title, color = Boar.colors.textAccentEmerald,
                         modifier = Modifier.fillMaxWidth().clickable { vm.newChat(); scope.launch { drawer.close() } }.padding(8.dp))
+                    Text("🧠 " + t("modelCatalogScreen.title"), style = Boar.type.body, color = Boar.colors.textSecondary,
+                        modifier = Modifier.fillMaxWidth().clickable { screen = "models"; scope.launch { drawer.close() } }.padding(8.dp))
                     Text("⚙ " + t("native.drawer.settings"), style = Boar.type.body, color = Boar.colors.textSecondary,
                         modifier = Modifier.fillMaxWidth().clickable { screen = "settings"; scope.launch { drawer.close() } }.padding(8.dp))
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
