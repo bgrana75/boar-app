@@ -24,6 +24,7 @@ import team.sopa.boar.engine.answer.AnswerRequest
 import team.sopa.boar.engine.answer.AnswerStage
 import team.sopa.boar.engine.answer.AnswerText
 import team.sopa.boar.engine.answer.DeepResearch
+import team.sopa.boar.engine.answer.HistoryBudget
 import team.sopa.boar.engine.answer.PipelineInput
 import team.sopa.boar.engine.answer.PlanExecutor
 import team.sopa.boar.engine.answer.ResearchStage
@@ -213,7 +214,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             val (systemPrompt, styleReminder) = services.personalities.promptFor(settings.personalityId, settings.customSystemPrompt)
             val history = ConversationHistory(
                 summary = chats.listSessions().firstOrNull { it.id == sessionId }?.summary,
-                turns = prior.takeLast(VERBATIM_MESSAGE_COUNT).map { ConversationTurn(it.role, if (it.role == "assistant") AnswerText.stripThinking(it.text) else it.text) },
+                // Within a token budget: earlier answers cut to their opening sentences (HistoryBudget).
+                turns = HistoryBudget.budget(prior.takeLast(VERBATIM_MESSAGE_COUNT).map { ConversationTurn(it.role, if (it.role == "assistant") AnswerText.stripThinking(it.text) else it.text) }),
             )
             val text = StringBuilder()
             var sources: List<Chunk> = emptyList()
@@ -293,7 +295,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             val previous = services.chats.listSessions().firstOrNull { it.id == sessionId }?.summary
             background = viewModelScope.launch(Dispatchers.Default) {
                 runCatching {
-                    val turns = older.map { ConversationTurn(it.role, if (it.role == "assistant") AnswerText.stripThinking(it.text) else it.text) }
+                    // Bounded like the answer's history: a whole detailed chat (thousands of tokens) took tens of seconds to read.
+                    val turns = HistoryBudget.budget(older.map { ConversationTurn(it.role, if (it.role == "assistant") AnswerText.stripThinking(it.text) else it.text) })
                     services.chats.setSummary(sessionId, Summarize.summary(gen, turns, previous))
                 }
             }
