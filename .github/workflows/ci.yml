@@ -22,10 +22,14 @@ jobs:
     # The native app (android-native/) on pull requests into fullnative-dev: engine unit tests, app compiles.
     if: github.base_ref == 'fullnative-dev'
     runs-on: ubuntu-latest
+    # The job runs the pull request's Gradle code: a read-only token, not kept in the checkout.
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+          persist-credentials: false
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
