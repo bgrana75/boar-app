@@ -20,4 +20,21 @@ describe("emergencyNumbersAnswer (Sextant trv-001)", () => {
     expect(emergencyNumbersAnswer("What emergency numbers should I know in Bhutan?", false)).toBeNull();
     expect(emergencyNumbersAnswer("Qual é a capital da Tailândia?", true)).toBeNull();
   });
+
+  it("New South Wales is Australia, not the United Kingdom; Wales alone is still the UK", () => {
+    const nsw = emergencyNumbersAnswer("What emergency numbers should I know in New South Wales, Australia?", false)!;
+    expect(nsw).toContain("Australia: 000");
+    expect(nsw).not.toContain("United Kingdom");
+    expect(emergencyNumbersAnswer("Emergency numbers in New South Wales?", false)).toContain("Australia: 000");
+    expect(emergencyNumbersAnswer("What are the emergency numbers in Wales?", false)).toContain("United Kingdom: 999");
+  });
+
+  it("Índia with its accent, and U.S. at the end of a question", () => {
+    expect(emergencyNumbersAnswer("Quais números de emergência eu preciso saber na Índia?", true)).toContain("Índia: 112");
+    expect(emergencyNumbersAnswer("What are the emergency numbers in India?", false)).toContain("India: 112");
+    expect(emergencyNumbersAnswer("Which emergency numbers should I know in the U.S.?", false)).toContain("United States: 911");
+    expect(emergencyNumbersAnswer("Emergency numbers in the U.S.A.", false)).toContain("United States: 911");
+    // Not a word that only contains the name.
+    expect(emergencyNumbersAnswer("Emergency numbers in Indiana?", false)).toBeNull();
+  });
 });

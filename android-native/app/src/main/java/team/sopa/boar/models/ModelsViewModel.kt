@@ -117,6 +117,8 @@ class ModelsViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(activating = a.id) }
         viewModelScope.launch(Dispatchers.Default) {
             services.settings.setActiveModelId(a.kind.name.lowercase(), a.id)
+            // Picked again after it closed the app: the user's call (CR-2's confirmation).
+            if (a.kind == AssetKind.LLM) services.loadGuard.confirm(a.id)
             if (a.kind == AssetKind.LLM) runCatching { services.host.unload(); services.activeSession() }
             _state.update { it.copy(activating = null, toast = a.label) }
             refresh()

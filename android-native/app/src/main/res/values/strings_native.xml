@@ -48,4 +48,10 @@
     <string name="native_drawer_evaluation" formatted="false">🧪 Evaluation</string>
     <string name="native_eval_adaptiveLater" formatted="false">Adaptive routing isn\'t in the native build yet, so only fixed models are listed.</string>
     <string name="native_eval_keepScreenOn" formatted="false">Keep the screen on and the app open while it runs. The chat\'s model is unloaded first so the two don\'t share memory.</string>
+    <string name="native_chat_loadCrashed" formatted="false">{{crashed}} closed the app while loading (not enough memory), so BOAR is answering with {{fallback}}. Pick it again in the Model Catalog to retry.</string>
+    <string name="native_chat_loadCrashedNoFallback" formatted="false">{{crashed}} closed the app while loading (not enough memory). Pick a smaller model in the Model Catalog.</string>
+    <string name="native_tweaks_thinking" formatted="false">Thinking before answering</string>
+    <string name="native_tweaks_thinkingNote" formatted="false">Lets a thinking model reason first. Auto: off, so the answer\'s token budget isn\'t spent on reasoning.</string>
+    <string name="native_tweaks_repack" formatted="false">Repacked weights</string>
+    <string name="native_tweaks_repackNote" formatted="false">Auto: on (prompts read about 2x faster). After a load that ran out of memory, the next one keeps the weights mapped from storage.</string>
 </resources>

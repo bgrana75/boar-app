@@ -78,5 +78,20 @@ class AppSettings(private val file: File) {
         set(v) = set("engineTweaks", if (v.isAuto) null else json.parseToJsonElement(v.toJson()))
 
     /** Every key as stored, for tests and diagnostics. */
+    private fun strings(key: String): List<String> = (data[key] as? kotlinx.serialization.json.JsonArray)?.mapNotNull { (it as? JsonPrimitive)?.takeIf { p -> p.isString }?.content }.orEmpty()
+    private fun setStrings(key: String, v: List<String>) = set(key, if (v.isEmpty()) null else kotlinx.serialization.json.JsonArray(v.map(::JsonPrimitive)))
+
+    /** CR-2's bookkeeping, under the Expo app's keys (loadCrashedIds, pendingLoadCrash) plus #73's loadMappedIds. */
+    val loadLedger = object : team.sopa.boar.engine.models.LoadGuard.Ledger {
+        override var crashedIds: List<String> get() = strings("loadCrashedIds"); set(v) = setStrings("loadCrashedIds", v)
+        override var mappedIds: List<String> get() = strings("loadMappedIds"); set(v) = setStrings("loadMappedIds", v)
+        override var pendingCrash: team.sopa.boar.engine.models.LoadGuard.Crash?
+            get() = data["pendingLoadCrash"]?.takeIf { it is JsonObject }?.let { team.sopa.boar.engine.models.LoadGuard.crashFromJson(it.toString()) }
+            set(v) = set("pendingLoadCrash", v?.let { json.parseToJsonElement(team.sopa.boar.engine.models.LoadGuard.crashToJson(it)) })
+    }
+
+    /** The last model that loaded: CR-2's fallback after a crash on a cold start. */
+    var lastLoadedModelId: String? get() = str("lastLoadedModelId"); set(v) = set("lastLoadedModelId", v?.let(::JsonPrimitive))
+
     fun raw(): JsonObject = data
 }

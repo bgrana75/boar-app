@@ -22,7 +22,7 @@ data class EngineTweaks(
     val cores: String = AUTO,
     /** Keep threads strictly on [cores] (llama.cpp's strict cpumask). */
     val strictCpu: Boolean = false,
-    /** Context window in tokens. Auto: 4096. */
+    /** Context window in tokens. Auto: [contextSizeForRam] (2048 up to 4.5 GB of RAM, 3072 up to 6.5 GB, else 4096). */
     val contextTokens: Int? = null,
     /** Prompt batch and micro-batch. Auto: 512 and 512. */
     val batch: Int? = null,
@@ -40,7 +40,16 @@ data class EngineTweaks(
      * phone. A generation that hits the limit keeps what it wrote.
      */
     val stageTimeoutSeconds: Int? = null,
+    /**
+     * Repacked weights. Auto: on (prompts read about 2x faster), except the load after a repacked load got the app
+     * killed, which keeps the mapped file once (LoadGuard, as #73).
+     */
+    val weightRepack: Boolean? = null,
+    /** Let a thinking model reason before it answers. Auto: off, so the answer's token cap isn't spent on reasoning. */
+    val thinking: Boolean? = null,
 ) {
+    val thinkingEnabled: Boolean get() = thinking ?: false
+
     /** The limit for a generation of up to [nPredict] tokens, or null for none. */
     fun stageTimeoutMs(nPredict: Int): Long? = when {
         stageTimeoutSeconds == null -> autoStageTimeoutMs(nPredict)
@@ -49,8 +58,11 @@ data class EngineTweaks(
     }
     data class Resolved(val params: EngineParams, val cpuSetting: String, val notes: List<String>)
 
-    /** The engine parameters these tweaks give on this phone, with a note for each value that was clamped. */
-    fun resolve(topology: CpuTopology): Resolved {
+    /**
+     * The engine parameters these tweaks give on this phone, with a note for each value that was clamped.
+     * [totalRamBytes] sizes the Auto context; 0 (unknown) gives 4096.
+     */
+    fun resolve(topology: CpuTopology, totalRamBytes: Long = 0): Resolved {
         val notes = ArrayList<String>()
         val n = topology.cores.size.coerceAtLeast(1)
         val big = topology.autoCores.ifEmpty { topology.cores.map { it.id } }
@@ -68,7 +80,7 @@ data class EngineTweaks(
         val t = threads?.let { clamp("threads", it, 1, n) } ?: minOf(big.size, 4).coerceAtLeast(1)
         if (threads == null && t > maxThreads) notes += "threads $t > cores $maxThreads"
         val tb = threadsBatch?.let { clamp("prompt threads", it, 1, n) } ?: t
-        val ctx = contextTokens?.let { clamp("context", it, 256, 131072) } ?: 4096
+        val ctx = contextTokens?.let { clamp("context", it, 256, 131072) } ?: contextSizeForRam(totalRamBytes)
         val b = batch?.let { clamp("batch", it, 32, 4096) } ?: 512
         val ub = microBatch?.let { clamp("micro-batch", it, 32, b) } ?: minOf(512, b)
         return Resolved(
@@ -76,7 +88,7 @@ data class EngineTweaks(
                 nCtx = ctx, nBatch = b, nUbatch = ub, threads = t, threadsBatch = tb,
                 cpus = coreIds?.let { topology.cpuList(it) } ?: "", strictCpu = strictCpu && coreIds != null,
                 typeK = kvCache ?: KvType.F16, typeV = kvCache ?: KvType.F16, flashAttn = flashAttention,
-                loadMode = loadMode ?: LoadMode.MMAP, lazyMode = lazyExperts ?: LazyMode.OFF,
+                loadMode = loadMode ?: LoadMode.MMAP, lazyMode = lazyExperts ?: LazyMode.OFF, repack = weightRepack ?: true,
             ),
             cpuBuild, notes,
         )
@@ -92,6 +104,18 @@ data class EngineTweaks(
          * Auto time limit: 2 minutes (the TS app's fixed STEP_TIMEOUT_MS) plus half a second per token allowed, i.e. room
          * for a phone generating at 2 tok/s. 512 tokens: about 6 minutes; 2048: about 19.
          */
+        /**
+         * memoryFit.ts contextSizeForRam: a smaller KV cache on small phones (about 140 MB less for a 4B at 3072),
+         * so the model load is less likely to be killed by the low-memory killer.
+         */
+        fun contextSizeForRam(totalRamBytes: Long): Int = when {
+            totalRamBytes <= 0 -> 4096
+            totalRamBytes <= 4.5 * GIB -> 2048
+            totalRamBytes <= 6.5 * GIB -> 3072
+            else -> 4096
+        }
+        private const val GIB = 1024.0 * 1024 * 1024
+
         fun autoStageTimeoutMs(nPredict: Int): Long = 120_000L + nPredict.coerceAtLeast(0) * 500L
 
         const val AUTO = "auto"

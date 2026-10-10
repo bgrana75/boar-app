@@ -50,7 +50,7 @@ object PtQuery {
         """inc[êe]ndio|fogo""" to "fire",
         """evacua[çc][ãa]o|evacuar""" to "evacuation",
         """nariz""" to "nose",
-        """crian[çc]a|beb[êe]""" to "child",
+        """crian[çc]a|beb[êe]s?(?![a-zà-ÿ])""" to "child",
         """parar|estancar|interromper""" to "stop",
         """tratar|tratamento|cuidar""" to "treat",
         """prevenir|evitar""" to "prevent",

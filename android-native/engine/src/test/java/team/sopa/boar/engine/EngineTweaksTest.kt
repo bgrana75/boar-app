@@ -103,4 +103,15 @@ class EngineTweaksTest {
         assertNull(EngineTweaks(stageTimeoutSeconds = 0).stageTimeoutMs(2048))
         assertEquals(EngineTweaks(stageTimeoutSeconds = 0), EngineTweaks.fromJson(EngineTweaks(stageTimeoutSeconds = 0).toJson()))
     }
+
+    @Test fun `Auto context follows the phone's RAM, as contextSizeForRam`() {
+        val gib = 1024L * 1024 * 1024
+        val topo = CpuTopology(listOf(CpuTopology.Core(0, 2_000_000)))
+        assertEquals(4096, EngineTweaks().resolve(topo).params.nCtx)
+        assertEquals(2048, EngineTweaks().resolve(topo, 4 * gib).params.nCtx)
+        assertEquals(3072, EngineTweaks().resolve(topo, 6 * gib).params.nCtx)
+        assertEquals(3072, EngineTweaks().resolve(topo, (6.5 * gib).toLong()).params.nCtx)
+        assertEquals(4096, EngineTweaks().resolve(topo, 8 * gib).params.nCtx)
+        assertEquals(8192, EngineTweaks(contextTokens = 8192).resolve(topo, 4 * gib).params.nCtx)
+    }
 }

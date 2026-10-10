@@ -14,13 +14,13 @@ import team.sopa.boar.engine.rag.PromptMessage
  * A loaded model as the executor and Deep Research use it: role messages through the model's own chat template (or a
  * plain prompt with stop words), and a time limit that stops the native generation and keeps what it wrote.
  */
-class SessionEngine(private val session: LlamaSession) : StepEngine, StageGenerator {
+class SessionEngine(private val session: LlamaSession, private val enableThinking: Boolean = false) : StepEngine, StageGenerator {
     override val hasChatTemplate: Boolean = session.info.optBoolean("hasChatTemplate", false)
 
     override suspend fun generate(req: GenRequest, onToken: ((String) -> Unit)?): GenResult = coroutineScope {
         val (prompt, stops) = if (req.messages != null) {
-            // llama.rn's completion({ messages, jinja: true }) leaves enable_thinking at the template's default (on).
-            val f = session.formatChat(req.messages.map { ChatMessage(it.role, it.content) }, enableThinking = true)
+            // The user's thinking tweak (off by default), as on the default path.
+            val f = session.formatChat(req.messages.map { ChatMessage(it.role, it.content) }, enableThinking = enableThinking)
             f.prompt to (f.stops + req.stops).distinct()
         } else {
             (req.prompt ?: "") to req.stops

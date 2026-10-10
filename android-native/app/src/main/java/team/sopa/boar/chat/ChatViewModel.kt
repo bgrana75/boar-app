@@ -72,6 +72,8 @@ data class ChatState(
     val noModel: Boolean = false,
     val deepResearch: Boolean = false,
     val error: String? = null,
+    /** CR-2, shown once: the model that closed the app and the one answering instead. */
+    val loadCrash: team.sopa.boar.engine.models.LoadGuard.Crash? = null,
     /** While the model loads or the corpus indexes: the line the Expo app shows under the header (chatScreen.*). */
     val loadingKey: String? = null,
     val personalityId: String = "succinct",
@@ -110,7 +112,9 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(loadingKey = "chatScreen.mountingWeights") }
         viewModelScope.launch(Dispatchers.Default) {
             runCatching { services.activeSession() }
-            _state.update { it.copy(loadingKey = null) }
+            val crash = services.loadGuard.consume()
+            _state.update { it.copy(loadingKey = null, loadCrash = crash) }
+            if (crash != null) refreshModel()
         }
     }
 
@@ -151,13 +155,15 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
     /** After setup or a model change: the active model's name, or that there's none. */
     fun refreshModel() {
-        val m = services.activeModel()
+        val m = services.answerModel()
         val lang = getApplication<Application>().resources.configuration.locales[0]?.language
         val installed = services.catalog.corpusCatalog.filter { services.fileOf(it).isFile }.map { it.id }
         // shortModelLabel: the catalog label without its parenthesis ("Qwen3-4B-Instruct-2507").
         val label = m?.label?.replace(Regex("\\s*\\([^)]*\\)"), "")?.replace(Regex("\\s{2,}"), " ")?.trim()?.ifEmpty { m.label.trim() }
         _state.update { it.copy(modelLabel = label, noModel = m == null, suggestions = suggestionData.forModel(m?.id, lang, installed)) }
     }
+
+    fun dismissLoadCrash() = _state.update { it.copy(loadCrash = null) }
 
     fun setDeepResearch(on: Boolean) {
         services.settings.deepResearchMode = on
@@ -235,7 +241,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 if (session == null) {
                     _state.update { it.copy(noModel = true, error = "no-model") }
                 } else if (_state.value.deepResearch) {
-                    val r = DeepResearch(SessionEngine(session), services.retriever::retrieve, settings.engineTweaks::stageTimeoutMs).run(
+                    val r = DeepResearch(SessionEngine(session, settings.engineTweaks.thinkingEnabled), services.retriever::retrieve, settings.engineTweaks::stageTimeoutMs).run(
                         q, systemPrompt, history, settings.maxTokens,
                         onProgress = { p -> _state.update { it.copy(activity = Activity.Researching(p.stage, p.subQuestionIndex?.plus(1), p.subQuestionCount)) } },
                         onToken = ::onPiece,
@@ -249,7 +255,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     timedOut = r.second
                 } else {
                     val pipeline = AnswerPipeline(session, services.retriever::retrieve, { Classify.classifyTask(it).value }, { Classify.isRetrievalIrrelevant(TaskType.of(it)) })
-                    pipeline.answer(AnswerRequest(q, systemPrompt, styleReminder, settings.maxTokens, history)).collect { e ->
+                    pipeline.answer(AnswerRequest(q, systemPrompt, styleReminder, settings.maxTokens, history, enableThinking = settings.engineTweaks.thinkingEnabled)).collect { e ->
                         when (e) {
                             is AnswerEvent.Stage -> _state.update { it.copy(activity = when (e.stage) { AnswerStage.RETRIEVING -> Activity.Retrieving; AnswerStage.THINKING -> Activity.Thinking; AnswerStage.GENERATING -> Activity.Generating }) }
                             is AnswerEvent.Sources -> sources = e.chunks
@@ -265,7 +271,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             val stopped = stopRequested
             chats.upsertMessage(sessionId, "assistant", text.toString(), answerId)
             if (shown.isNotEmpty()) chats.setMessageMeta(answerId, metaOf(shown))
-            afterAnswer(sessionId, isNewSession, stopped, prior + UiMessage(userId, "user", q) + UiMessage(answerId, "assistant", text.toString()))
+            afterAnswer(sessionId, isNewSession, stopped, prior + UiMessage(userId, "user", q) + UiMessage(answerId, "assistant", text.toString()), systemPrompt)
             chats.prune(settings.maxSavedSessions)
             _state.update { s ->
                 s.copy(answeringId = null, activity = null,
@@ -278,7 +284,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
      * As ChatScreen.tsx after an answer: a new chat gets a model-written title (autoGenerateTitles); a long one gets its
      * older turns summarized (autoSummarize, past historyTurnThreshold), in the background.
      */
-    private fun afterAnswer(sessionId: String, isNewSession: Boolean, stopped: Boolean, all: List<UiMessage>) {
+    private fun afterAnswer(sessionId: String, isNewSession: Boolean, stopped: Boolean, all: List<UiMessage>, systemPrompt: String?) {
         if (stopped) return
         val s = services.settings
         val session = services.host.current() ?: return
@@ -286,6 +292,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         if (isNewSession && s.autoGenerateTitles) {
             background = viewModelScope.launch(Dispatchers.Default) {
                 runCatching { services.chats.setTitle(sessionId, Summarize.title(gen, all.first { it.role == "user" }.text)) }
+                runCatching { warmPrefix(session, systemPrompt) }
             }
         } else if (s.autoSummarize && all.size / 2 > s.historyTurnThreshold) {
             val older = all.dropLast(VERBATIM_MESSAGE_COUNT)
@@ -296,8 +303,21 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     val turns = older.map { ConversationTurn(it.role, if (it.role == "assistant") AnswerText.stripThinking(it.text) else it.text) }
                     services.chats.setSummary(sessionId, Summarize.summary(gen, turns, previous))
                 }
+                runCatching { warmPrefix(session, systemPrompt) }
             }
         }
+    }
+
+    /**
+     * A title or summary left its own prompt in the KV cache, so the next question would read the whole system prompt
+     * again (about 230 tokens, 8 s on a 4B). Prefill it back: the next answer reuses it (#72's warm-up).
+     */
+    private suspend fun warmPrefix(session: team.sopa.boar.engine.LlamaSession, systemPrompt: String?) {
+        val (head, plain) = team.sopa.boar.engine.rag.RagPure.answerPromptPrefix(systemPrompt)
+        val prompt = if (session.info.optBoolean("hasChatTemplate", false))
+            session.formatChat(listOf(team.sopa.boar.engine.ChatMessage("system", head)), services.settings.engineTweaks.thinkingEnabled).prompt
+        else plain
+        session.generate(prompt, team.sopa.boar.engine.Sampling(nPredict = 0)).collect {}
     }
 
     /** runAdaptiveChat: plan with the installed models and the user's routing settings, then execute. */
