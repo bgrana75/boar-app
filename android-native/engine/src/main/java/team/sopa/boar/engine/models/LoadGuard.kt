@@ -101,6 +101,17 @@ class LoadGuard(private val store: MarkerStore, private val ledger: Ledger, priv
     }
 
     companion object {
+        /** Decode below this rate, for at least [STALL_MIN_MS], is a stall (a 4B on a 6 GB phone normally writes 3.5–6 tok/s). */
+        const val STALL_TOK_PER_SEC = 1.0
+        const val STALL_MIN_MS = 10_000.0
+
+        /**
+         * memoryFit.ts isDecodeStall (#73): repacked weights pushed to swap make every token wait for them to be
+         * decompressed (0.1 tok/s on a Pixel 6a with the 4B, about 1 answer in 6 in long conversations).
+         */
+        fun isDecodeStall(generatedTokens: Int, decodeMs: Double): Boolean =
+            decodeMs >= STALL_MIN_MS && generatedTokens * 1000.0 / decodeMs < STALL_TOK_PER_SEC
+
         private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
 
         fun toCrash(m: Marker) = Crash(

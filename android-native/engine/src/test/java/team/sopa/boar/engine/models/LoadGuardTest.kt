@@ -87,4 +87,11 @@ class LoadGuardTest {
         assertFalse(g.isBlocked("qwen3-4b"))
         assertNull(store.v)
     }
+
+    @Test fun `a stall is under 1 tok per s for at least 10 s of writing`() {
+        assertTrue(LoadGuard.isDecodeStall(5, 12_000.0))
+        assertFalse(LoadGuard.isDecodeStall(5, 9_000.0)) // too short to tell
+        assertFalse(LoadGuard.isDecodeStall(12, 10_000.0)) // 1.2 tok/s
+        assertTrue(LoadGuard.isDecodeStall(0, 10_000.0))
+    }
 }
