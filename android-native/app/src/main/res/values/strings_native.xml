@@ -44,4 +44,5 @@
     <string name="native_settings_adaptiveTitle" formatted="false">Adaptive routing</string>
     <string name="native_settings_adaptiveNote" formatted="false">Picks a model per question from the ones installed, and can check the answer against its sources.</string>
     <string name="native_drawer_settings" formatted="false">Settings</string>
+    <string name="native_about_airGappedBody" formatted="false">BOAR is an offline-first mobile AI system exploring adaptive model routing, local retrieval, and resource-aware inference. It runs local LLM inference with llama.cpp, built into the app, and local hybrid retrieval (SQLite FTS5 + on-device embeddings) with zero cloud dependencies.</string>
 </resources>

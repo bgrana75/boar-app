@@ -12,6 +12,7 @@ import team.sopa.boar.setup.SetupViewModel
 import team.sopa.boar.models.ModelsViewModel
 import team.sopa.boar.documents.DocumentsViewModel
 import team.sopa.boar.ui.documents.DocumentsScreen
+import team.sopa.boar.ui.about.AboutScreen
 import team.sopa.boar.ui.models.ModelsScreen
 import team.sopa.boar.ui.setup.SetupScreen
 import androidx.compose.runtime.DisposableEffect
@@ -113,6 +114,11 @@ private fun App(services: BoarServices, prefs: DisplayPrefs, vm: ChatViewModel =
         DocumentsScreen(docsState, docs) { screen = "chat" }
         return
     }
+    if (screen == "about") {
+        BackHandler { screen = "chat" }
+        AboutScreen { screen = "chat" }
+        return
+    }
     if (screen == "settings") {
         BackHandler { vm.refreshSettings(); screen = "chat" }
         SettingsScreen(services, prefs) { vm.refreshSettings(); screen = "chat" }
@@ -133,6 +139,8 @@ private fun App(services: BoarServices, prefs: DisplayPrefs, vm: ChatViewModel =
                         modifier = Modifier.fillMaxWidth().clickable { screen = "models"; scope.launch { drawer.close() } }.padding(8.dp))
                     Text("📄 " + t("modelSetupScreen.sections.knowledgeBase"), style = Boar.type.body, color = Boar.colors.textSecondary,
                         modifier = Modifier.fillMaxWidth().clickable { screen = "documents"; scope.launch { drawer.close() } }.padding(8.dp))
+                    Text("🐗 " + t("aboutScreen.title"), style = Boar.type.body, color = Boar.colors.textSecondary,
+                        modifier = Modifier.fillMaxWidth().clickable { screen = "about"; scope.launch { drawer.close() } }.padding(8.dp))
                     Text("⚙ " + t("native.drawer.settings"), style = Boar.type.body, color = Boar.colors.textSecondary,
                         modifier = Modifier.fillMaxWidth().clickable { screen = "settings"; scope.launch { drawer.close() } }.padding(8.dp))
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {

@@ -44,4 +44,5 @@
     <string name="native_settings_adaptiveTitle" formatted="false">Roteamento adaptativo</string>
     <string name="native_settings_adaptiveNote" formatted="false">Escolhe um modelo por pergunta entre os instalados e pode conferir a resposta com as fontes.</string>
     <string name="native_drawer_settings" formatted="false">Configurações</string>
+    <string name="native_about_airGappedBody" formatted="false">BOAR é um sistema de IA móvel que funciona offline, explorando roteamento adaptativo de modelos, busca local e inferência consciente dos recursos. Roda os modelos com o llama.cpp, embutido no app, e a busca híbrida local (SQLite FTS5 + embeddings no aparelho), sem nenhuma dependência de nuvem.</string>
 </resources>
