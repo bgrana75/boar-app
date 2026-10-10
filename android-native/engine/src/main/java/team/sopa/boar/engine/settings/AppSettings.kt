@@ -30,7 +30,7 @@ class AppSettings(private val file: File) {
         data = JsonObject(m)
         val tmp = File(file.parentFile, file.name + ".tmp")
         tmp.writeText(json.encodeToString(JsonObject.serializer(), data))
-        tmp.renameTo(file)
+        java.nio.file.Files.move(tmp.toPath(), file.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING, java.nio.file.StandardCopyOption.ATOMIC_MOVE)
     }
 
     private fun str(key: String) = (data[key] as? JsonPrimitive)?.takeIf { it.isString }?.content

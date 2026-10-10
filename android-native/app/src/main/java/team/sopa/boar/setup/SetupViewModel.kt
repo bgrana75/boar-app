@@ -105,8 +105,14 @@ class SetupViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { s -> s.copy(downloads = s.downloads.map { if (it.asset.id == a.id) change(it) else it }) }
 
     /** Step 4: index the bundled corpus and the downloaded corpus packs with the embedding model. */
+    /** Runs step 4 again after it failed (the embedder didn't load, or seeding stopped). */
+    fun retryIndex() {
+        if (job?.isActive == true) return
+        job = viewModelScope.launch { index() }
+    }
+
     private suspend fun index() {
-        _state.update { it.copy(step = 4) }
+        _state.update { it.copy(step = 4, error = null) }
         val app = getApplication<Application>()
         val emb = services.installed(AssetKind.EMBEDDING).firstOrNull() ?: run { _state.update { it.copy(error = "embedding model missing") }; return }
         val embedder = LlamaSession.load(services.fileOf(emb).path, EngineParams(nCtx = 512, threads = 2, embeddings = true))

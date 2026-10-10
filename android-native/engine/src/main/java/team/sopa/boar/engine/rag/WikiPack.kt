@@ -663,6 +663,9 @@ class WikiPack private constructor(
         }.getOrDefault(emptyMap())
     }
 
+    /** Closes the pack's database (after a pack is removed or replaced). */
+    fun close() = db.close()
+
     companion object {
         /** Index = articles.source code written by scripts/build-wiki-pack.mjs. */
         val SOURCES = listOf(

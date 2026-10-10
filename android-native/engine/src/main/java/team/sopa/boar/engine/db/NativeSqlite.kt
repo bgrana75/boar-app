@@ -1,5 +1,7 @@
 package team.sopa.boar.engine.db
 
+import kotlin.concurrent.withLock
+
 internal object SqliteNative {
     init { System.loadLibrary("boar_engine") }
     external fun open(path: ByteArray, flags: Int): Long
@@ -29,11 +31,17 @@ internal object SqliteNative {
     external fun zstdDecompress(src: ByteArray): ByteArray?
 }
 
-/** The bundled SQLite (with FTS5) through JNI. One connection; calls are serialized by SQLite (FULLMUTEX). */
+/**
+ * The bundled SQLite (with FTS5) through JNI. One connection shared by every caller: a reentrant lock holds it for each
+ * call and for a whole transaction, so another thread's statements can't land inside someone else's BEGIN…COMMIT.
+ */
 class NativeSqlite private constructor(private var db: Long) : SqlDatabase {
+    private val lock = java.util.concurrent.locks.ReentrantLock()
     private var txDepth = 0
 
-    override fun <T> query(sql: String, args: List<Any?>, map: (SqlRow) -> T): List<T> {
+    override fun <T> query(sql: String, args: List<Any?>, map: (SqlRow) -> T): List<T> = lock.withLock { queryLocked(sql, args, map) }
+
+    private fun <T> queryLocked(sql: String, args: List<Any?>, map: (SqlRow) -> T): List<T> {
         val st = prepare(sql, args)
         try {
             val row = NativeRow(st)
@@ -50,33 +58,33 @@ class NativeSqlite private constructor(private var db: Long) : SqlDatabase {
         }
     }
 
-    override fun execute(sql: String, args: List<Any?>): Long {
+    override fun execute(sql: String, args: List<Any?>): Long = lock.withLock {
         val st = prepare(sql, args)
         try {
             var rc: Int
             do { rc = SqliteNative.step(st) } while (rc == SQLITE_ROW)
             if (rc != SQLITE_DONE) throw error(rc)
-            return SqliteNative.changes(db)
+            SqliteNative.changes(db)
         } finally {
             SqliteNative.finalize(st)
         }
     }
 
-    override fun exec(script: String) {
+    override fun exec(script: String) = lock.withLock {
         val rc = SqliteNative.exec(db, script.toByteArray())
         if (rc != SQLITE_OK) throw error(rc)
     }
 
     override fun lastInsertRowid(): Long = SqliteNative.lastInsertRowid(db)
 
-    override fun <T> transaction(block: () -> T): T {
-        if (txDepth > 0) return block()
+    override fun <T> transaction(block: () -> T): T = lock.withLock {
+        if (txDepth > 0) return@withLock block()
         exec("BEGIN")
         txDepth++
         try {
             val r = block()
             exec("COMMIT")
-            return r
+            r
         } catch (e: Throwable) {
             runCatching { exec("ROLLBACK") }
             throw e
@@ -87,7 +95,7 @@ class NativeSqlite private constructor(private var db: Long) : SqlDatabase {
 
     fun interrupt() = SqliteNative.interrupt(db)
 
-    override fun close() {
+    override fun close() = lock.withLock {
         if (db != 0L) { SqliteNative.close(db); db = 0L }
     }
 

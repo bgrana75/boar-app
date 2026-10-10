@@ -96,9 +96,9 @@ class ModelsViewModel(app: Application) : AndroidViewModel(app) {
 
     /** A corpus pack is searchable once indexed with the embedding model (as setup does). */
     private suspend fun index(pack: CatalogAsset) {
-        row(pack.id) { it.copy(indexing = true) }
         val emb = services.installed(AssetKind.EMBEDDING).firstOrNull() ?: return
         val embedder = LlamaSession.load(services.fileOf(emb).path, EngineParams(nCtx = 512, threads = 2, embeddings = true)) ?: return
+        row(pack.id) { it.copy(indexing = true) }
         try {
             val builtin = getApplication<Application>().assets.open("corpus/corpus.json").bufferedReader().use { it.readText() }
             val collections = listOf(SeedCorpus.Collection(SeedCorpus.BUILTIN, SeedCorpus.docs(SeedCorpus.BUILTIN, builtin))) +

@@ -38,10 +38,10 @@ const answers = [];
 // This checkout's runs, plus older ones in a sibling checkout when present (read only).
 for (const evalDir of [join(root, "eval-results"), join(root, "../boar_app/eval-results")]) {
   if (!existsSync(evalDir)) continue;
-  for (const day of readdirSync(evalDir)) {
+  for (const day of readdirSync(evalDir).sort()) {
     const dir = join(evalDir, day);
     if (!existsSync(dir) || !readdirSync(dir).length) continue;
-    for (const f of readdirSync(dir).filter((f) => f.endsWith(".jsonl"))) {
+    for (const f of readdirSync(dir).filter((f) => f.endsWith(".jsonl")).sort()) {
       for (const line of readFileSync(join(dir, f), "utf8").split("\n").filter(Boolean)) {
         try { const a = JSON.parse(line).answer; if (a) answers.push(a); } catch {}
       }

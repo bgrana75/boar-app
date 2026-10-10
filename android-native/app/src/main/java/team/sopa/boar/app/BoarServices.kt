@@ -69,7 +69,7 @@ class BoarServices private constructor(private val context: Context) {
 
     /** After a pack is downloaded or removed: the next search opens the current set. */
     fun reloadPacks() = synchronized(this) {
-        openPacks?.forEach { p -> runCatching { (p as? OpenPack.Format1)?.db?.close() } }
+        openPacks?.forEach { p -> runCatching { when (p) { is OpenPack.Format1 -> p.db.close(); is OpenPack.Format2 -> p.pack.close() } } }
         openPacks = null
     }
 

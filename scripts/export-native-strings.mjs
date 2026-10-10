@@ -15,6 +15,7 @@ const flatten = (o, p = "", out = {}) => {
     // "-" isn't allowed in a resource name: "__" (already-shared -> already__shared), never in a TS key.
     const key = (p ? `${p}_${k}` : k).replace(/-/g, "__");
     if (v && typeof v === "object") flatten(v, key, out);
+    else if (key in out) throw new Error(`two keys map to the resource name ${key}`);
     else out[key] = String(v);
   }
   return out;

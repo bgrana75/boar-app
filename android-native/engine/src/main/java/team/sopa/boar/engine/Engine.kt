@@ -121,7 +121,7 @@ data class BenchResult(val pp: BenchStats?, val tg: BenchStats?, val nPp: Int, v
  * One loaded model. Calls are serialized: llama.cpp contexts are not thread-safe.
  * [cancel] may be called from any thread and stops a running [generate] or [bench].
  */
-class LlamaSession private constructor(private var handle: Long, val params: EngineParams) : Closeable {
+class LlamaSession private constructor(@Volatile private var handle: Long, val params: EngineParams) : Closeable {
     private val lock = Mutex()
 
     val info: JSONObject get() = JSONObject(BoarNative.modelInfo(handle))
@@ -167,11 +167,18 @@ class LlamaSession private constructor(private var handle: Long, val params: Eng
 
     fun cancel() = BoarNative.cancel(handle)
 
+    /** Stops a generation in flight, waits for it to return, then frees the context (never under a running call). */
     override fun close() {
-        if (handle != 0L) {
-            BoarNative.cancel(handle)
-            BoarNative.free(handle)
-            handle = 0L
+        val h = handle
+        if (h == 0L) return
+        BoarNative.cancel(h)
+        kotlinx.coroutines.runBlocking {
+            lock.withLock {
+                if (handle != 0L) {
+                    BoarNative.free(handle)
+                    handle = 0L
+                }
+            }
         }
     }
 

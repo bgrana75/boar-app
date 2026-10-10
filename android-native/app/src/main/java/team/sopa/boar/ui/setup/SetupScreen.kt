@@ -47,7 +47,7 @@ fun SetupScreen(state: SetupState, vm: SetupViewModel, onDone: () -> Unit) {
             1 -> Hardware(state, vm)
             2 -> ModelAndKnowledge(state, vm)
             3 -> Downloads(state, vm)
-            else -> Indexing(state, onDone)
+            else -> Indexing(state, vm::retryIndex, onDone)
         }
     }
 }
@@ -143,7 +143,7 @@ private fun Downloads(state: SetupState, vm: SetupViewModel) {
 }
 
 @Composable
-private fun Indexing(state: SetupState, onDone: () -> Unit) {
+private fun Indexing(state: SetupState, onRetry: () -> Unit, onDone: () -> Unit) {
     val c = Boar.colors
     Text(t("setupWizard.step4.title"), style = Boar.type.titleLg, color = c.textHeading)
     Text(t("setupWizard.step4.subtitle"), style = Boar.type.body, color = c.textSecondary)
@@ -155,4 +155,5 @@ private fun Indexing(state: SetupState, onDone: () -> Unit) {
         state.error?.let { Text(it, style = Boar.type.subtext, color = c.crimson400) }
     }
     if (state.finished) Button(t("setupWizard.step3.launchButton"), onClick = onDone)
+    else if (state.error != null) Button(t("common.retry"), onClick = onRetry)
 }

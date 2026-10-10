@@ -126,8 +126,10 @@ const fonts = {
   "lexend_700bold.ttf": "@expo-google-fonts/lexend/700Bold/Lexend_700Bold.ttf",
 };
 const images = ["mascot.png", "boar.png"];
+// A copied file is stale when it's missing or its bytes differ from the source.
+const differs = (pairs) => pairs.some(([copy, src]) => !existsSync(copy) || !readFileSync(copy).equals(readFileSync(src)));
 if (process.argv.includes("--check")) {
-  const stale = !existsSync(ktPath) || readFileSync(ktPath, "utf8") !== kt || Object.keys(fonts).some((f) => !existsSync(join(app, "res/font", f))) || images.some((f) => !existsSync(join(app, "res/drawable-nodpi", f)));
+  const stale = !existsSync(ktPath) || readFileSync(ktPath, "utf8") !== kt || differs(Object.entries(fonts).map(([f, src]) => [join(app, "res/font", f), join(root, "node_modules", src)])) || differs(images.map((f) => [join(app, "res/drawable-nodpi", f), join(root, "assets", f)]));
   if (stale) { console.error("theme out of date: run node scripts/export-native-theme.mjs"); process.exit(1); }
   process.exit(0);
 }
