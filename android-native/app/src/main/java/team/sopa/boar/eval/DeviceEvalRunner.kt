@@ -160,6 +160,10 @@ class DeviceEvalRunner(
         val systemPrompt = personalities.get(personalities.defaultId).systemPrompt
         val maxTokens = personalities.defaultMaxTokens
         val topology = CpuTopology.read()
+        // The same Auto context as the chat (contextSizeForRam).
+        val totalRam = runCatching {
+            android.app.ActivityManager.MemoryInfo().also { context.getSystemService(android.app.ActivityManager::class.java).getMemoryInfo(it) }.totalMem
+        }.getOrDefault(0L)
         val retrieval = openRetrieval(topology)
         try {
             run@ for ((ci, config) in configs.withIndex()) {
@@ -180,7 +184,7 @@ class DeviceEvalRunner(
                                 if (session == null) {
                                     val file = installed.firstOrNull { it.first.id == config.modelId }?.second
                                     val t0 = System.nanoTime()
-                                    session = file?.let { LlamaSession.load(it.absolutePath, EngineTweaks().resolve(topology).params) }
+                                    session = file?.let { LlamaSession.load(it.absolutePath, EngineTweaks().resolve(topology, totalRam).params) }
                                     loadMs = (System.nanoTime() - t0) / 1e6
                                 } else {
                                     residency = "resident"

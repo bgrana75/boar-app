@@ -119,8 +119,8 @@ private fun TweaksSection(services: BoarServices) {
     val scope = rememberCoroutineScope()
     var tw by remember { mutableStateOf(s.engineTweaks) }
     val topology = services.topology
-    val resolved = tw.resolve(topology)
-    val auto = EngineTweaks().resolve(topology).params
+    val resolved = tw.resolve(topology, services.totalRamBytes)
+    val auto = EngineTweaks().resolve(topology, services.totalRamBytes).params
     val features = remember { CpuVariants.readFeatures() }
     fun save(next: EngineTweaks) {
         tw = next
@@ -156,6 +156,10 @@ private fun TweaksSection(services: BoarServices) {
             listOf<Pair<LoadMode?, String>>(null to autoOf(t("native.tweaks.loadMmap")), LoadMode.MMAP_MLOCK to t("native.tweaks.loadLock"), LoadMode.NONE to t("native.tweaks.loadRead")),
             tw.loadMode,
         ) { save(tw.copy(loadMode = it)) }
+        Choices(t("native.tweaks.repack"), listOf<Pair<Boolean?, String>>(null to autoOf(t("native.tweaks.on")), true to t("native.tweaks.on"), false to t("native.tweaks.off")), tw.weightRepack) { save(tw.copy(weightRepack = it)) }
+        Note(t("native.tweaks.repackNote"))
+        Choices(t("native.tweaks.thinking"), listOf<Pair<Boolean?, String>>(null to autoOf(t("native.tweaks.off")), true to t("native.tweaks.on"), false to t("native.tweaks.off")), tw.thinking) { save(tw.copy(thinking = it)) }
+        Note(t("native.tweaks.thinkingNote"))
         Choices(t("native.tweaks.moe"), listOf<Pair<LazyMode?, String>>(null to autoOf(t("native.tweaks.off")), LazyMode.AUTO to autoLabel, LazyMode.ON to t("native.tweaks.on")), tw.lazyExperts) { save(tw.copy(lazyExperts = it)) }
         val autoMin = (EngineTweaks.autoStageTimeoutMs(s.maxTokens) / 60_000.0).let { "%.0f".format(it) }
         Choices(

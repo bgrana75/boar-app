@@ -11,6 +11,7 @@ import team.sopa.boar.engine.BoarEngine
 import team.sopa.boar.engine.CpuTopology
 import team.sopa.boar.engine.EngineParams
 import team.sopa.boar.engine.LlamaSession
+import team.sopa.boar.engine.models.LoadGuard
 import team.sopa.boar.engine.answer.ModelHost
 import team.sopa.boar.engine.answer.Personalities
 import team.sopa.boar.engine.answer.SessionEngine
@@ -39,6 +40,10 @@ class BoarServices private constructor(private val context: Context) {
     val catalog: Catalog = Catalog.parse(asset("boar-data/catalog.json"))
     val personalities: Personalities = Personalities.parse(asset("boar-data/personalities.json"))
     val topology: CpuTopology = CpuTopology.read()
+    /** Total RAM, for the Auto context size; 0 when Android doesn't say. */
+    val totalRamBytes: Long = runCatching {
+        android.app.ActivityManager.MemoryInfo().also { context.getSystemService(android.app.ActivityManager::class.java).getMemoryInfo(it) }.totalMem
+    }.getOrDefault(0L)
 
     private val kbDb = NativeSqlite.open(File(files, "SQLite").apply { mkdirs() }.resolve("aoair_knowledge.db").path)
     val knowledgeBase = KnowledgeBase(kbDb)
@@ -57,6 +62,25 @@ class BoarServices private constructor(private val context: Context) {
     /** The user's model, else the first installed one (the catalog's order puts the default first). */
     fun activeModel(): CatalogAsset? =
         settings.activeModelId("llm")?.let(catalog::byId)?.takeIf { fileOf(it).isFile } ?: installed(AssetKind.LLM).firstOrNull()
+
+    /** CR-2: the marker next to the models and the bookkeeping in settings.json. */
+    val loadGuard = LoadGuard(object : LoadGuard.MarkerStore {
+        private val f = File(files, "model-load.marker.json")
+        override fun read() = f.takeIf { it.isFile }?.readText()
+        override fun write(json: String) = f.writeText(json)
+        override fun clear() { f.delete() }
+    }, settings.loadLedger)
+
+    /**
+     * The model the chat answers with: the active one, unless its load killed the app (CR-2). Then the model loaded
+     * before it, else the smallest installed one that isn't blocked, so a phone doesn't crash on every start.
+     */
+    fun answerModel(): CatalogAsset? {
+        val m = activeModel() ?: return null
+        if (!loadGuard.isBlocked(m.id)) return m
+        val ok = installed(AssetKind.LLM).filter { !loadGuard.isBlocked(it.id) }
+        return settings.lastLoadedModelId?.let { id -> ok.firstOrNull { it.id == id } } ?: ok.minByOrNull { it.sizeBytes }
+    }
 
     // --- Packs and retrieval -----------------------------------------------------------------------------------
 
@@ -116,21 +140,32 @@ class BoarServices private constructor(private val context: Context) {
         private val lock = Mutex()
         private var session: LlamaSession? = null
         private var filename: String? = null
+        private var residentId: String? = null
 
         override fun residentFilename(): String? = filename
         override fun filenameOf(modelId: String): String? = catalog.byId(modelId)?.takeIf { fileOf(it).isFile }?.filename
 
         override suspend fun load(modelId: String): StepEngine? = lock.withLock {
             val asset = catalog.byId(modelId)?.takeIf { fileOf(it).isFile } ?: return null
+            val tweaks = settings.engineTweaks
             if (filename != asset.filename || session == null) {
+                val previous = (residentId ?: settings.lastLoadedModelId)?.let(catalog::byId)?.let { LoadGuard.Meta(it.filename, it.id, it.label) }
                 session?.close()
                 session = null
                 filename = null
-                val s = LlamaSession.load(fileOf(asset).path, settings.engineTweaks.resolve(topology).params) ?: return null
+                residentId = null
+                val meta = LoadGuard.Meta(asset.filename, asset.id, asset.label)
+                val repack = tweaks.weightRepack ?: !loadGuard.mappedNext(asset.id)
+                loadGuard.begin(meta, previous, repack)
+                val s = LlamaSession.load(fileOf(asset).path, tweaks.resolve(topology, totalRamBytes).params.copy(repack = repack))
+                loadGuard.end(meta, s != null)
+                if (s == null) return null
                 session = s
                 filename = asset.filename
+                residentId = asset.id
+                settings.lastLoadedModelId = asset.id
             }
-            SessionEngine(session!!)
+            SessionEngine(session!!, tweaks.thinkingEnabled)
         }
 
         /** The loaded session, for the default path (AnswerPipeline). */
@@ -141,12 +176,13 @@ class BoarServices private constructor(private val context: Context) {
             session?.close()
             session = null
             filename = null
+            residentId = null
         }
     }
 
     /** Loads the active model if it isn't resident; null when no model is installed or it fails to load. */
     suspend fun activeSession(): LlamaSession? {
-        val m = activeModel() ?: return null
+        val m = answerModel() ?: return null
         host.load(m.id) ?: return null
         return host.current()
     }
