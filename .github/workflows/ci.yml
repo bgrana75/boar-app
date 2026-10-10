@@ -30,14 +30,17 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - uses: android-actions/setup-android@v3
-      # The NDK and CMake the engine module pins, read from its build file so they can't drift.
+      # The runner's preinstalled Android SDK, with the NDK and CMake the engine module pins (read from its build file
+      # so they can't drift). android-actions/setup-android@v3 failed here: its default packages include "tools",
+      # which the SDK repository no longer has.
       - name: Install NDK and CMake
         run: |
           ndk=$(sed -n 's/.*ndkVersion = "\(.*\)".*/\1/p' android-native/engine/build.gradle.kts)
           cmake=$(sed -n 's/.*version = "\([0-9.]*\)".*/\1/p' android-native/engine/build.gradle.kts | head -1)
-          echo "NDK $ndk, CMake $cmake"
-          sdkmanager "ndk;$ndk" "cmake;$cmake"
+          echo "ANDROID_HOME $ANDROID_HOME, NDK $ndk, CMake $cmake"
+          sdkmanager="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$sdkmanager" --licenses > /dev/null || true
+          "$sdkmanager" "ndk;$ndk" "cmake;$cmake"
       - uses: gradle/actions/setup-gradle@v4
       - name: Engine unit tests
         working-directory: android-native
